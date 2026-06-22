@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "TextureFactory.h"
+
 void Game::Initialize(HWND window, int width, int height) {
 	m_window = window;
 	m_windowWidth = width;
@@ -426,150 +428,24 @@ void Game::DrawUI() {
 }
 
 void Game::CreateBulletTexture() {
-	struct Pixel {
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-	};
-
-	constexpr int width = Bullet::TextureWidth;
-	constexpr int height = Bullet::TextureHeight;
-
-	std::vector<Pixel> pixels(width * height);
-
-	// set the color
-	for (int y = 0;y < height;y++) {
-		for (int x = 0;x < width;x++) {
-			// making the 4px border around player
-			bool isBorder =
-				x == 0 ||
-				x == width - 1 ||
-				y == 0 ||
-				y == height - 1;
-
-			Pixel color{};
-
-			if (isBorder)
-				color = Pixel{ 255, 255, 255, 255 };	// white border
-			else
-				color = Pixel{ 255, 210, 50, 255 };		// golden yellow inside
-
-			pixels[y * width + x] = color;
-		}
-	}
-
-	D3D11_TEXTURE2D_DESC textureDesc = {};
-	textureDesc.Width = width;
-	textureDesc.Height = height;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-	D3D11_SUBRESOURCE_DATA initData = {};
-	initData.pSysMem = pixels.data();
-	initData.SysMemPitch = width * sizeof(Pixel);
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-
-	// create 2d texture with the above data
-	ThrowIfFailed(
-		m_device->CreateTexture2D(
-			&textureDesc,
-			&initData,
-			&texture
-		)
-	);
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-	// create shader resorce view (sprite batch uses shader resource view, not ID3D11Texture2D)
-	ThrowIfFailed(
-		m_device->CreateShaderResourceView(
-			texture.Get(),
-			&srvDesc,
-			&m_bulletTexture
-		)
+	m_bulletTexture = TextureFactory::CreateRectangleTexture(
+		m_device.Get(),
+		Bullet::TextureWidth,
+		Bullet::TextureHeight,
+		TextureFactory::ColorRGBA{ 255, 210, 50, 255 },
+		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+		1
 	);
 }
 
 void Game::CreateEnemyTexture() {
-	struct Pixel {
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-	};
-
-	constexpr int width = Enemy::TextureWidth;
-	constexpr int height = Enemy::TextureHeight;
-
-	std::vector<Pixel> pixels(width * height);
-
-	// set the color
-	for (int y = 0;y < height;y++) {
-		for (int x = 0;x < width;x++) {
-			// making the 4px border around player
-			bool isBorder =
-				x < 4 ||
-				x >= width - 4 ||
-				y < 4 ||
-				y >= height - 4;
-
-			Pixel color{};
-
-			if (isBorder)
-				color = Pixel{ 255, 255, 255, 255 };	// white border
-			else
-				color = Pixel{ 255, 80, 100, 255 };		// coral pink inside
-
-			pixels[y * width + x] = color;
-		}
-	}
-
-	D3D11_TEXTURE2D_DESC textureDesc = {};
-	textureDesc.Width = width;
-	textureDesc.Height = height;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-	D3D11_SUBRESOURCE_DATA initData = {};
-	initData.pSysMem = pixels.data();
-	initData.SysMemPitch = width * sizeof(Pixel);
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-
-	// create 2d texture with the above data
-	ThrowIfFailed(
-		m_device->CreateTexture2D(
-			&textureDesc,
-			&initData,
-			&texture
-		)
-	);
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-	// create shader resorce view (sprite batch uses shader resource view, not ID3D11Texture2D)
-	ThrowIfFailed(
-		m_device->CreateShaderResourceView(
-			texture.Get(),
-			&srvDesc,
-			&m_enemyTexture
-		)
+	m_enemyTexture = TextureFactory::CreateRectangleTexture(
+		m_device.Get(),
+		Enemy::TextureWidth,
+		Enemy::TextureHeight,
+		TextureFactory::ColorRGBA{ 255, 80, 100, 255 },
+		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+		4
 	);
 }
 

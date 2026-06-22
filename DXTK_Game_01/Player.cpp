@@ -3,9 +3,9 @@
 #include <DirectXColors.h>
 
 #include <algorithm>
-#include <cstdint>
 #include <stdexcept>
-#include <vector>
+
+#include "TextureFactory.h"
 
 void Player::Initialize(ID3D11Device* device) {
 	if (!device)
@@ -76,77 +76,12 @@ void Player::Reset() noexcept {
 
 // create a simple blue square with white border
 void Player::CreateTexture(ID3D11Device* device) {
-	struct Pixel {
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-	};
-
-	constexpr int width = Size;
-	constexpr int height = Size;
-
-	std::vector<Pixel> pixels(width * height);
-
-	// set the color
-	for (int y = 0;y < height;y++) {
-		for (int x = 0;x < width;x++) {
-			// making the 4px border around player
-			bool isBorder =
-				x < 4 ||
-				x >= width - 4 ||
-				y < 4 ||
-				y >= height - 4;
-
-			Pixel color{};
-
-			if (isBorder)
-				color = Pixel{ 255, 255, 255, 255 };	// white border
-			else
-				color = Pixel{ 80, 180, 255, 255 };		// blue inside
-
-			pixels[y * width + x] = color;
-		}
-	}
-
-	D3D11_TEXTURE2D_DESC textureDesc = {};
-	textureDesc.Width = width;
-	textureDesc.Height = height;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-
-	D3D11_SUBRESOURCE_DATA initData = {};
-	initData.pSysMem = pixels.data();
-	initData.SysMemPitch = width * sizeof(Pixel);
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
-
-	// create 2d texture with the above data
-	HRESULT res = device->CreateTexture2D(
-		&textureDesc,
-		&initData,
-		&texture
+	m_texture = TextureFactory::CreateRectangleTexture(
+		device,
+		Size,
+		Size,
+		TextureFactory::ColorRGBA{ 80, 180, 255, 255 },
+		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+		4
 	);
-
-	if (FAILED(res))
-		throw std::runtime_error("Failed to create the player texture.");
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-
-	// create shader resorce view (sprite batch uses shader resource view, not ID3D11Texture2D)
-	res = device->CreateShaderResourceView(
-		texture.Get(),
-		&srvDesc,
-		&m_texture
-	);
-
-	if (FAILED(res))
-		throw std::runtime_error("Failed to create the player shader resource view.");
 }

@@ -5,7 +5,6 @@
 #include <DirectXColors.h>
 
 #include <algorithm>
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -428,25 +427,45 @@ void Game::DrawUI() {
 }
 
 void Game::CreateBulletTexture() {
-	m_bulletTexture = TextureFactory::CreateRectangleTexture(
-		m_device.Get(),
-		Bullet::TextureWidth,
-		Bullet::TextureHeight,
-		TextureFactory::ColorRGBA{ 255, 210, 50, 255 },
-		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
-		1
-	);
+	// actual image texture
+	try {
+		m_bulletTexture = TextureFactory::LoadTextureFromFile(
+			m_device.Get(),
+			L"Assets/Textures/bullet.png"
+		);
+	}
+	// fallback debug texture
+	catch (...) {
+		m_bulletTexture = TextureFactory::CreateRectangleTexture(
+			m_device.Get(),
+			Bullet::TextureWidth,
+			Bullet::TextureHeight,
+			TextureFactory::ColorRGBA{ 255, 210, 50, 255 },
+			TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+			1
+		);
+	}
 }
 
 void Game::CreateEnemyTexture() {
-	m_enemyTexture = TextureFactory::CreateRectangleTexture(
-		m_device.Get(),
-		Enemy::TextureWidth,
-		Enemy::TextureHeight,
-		TextureFactory::ColorRGBA{ 255, 80, 100, 255 },
-		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
-		4
-	);
+	// actual image texture
+	try {
+		m_enemyTexture = TextureFactory::LoadTextureFromFile(
+			m_device.Get(),
+			L"Assets/Textures/enemy.png"
+		);
+	}
+	// fallback debug texture
+	catch (...) {
+		m_enemyTexture = TextureFactory::CreateRectangleTexture(
+			m_device.Get(),
+			Enemy::TextureWidth,
+			Enemy::TextureHeight,
+			TextureFactory::ColorRGBA{ 255, 80, 100, 255 },
+			TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+			4
+		);
+	}
 }
 
 void Game::ThrowIfFailed(HRESULT result) {

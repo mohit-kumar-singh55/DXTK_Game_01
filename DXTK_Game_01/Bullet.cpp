@@ -17,7 +17,15 @@ void Bullet::Draw(DirectX::SpriteBatch* spriteBatch, ID3D11ShaderResourceView* t
 	if (!spriteBatch || !texture)
 		return;
 
-	spriteBatch->Draw(texture, m_pos, DirectX::Colors::White);
+	RECT destinationRec = {};
+
+	// forcing the texture to fit inside the rect with the size as we want
+	destinationRec.left = static_cast<LONG>(m_pos.x);
+	destinationRec.top = static_cast<LONG>(m_pos.y);
+	destinationRec.right = static_cast<LONG>(m_pos.x + TextureWidth);
+	destinationRec.bottom = static_cast<LONG>(m_pos.y + TextureHeight);
+
+	spriteBatch->Draw(texture, destinationRec, DirectX::Colors::White);
 }
 
 bool Bullet::IsOutsideScreen() const noexcept {

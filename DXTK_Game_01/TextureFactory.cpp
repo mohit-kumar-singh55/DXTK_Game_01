@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <vector>
 
+#include <WICTextureLoader.h>
+
 namespace TextureFactory {
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> CreateRectangleTexture(
 		ID3D11Device* device,
@@ -80,6 +82,30 @@ namespace TextureFactory {
 
 		if (FAILED(res))
 			throw std::runtime_error("Failed to create ShaderResourceView");
+
+		return textureView;
+	}
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> LoadTextureFromFile(
+		ID3D11Device* device,
+		const wchar_t* filePath
+	) {
+		if (!device)
+			throw std::invalid_argument("LoadTextureFromFile received a null device");
+		if (!filePath)
+			throw std::invalid_argument("LoadTextureFromFile received a null file path");
+
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+
+		HRESULT res = DirectX::CreateWICTextureFromFile(
+			device,
+			filePath,
+			nullptr,
+			&textureView
+		);
+
+		if (FAILED(res))
+			throw std::runtime_error("Failed to load texture from file");
 
 		return textureView;
 	}

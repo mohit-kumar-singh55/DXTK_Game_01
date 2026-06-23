@@ -53,10 +53,18 @@ void Player::Draw(DirectX::SpriteBatch* spriteBatch) const {
 	if (!spriteBatch || !m_texture)
 		return;
 
+	RECT destinationRec = {};
+
+	// forcing the texture to fit inside the rect with the size as we want
+	destinationRec.left = static_cast<LONG>(m_pos.x);
+	destinationRec.top = static_cast<LONG>(m_pos.y);
+	destinationRec.right = static_cast<LONG>(m_pos.x + Size);
+	destinationRec.bottom = static_cast<LONG>(m_pos.y + Size);
+
 	// draw player
 	spriteBatch->Draw(
 		m_texture.Get(),
-		m_pos,
+		destinationRec,
 		DirectX::Colors::White
 	);
 }
@@ -74,14 +82,33 @@ void Player::Reset() noexcept {
 	m_pos = DirectX::SimpleMath::Vector2(100.0f, 100.0f);
 }
 
+RectF Player::GetBounds() const noexcept {
+	return RectF{
+		m_pos.x,
+		m_pos.y,
+		static_cast<float>(Size),
+		static_cast<float>(Size),
+	};
+}
+
 // create a simple blue square with white border
 void Player::CreateTexture(ID3D11Device* device) {
-	m_texture = TextureFactory::CreateRectangleTexture(
-		device,
-		Size,
-		Size,
-		TextureFactory::ColorRGBA{ 80, 180, 255, 255 },
-		TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
-		4
-	);
+	// actual image texture
+	try {
+		m_texture = TextureFactory::LoadTextureFromFile(
+			device,
+			L"Assets/Textures/player.png"
+		);
+	}
+	// fallback debug texture
+	catch (...) {
+		m_texture = TextureFactory::CreateRectangleTexture(
+			device,
+			Size,
+			Size,
+			TextureFactory::ColorRGBA{ 80, 180, 255, 255 },
+			TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
+			4
+		);
+	}
 }

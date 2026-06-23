@@ -17,13 +17,10 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <Keyboard.h>
-#include <SimpleMath.h>
-#include <DirectXColors.h>
 
 // game related
 #include <chrono>
 #include <vector>
-#include <cstdint>
 #include <random>
 
 class Game {

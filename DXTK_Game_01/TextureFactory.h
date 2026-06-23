@@ -21,4 +21,9 @@ namespace TextureFactory {
 		ColorRGBA borderColor,
 		int borderThickness
 	);
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> LoadTextureFromFile(
+		ID3D11Device* device,
+		const wchar_t* filePath
+	);
 }

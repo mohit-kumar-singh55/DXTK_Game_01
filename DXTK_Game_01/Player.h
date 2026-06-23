@@ -6,6 +6,8 @@
 #include <SimpleMath.h>
 #include <SpriteBatch.h>
 
+#include "Collision.h"
+
 class Player {
 public:
 	void Initialize(ID3D11Device* device);
@@ -23,6 +25,9 @@ public:
 	DirectX::SimpleMath::Vector2 GetBulletSpawnPosition() const noexcept;
 
 	void Reset() noexcept;
+
+	[[nodiscard]]
+	RectF GetBounds() const noexcept;
 
 private:
 	void CreateTexture(ID3D11Device* device);

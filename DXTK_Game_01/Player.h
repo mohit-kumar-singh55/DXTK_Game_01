@@ -24,7 +24,7 @@ public:
 	[[nodiscard]]
 	DirectX::SimpleMath::Vector2 GetBulletSpawnPosition() const noexcept;
 
-	void Reset() noexcept;
+	void Reset(int screenWidth, int screenHeight) noexcept;
 
 	[[nodiscard]]
 	RectF GetBounds() const noexcept;

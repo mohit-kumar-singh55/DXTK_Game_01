@@ -304,7 +304,7 @@ void Game::StartGame() {
 	m_enemySpawnTimer = 0.0f;
 
 	if (m_player)
-		m_player->Reset();
+		m_player->Reset(m_windowWidth, m_windowHeight);
 
 	m_gameState = GameState::Playing;
 }

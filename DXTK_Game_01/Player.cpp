@@ -77,9 +77,13 @@ DirectX::SimpleMath::Vector2 Player::GetBulletSpawnPosition() const noexcept {
 	);
 }
 
-void Player::Reset() noexcept {
+void Player::Reset(int screenWidth, int screenHeight) noexcept {
 	// reset position when game restarts
-	m_pos = DirectX::SimpleMath::Vector2(100.0f, 100.0f);
+	// bottom center
+	m_pos = DirectX::SimpleMath::Vector2(
+		screenWidth * .5f - Size * .5f,
+		screenHeight - Size - 40.0f
+	);
 }
 
 RectF Player::GetBounds() const noexcept {

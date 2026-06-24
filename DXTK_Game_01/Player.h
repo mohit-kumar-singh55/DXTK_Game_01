@@ -29,12 +29,20 @@ public:
 	[[nodiscard]]
 	RectF GetBounds() const noexcept;
 
+	[[nodiscard]]
+	bool IsInvincible() const noexcept;
+
+	void StartInvincibility() noexcept;
+
 private:
 	void CreateTexture(ID3D11Device* device);
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 	DirectX::SimpleMath::Vector2 m_pos{ 100.0,100.0f };
 
+	float m_invincibleTimer = 0.0f;
+
 	static constexpr float Speed = 300.0f;
 	static constexpr int Size = 64;
+	static constexpr float InvincibleDuration = 1.5f;
 };

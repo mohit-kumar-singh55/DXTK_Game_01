@@ -198,6 +198,26 @@ void Game::Update(float deltaTime) {
 			}
 		}
 
+		// player vs enemy collision
+		for (Enemy& enemy : m_enemies) {
+			if (!enemy.IsActive())
+				continue;
+
+			if (Intersects(m_player->GetBounds(), enemy.GetBounds())) {
+				enemy.Destroy();
+
+				if (!m_player->IsInvincible()) {
+					m_playerHp--;
+					m_player->StartInvincibility();
+
+					// end the game
+					if (m_playerHp <= 0)
+						m_gameState = GameState::GameOver;
+				}
+			}
+		}
+
+
 		// or instead use erase_if for shorter version
 		m_bullets.erase(
 			// rearranges the vector so unwanted objects are moved to the end, then returns the beginning of that unwanted range

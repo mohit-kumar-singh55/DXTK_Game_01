@@ -15,6 +15,10 @@ void Player::Initialize(ID3D11Device* device) {
 }
 
 void Player::Update(const DirectX::Keyboard::State& keyboardState, float deltaTime, int screenWidth, int screenHeight) {
+	// invincibility timer
+	if (m_invincibleTimer > 0.0f)
+		m_invincibleTimer -= deltaTime;
+
 	using DirectX::SimpleMath::Vector2;
 
 	// move player
@@ -53,6 +57,13 @@ void Player::Draw(DirectX::SpriteBatch* spriteBatch) const {
 	if (!spriteBatch || !m_texture)
 		return;
 
+	// flicker during invincibility
+	if (m_invincibleTimer > 0.0f) {
+		const int flickerFrame = static_cast<int>(m_invincibleTimer * 20.0f);
+		if (flickerFrame % 2 == 0)
+			return;
+	}
+
 	RECT destinationRec = {};
 
 	// forcing the texture to fit inside the rect with the size as we want
@@ -84,6 +95,8 @@ void Player::Reset(int screenWidth, int screenHeight) noexcept {
 		screenWidth * .5f - Size * .5f,
 		screenHeight - Size - 40.0f
 	);
+
+	m_invincibleTimer = 0.0f;
 }
 
 RectF Player::GetBounds() const noexcept {
@@ -93,6 +106,14 @@ RectF Player::GetBounds() const noexcept {
 		static_cast<float>(Size),
 		static_cast<float>(Size),
 	};
+}
+
+bool Player::IsInvincible() const noexcept {
+	return m_invincibleTimer > 0.0f;
+}
+
+void Player::StartInvincibility() noexcept {
+	m_invincibleTimer = InvincibleDuration;
 }
 
 // create a simple blue square with white border

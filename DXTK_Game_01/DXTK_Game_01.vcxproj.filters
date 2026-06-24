@@ -32,6 +32,9 @@
     <ClCompile Include="TextureFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -52,6 +55,9 @@
     <ClInclude Include="TextureFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\bullet.png">
@@ -66,5 +72,16 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="Assets\gamefont.spritefont" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Assets\Audios\damage.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Assets\Audios\hit.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Assets\Audios\shoot.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

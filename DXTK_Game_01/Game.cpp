@@ -17,6 +17,8 @@ void Game::Initialize(HWND window, int width, int height) {
 
 	InitializeDirect3D();
 
+	m_audioManager.Initialize();
+
 	m_previousTime = Clock::now();
 }
 
@@ -35,6 +37,7 @@ void Game::Tick() {
 	deltaTime = (deltaTime < 0.1f) ? deltaTime : 0.1f;	// min
 
 	Update(deltaTime);
+	m_audioManager.Update();
 	Render();
 }
 
@@ -145,9 +148,13 @@ void Game::Update(float deltaTime) {
 		m_player->Update(keyboardState, deltaTime, m_windowWidth, m_windowHeight);
 
 		// spawn bullet only once when space changes from released to pressed
-		if (m_keyboardTracker.pressed.Space)
+		if (m_keyboardTracker.pressed.Space) {
 			// emplace_back constructs the object and push at the back
 			m_bullets.emplace_back(m_player->GetBulletSpawnPosition());
+
+			// sfx
+			m_audioManager.PlayShoot();
+		}
 
 		// update bullets
 		for (Bullet& bullet : m_bullets)
@@ -172,6 +179,10 @@ void Game::Update(float deltaTime) {
 			if (enemy.IsOutsideScreen(m_windowHeight)) {
 				enemy.Destroy();
 				--m_playerHp;
+
+				// sfx
+				m_audioManager.PlayDamage();
+
 				if (m_playerHp <= 0) {
 					m_playerHp = 0;
 					m_gameState = GameState::GameOver;
@@ -193,6 +204,10 @@ void Game::Update(float deltaTime) {
 					bullet.Destroy();
 					enemy.Destroy();
 					m_score += 100;
+
+					// sfx
+					m_audioManager.PlayHit();
+
 					break;
 				}
 			}

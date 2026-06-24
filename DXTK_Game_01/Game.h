@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "AudioManager.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -93,4 +94,6 @@ private:
 	};
 
 	GameState m_gameState = GameState::Title;
+
+	AudioManager m_audioManager;
 };

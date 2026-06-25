@@ -221,6 +221,9 @@ void Game::Update(float deltaTime) {
 			if (Intersects(m_player->GetBounds(), enemy.GetBounds())) {
 				enemy.Destroy();
 
+				// sfx
+				m_audioManager.PlayDamage();
+
 				if (!m_player->IsInvincible()) {
 					m_playerHp--;
 					m_player->StartInvincibility();

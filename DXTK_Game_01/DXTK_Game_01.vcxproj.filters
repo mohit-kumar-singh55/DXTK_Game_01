@@ -60,28 +60,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Textures\bullet.png">
+    <CopyFileToFolders Include="Assets\gamefont.spritefont" />
+    <CopyFileToFolders Include="Assets\Textures\bullet.png">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Assets\Textures\enemy.png">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Audios\damage.wav">
       <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Assets\Textures\player.png">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Textures\enemy.png">
       <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Assets\gamefont.spritefont" />
-  </ItemGroup>
-  <ItemGroup>
-    <Media Include="Assets\Audios\damage.wav">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Audios\hit.wav">
       <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="Assets\Audios\hit.wav">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Textures\player.png">
       <Filter>Resource Files</Filter>
-    </Media>
-    <Media Include="Assets\Audios\shoot.wav">
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Assets\Audios\shoot.wav">
       <Filter>Resource Files</Filter>
-    </Media>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

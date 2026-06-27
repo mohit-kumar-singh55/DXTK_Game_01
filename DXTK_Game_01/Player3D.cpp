@@ -1,18 +1,18 @@
-#include "CubeObject.h"
+#include "Player3D.h"
 
 #include <DirectXColors.h>
 
 #include <algorithm>
 #include <stdexcept>
 
-void CubeObject::Initialize(ID3D11DeviceContext* context) {
+void Player3D::Initialize(ID3D11DeviceContext* context) {
 	if (!context)
-		throw std::invalid_argument("CubeObject::Initialize received a null context");
+		throw std::invalid_argument("Player3D::Initialize received a null context");
 
 	m_primitive = DirectX::GeometricPrimitive::CreateCube(context, 2.0f);
 }
 
-void CubeObject::Update(
+void Player3D::Update(
 	const DirectX::Keyboard::State& keyboardState,
 	float deltaTime
 ) {
@@ -28,16 +28,19 @@ void CubeObject::Update(
 	if (move.LengthSquared() > 0.0f) {
 		move.Normalize();
 		m_position += move * MoveSpeed * deltaTime;
+
+		// face the movement dir
+		//m_yaw = std::atan2(move.x, -move.z);
+		float newRot = std::atan2(-move.x, -move.z);
+		m_yaw = std::lerp(m_yaw, newRot, deltaTime * 10);
 	}
 
 	// clamp cube inside the predifined area
 	m_position.x = std::clamp(m_position.x, m_minX, m_maxX);
 	m_position.z = std::clamp(m_position.z, m_minZ, m_maxZ);
-
-	m_rotation += deltaTime;
 }
 
-void CubeObject::Draw(
+void Player3D::Draw(
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
@@ -46,8 +49,7 @@ void CubeObject::Draw(
 	using DirectX::SimpleMath::Matrix;
 
 	const Matrix world =
-		Matrix::CreateRotationY(m_rotation) *
-		Matrix::CreateRotationX(m_rotation * 0.5f) *
+		Matrix::CreateRotationY(m_yaw) *
 		Matrix::CreateTranslation(m_position);
 
 	/*
@@ -65,15 +67,15 @@ void CubeObject::Draw(
 	);
 }
 
-void CubeObject::SetPosition(const DirectX::SimpleMath::Vector3& position) noexcept {
+void Player3D::SetPosition(const DirectX::SimpleMath::Vector3& position) noexcept {
 	m_position = position;
 }
 
-DirectX::SimpleMath::Vector3 CubeObject::GetPosition() const noexcept {
+DirectX::SimpleMath::Vector3 Player3D::GetPosition() const noexcept {
 	return m_position;
 }
 
-void CubeObject::SetMovementBounds(
+void Player3D::SetMovementBounds(
 	float minX,
 	float maxX,
 	float minZ,

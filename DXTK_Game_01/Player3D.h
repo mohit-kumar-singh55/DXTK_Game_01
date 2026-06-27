@@ -7,7 +7,7 @@
 #include <d3d11.h>
 #include <memory>
 
-class CubeObject {
+class Player3D {
 public:
 	void Initialize(ID3D11DeviceContext* context);
 
@@ -37,7 +37,7 @@ private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_primitive;
 
 	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
-	float m_rotation = 0.0f;
+	float m_yaw = 0.0f;
 
 	float m_minX = -9.0f;
 	float m_maxX = 9.0f;

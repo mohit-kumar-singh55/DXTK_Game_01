@@ -170,9 +170,9 @@ void Game::Initialize3D() {
 	using DirectX::SimpleMath::Vector3;
 
 	// create a cube
-	m_cube.Initialize(m_context.Get());
-	m_cube.SetPosition(Vector3::Zero);
-	m_cube.SetMovementBounds(-8.5f, 8.5f, -8.5f, 8.5f);
+	m_player3D.Initialize(m_context.Get());
+	m_player3D.SetPosition(Vector3::Zero);
+	m_player3D.SetMovementBounds(-8.5f, 8.5f, -8.5f, 8.5f);
 
 	// create ground
 	m_ground.Initialize(m_context.Get());
@@ -239,7 +239,7 @@ void Game::Update(float deltaTime) {
 		PostQuitMessage(0);
 
 	// ! updating 3D objects
-	m_cube.Update(keyboardState, deltaTime);
+	m_player3D.Update(keyboardState, deltaTime);
 
 	// update camera to follow cube
 	UpdateCamera();
@@ -393,7 +393,7 @@ void Game::UpdateCamera() {
 	using DirectX::SimpleMath::Matrix;
 	using DirectX::SimpleMath::Vector3;
 
-	const Vector3 cubePos = m_cube.GetPosition();
+	const Vector3 cubePos = m_player3D.GetPosition();
 
 	const Vector3 cameraOffset(0.0f, 3.0f, 8.0f);
 
@@ -468,7 +468,7 @@ void Game::Render() {
 }
 
 void Game::Render3D() {
-	m_cube.Draw(m_view, m_projection);
+	m_player3D.Draw(m_view, m_projection);
 	m_ground.Draw(m_view, m_projection);
 	for (const WallObject& wall : m_walls)
 		wall.Draw(m_view, m_projection);

@@ -5,7 +5,7 @@
 #include "Enemy.h"
 #include "AudioManager.h"
 
-#include "CubeObject.h"
+#include "Player3D.h"
 #include "GroundObject.h"
 #include "WallObject.h"
 
@@ -83,7 +83,7 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	DirectX::SimpleMath::Matrix m_projection;
 
-	CubeObject m_cube;
+	Player3D m_player3D;
 	GroundObject m_ground;
 	std::array<WallObject, 4> m_walls;
 	// upto here

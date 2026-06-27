@@ -89,7 +89,7 @@ void Game::InitializeDirect3D() {
 		)
 	);
 
-	// Get back buffer from swap chain.
+	// Get back buffer from swap chain
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 
 	ThrowIfFailed(
@@ -99,7 +99,7 @@ void Game::InitializeDirect3D() {
 		)
 	);
 
-	// Create render target view.
+	// Create render target view
 	ThrowIfFailed(
 		m_device->CreateRenderTargetView(
 			backBuffer.Get(),
@@ -107,6 +107,9 @@ void Game::InitializeDirect3D() {
 			&m_renderTargetView
 		)
 	);
+
+	// create depth buffer for 3D purpose
+	CreateDepthBuffer();
 
 	// TODO:  from here create DirectXTK objects.
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_context.Get());
@@ -121,6 +124,106 @@ void Game::InitializeDirect3D() {
 	CreateBulletTexture();
 	// create the shared enemy texture
 	CreateEnemyTexture();
+
+	// ! creating 3D world, camera
+	Initialize3D();
+}
+
+/*
+* Render target = color image (what color is this pixel?)
+* Depth buffer  = distance image (how far away is this pixel?)
+*/
+void Game::CreateDepthBuffer() {
+	D3D11_TEXTURE2D_DESC depthTextureDesc = {};
+
+	depthTextureDesc.Width = m_windowWidth;
+	depthTextureDesc.Height = m_windowHeight;
+	depthTextureDesc.MipLevels = 1;
+	depthTextureDesc.ArraySize = 1;
+	depthTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthTextureDesc.SampleDesc.Count = 1;
+	depthTextureDesc.SampleDesc.Quality = 0;
+	depthTextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture;
+
+	ThrowIfFailed(
+		m_device->CreateTexture2D(
+			&depthTextureDesc,
+			nullptr,
+			&depthTexture
+		)
+	);
+
+	ThrowIfFailed(
+		m_device->CreateDepthStencilView(
+			depthTexture.Get(),
+			nullptr,
+			&m_depthStencilView
+		)
+	);
+}
+
+void Game::Initialize3D() {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	// create a cube
+	m_cube.Initialize(m_context.Get());
+	m_cube.SetPosition(Vector3::Zero);
+	m_cube.SetMovementBounds(-8.5f, 8.5f, -8.5f, 8.5f);
+
+	// create ground
+	m_ground.Initialize(m_context.Get());
+
+	// walls
+	for (WallObject& wall : m_walls)
+		wall.Initialize(m_context.Get());
+
+	// set walls pos
+	// back wall
+	m_walls[0].SetTransform(
+		Vector3(0.0f, 0.0f, -10.0f),
+		Vector3(20.0f, 2.0f, 0.3f)
+	);
+	// front wall
+	m_walls[1].SetTransform(
+		Vector3(0.0f, 0.0f, 10.0f),
+		Vector3(20.0f, 2.0f, 0.3f)
+	);
+	// left wall
+	m_walls[2].SetTransform(
+		Vector3(-10.0f, 0.0f, 0.0f),
+		Vector3(0.3f, 2.0f, 20.0f)
+	);
+	// right wall
+	m_walls[3].SetTransform(
+		Vector3(10.0f, 0.0f, 0.0f),
+		Vector3(0.3f, 2.0f, 20.0f)
+	);
+
+	// create camera (eye looking at the target)
+	//m_view = Matrix::CreateLookAt(
+	//	Vector3(0.0f, 2.0f, 6.0f),		// camera pos
+	//	Vector3::Zero,					// look target
+	//	Vector3::Up						// up direction
+	//);
+
+	const float aspectRatio =
+		static_cast<float>(m_windowWidth) /
+		static_cast<float>(m_windowHeight);
+
+	// 3D perspective lens (camera lens)
+	m_projection = Matrix::CreatePerspectiveFieldOfView(
+		DirectX::XMConvertToRadians(60.0f),
+		aspectRatio,
+		0.1f,
+		100.0f
+	);
+
+	// create and update camera here
+	UpdateCamera();
 }
 
 void Game::Update(float deltaTime) {
@@ -134,6 +237,12 @@ void Game::Update(float deltaTime) {
 	// close window
 	if (keyboardState.Escape)
 		PostQuitMessage(0);
+
+	// ! updating 3D objects
+	m_cube.Update(keyboardState, deltaTime);
+
+	// update camera to follow cube
+	UpdateCamera();
 
 	switch (m_gameState) {
 	case GameState::Title: {
@@ -280,6 +389,20 @@ void Game::Update(float deltaTime) {
 	}
 }
 
+void Game::UpdateCamera() {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	const Vector3 cubePos = m_cube.GetPosition();
+
+	const Vector3 cameraOffset(0.0f, 3.0f, 8.0f);
+
+	const Vector3 cameraPos = cubePos + cameraOffset;
+	const Vector3 cameraTarget = cubePos;
+
+	m_view = Matrix::CreateLookAt(cameraPos, cameraTarget, Vector3::Up);
+}
+
 void Game::Render() {
 	const float clearColor[4] = {
 		//0.1f, 0.15f, 0.25f, 1.0f
@@ -289,7 +412,7 @@ void Game::Render() {
 	m_context->OMSetRenderTargets(
 		1,
 		m_renderTargetView.GetAddressOf(),
-		nullptr
+		m_depthStencilView.Get()
 	);
 
 	// set the viewport
@@ -303,10 +426,22 @@ void Game::Render() {
 
 	m_context->RSSetViewports(1, &viewport);
 
+	// clear render target view
 	m_context->ClearRenderTargetView(
 		m_renderTargetView.Get(),
 		clearColor
 	);
+
+	// clear depth stencil view
+	m_context->ClearDepthStencilView(
+		m_depthStencilView.Get(),
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f,
+		0
+	);
+
+	// render 3d objects
+	Render3D();
 
 	// DirectXTK SpriteBatch
 	m_spriteBatch->Begin();
@@ -330,6 +465,13 @@ void Game::Render() {
 	m_spriteBatch->End();
 
 	m_swapChain->Present(1, 0);
+}
+
+void Game::Render3D() {
+	m_cube.Draw(m_view, m_projection);
+	m_ground.Draw(m_view, m_projection);
+	for (const WallObject& wall : m_walls)
+		wall.Draw(m_view, m_projection);
 }
 
 void Game::StartGame() {

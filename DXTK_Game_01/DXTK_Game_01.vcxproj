@@ -163,7 +163,9 @@
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Bullet3D.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Enemy3D.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
@@ -175,8 +177,10 @@
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Bullet3D.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Enemy3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="Player.h" />

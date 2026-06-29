@@ -7,6 +7,8 @@
 #include <d3d11.h>
 #include <memory>
 
+#include "Collision.h"
+
 class Player3D {
 public:
 	void Initialize(ID3D11DeviceContext* context);
@@ -33,10 +35,25 @@ public:
 		float maxZ
 	) noexcept;
 
+	[[nodiscard]]
+	SphereBounds GetBounds() const noexcept;
+
+	[[nodiscard]]
+	bool IsInvincible() const noexcept;
+
+	void StartInvincibility() noexcept;
+
+	[[nodiscard]]
+	DirectX::SimpleMath::Vector3 GetForwardDirection() const noexcept;
+
+	[[nodiscard]]
+	DirectX::SimpleMath::Vector3 GetBulletSpawnPosition() const noexcept;
+
 private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_primitive;
 
 	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
+	DirectX::SimpleMath::Vector3 m_forwardDir{ 0.0f,0.0f,-1.0f };
 	float m_yaw = 0.0f;
 
 	float m_minX = -9.0f;
@@ -44,5 +61,9 @@ private:
 	float m_minZ = -9.0f;
 	float m_maxZ = 9.0f;
 
+	float m_invincibleTimer = 0.0f;
+
 	static constexpr float MoveSpeed = 4.0f;
+	static constexpr float CollisionRadius = 1.0f;
+	static constexpr float InvincibleDuration = 1.5f;
 };

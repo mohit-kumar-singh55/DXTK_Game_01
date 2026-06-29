@@ -174,6 +174,12 @@ void Game::Initialize3D() {
 	m_player3D.SetPosition(Vector3::Zero);
 	m_player3D.SetMovementBounds(-8.5f, 8.5f, -8.5f, 8.5f);
 
+	// initialize bullet
+	m_bullet3DPrimitive = DirectX::GeometricPrimitive::CreateSphere(
+		m_context.Get(),
+		1.0f
+	);
+
 	// create ground
 	m_ground.Initialize(m_context.Get());
 
@@ -241,9 +247,90 @@ void Game::Update(float deltaTime) {
 	// ! updating 3D objects
 	m_player3D.Update(keyboardState, deltaTime);
 
+	// fire bullet3D
+	if (m_keyboardTracker.pressed.U) {
+		m_bullets3D.emplace_back(
+			m_player3D.GetBulletSpawnPosition(),
+			m_player3D.GetForwardDirection()
+		);
+
+		m_audioManager.PlayShoot();
+	}
+
 	// update camera to follow cube
 	UpdateCamera();
 
+	// spawning enemies3D
+	m_enemy3DSpawnTimer += deltaTime;
+	if (m_enemy3DSpawnTimer >= Enemy3DSpawnInterval) {
+		m_enemy3DSpawnTimer -= Enemy3DSpawnInterval;
+		SpawnEnemy3D();
+	}
+
+	// update enemy3D
+	for (Enemy3D& enemy : m_enemies3D)
+		enemy.Update(m_player3D.GetPosition(), deltaTime);
+
+	// update bullet3D
+	for (Bullet3D& bullet : m_bullets3D)
+		bullet.Update(deltaTime);
+
+	// Bullet3D vs Enemy3D collision
+	for (Bullet3D& bullet : m_bullets3D) {
+		if (!bullet.IsActive()) continue;
+
+		for (Enemy3D& enemy : m_enemies3D) {
+			if (!enemy.IsActive()) continue;
+
+			if (Intersects(bullet.GetBounds(), enemy.GetBounds())) {
+				bullet.Destroy();
+				enemy.Destroy();
+
+				m_score3D += 100;
+				m_audioManager.PlayHit();
+				break;
+			}
+		}
+	}
+
+	// Enemy3D vs Player3D collision
+	for (Enemy3D& enemy : m_enemies3D) {
+		if (!enemy.IsActive()) continue;
+
+		if (Intersects(enemy.GetBounds(), m_player3D.GetBounds())) {
+			enemy.Destroy();
+
+			if (!m_player3D.IsInvincible()) {
+				m_player3DHp = m_player3DHp > 0 ? --m_player3DHp : 0;
+				m_audioManager.PlayDamage();
+				m_player3D.StartInvincibility();
+			}
+		}
+	}
+
+	m_enemies3D.erase(
+		std::remove_if(
+			m_enemies3D.begin(),
+			m_enemies3D.end(),
+			[](const Enemy3D& enemy) {
+				return !enemy.IsActive();
+			}
+		),
+		m_enemies3D.end()
+	);
+
+	m_bullets3D.erase(
+		std::remove_if(
+			m_bullets3D.begin(),
+			m_bullets3D.end(),
+			[](const Bullet3D& bullet) {
+				return !bullet.IsActive();
+			}
+		),
+		m_bullets3D.end()
+	);
+
+	// for 2D gae
 	switch (m_gameState) {
 	case GameState::Title: {
 		if (m_keyboardTracker.pressed.Enter)
@@ -472,6 +559,10 @@ void Game::Render3D() {
 	m_ground.Draw(m_view, m_projection);
 	for (const WallObject& wall : m_walls)
 		wall.Draw(m_view, m_projection);
+	for (const Enemy3D& enemy : m_enemies3D)
+		enemy.Draw(m_view, m_projection);
+	for (const Bullet3D& bullet : m_bullets3D)
+		bullet.Draw(m_bullet3DPrimitive.get(), m_view, m_projection);
 }
 
 void Game::StartGame() {
@@ -487,6 +578,13 @@ void Game::StartGame() {
 		m_player->Reset(m_windowWidth, m_windowHeight);
 
 	m_gameState = GameState::Playing;
+
+	m_player3DHp = Player3DMaxHp;
+	m_enemies3D.clear();
+	m_enemy3DSpawnTimer = 0.0f;
+
+	m_score3D = 0;
+	m_bullets3D.clear();
 }
 
 void Game::SpawnEnemy() {
@@ -504,6 +602,21 @@ void Game::SpawnEnemy() {
 	};
 
 	m_enemies.emplace_back(spawnPos);
+}
+
+void Game::SpawnEnemy3D() {
+	std::uniform_real_distribution<float> distribution(-8.0f, 8.0f);
+
+	const float x = distribution(m_randomEngine);
+	const float z = distribution(m_randomEngine);
+
+	DirectX::SimpleMath::Vector3 spawnPos(x, 0.0f, z);
+
+	Enemy3D enemy(spawnPos);
+
+	enemy.Initialize(m_context.Get());
+
+	m_enemies3D.emplace_back(std::move(enemy));	// (transfer the ownership) Because Enemy3D owns a unique_ptr<GeometricPrimitive>, it cannot be copied. It must be moved
 }
 
 void Game::DrawUI() {
@@ -551,20 +664,36 @@ void Game::DrawUI() {
 	case GameState::Playing: {
 		const std::wstring scoreText = L"Score: " + std::to_wstring(m_score);
 		const std::wstring hpText = L"HP: " + std::to_wstring(m_playerHp);
+		const std::wstring score3DText = L"3D Score: " + std::to_wstring(m_score3D);
+		const std::wstring hp3DText = L"HP: " + std::to_wstring(m_player3DHp);
 
 		// draw strings
 		m_font->DrawString(
 			m_spriteBatch.get(),
 			scoreText.c_str(),
-			DirectX::SimpleMath::Vector2(20.0f, 20.0f),
+			Vector2(20.0f, 20.0f),
 			DirectX::Colors::White
 		);
 
 		m_font->DrawString(
 			m_spriteBatch.get(),
 			hpText.c_str(),
-			DirectX::SimpleMath::Vector2(20.0f, 60.0f),
+			Vector2(20.0f, 60.0f),
 			DirectX::Colors::White
+		);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			score3DText.c_str(),
+			Vector2(20.0f, 100.0f),
+			DirectX::Colors::LightBlue
+		);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			hp3DText.c_str(),
+			Vector2(20.0f, 140.0f),
+			DirectX::Colors::LightBlue
 		);
 		break;
 	}

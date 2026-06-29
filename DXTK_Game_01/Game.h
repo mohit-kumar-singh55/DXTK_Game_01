@@ -6,6 +6,8 @@
 #include "AudioManager.h"
 
 #include "Player3D.h"
+#include "Enemy3D.h"
+#include "Bullet3D.h"
 #include "GroundObject.h"
 #include "WallObject.h"
 
@@ -22,6 +24,7 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <Keyboard.h>
+#include <GeometricPrimitive.h>
 
 // game related
 #include <chrono>
@@ -50,6 +53,7 @@ private:
 	void StartGame();
 
 	void SpawnEnemy();
+	void SpawnEnemy3D();
 
 	void DrawUI();
 
@@ -86,6 +90,16 @@ private:
 	Player3D m_player3D;
 	GroundObject m_ground;
 	std::array<WallObject, 4> m_walls;
+	std::vector<Enemy3D> m_enemies3D;
+	std::vector<Bullet3D> m_bullets3D;
+
+	std::unique_ptr<DirectX::GeometricPrimitive> m_bullet3DPrimitive;
+
+	float m_enemy3DSpawnTimer = 0.0f;
+	static constexpr float Enemy3DSpawnInterval = 2.0f;
+	static constexpr int Player3DMaxHp = 3;
+	int m_player3DHp = Player3DMaxHp;
+	int m_score3D = 0;
 	// upto here
 
 	std::unique_ptr<Player> m_player;

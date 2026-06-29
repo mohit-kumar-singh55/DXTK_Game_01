@@ -16,6 +16,11 @@ void Player3D::Update(
 	const DirectX::Keyboard::State& keyboardState,
 	float deltaTime
 ) {
+	// invincibility
+	if (m_invincibleTimer > 0.0f)
+		m_invincibleTimer -= deltaTime;
+
+	// movement & rotation
 	using DirectX::SimpleMath::Vector3;
 
 	Vector3 move = Vector3::Zero;
@@ -28,6 +33,9 @@ void Player3D::Update(
 	if (move.LengthSquared() > 0.0f) {
 		move.Normalize();
 		m_position += move * MoveSpeed * deltaTime;
+
+		// setting forward dir
+		m_forwardDir = move;
 
 		// face the movement dir
 		//m_yaw = std::atan2(move.x, -move.z);
@@ -45,6 +53,12 @@ void Player3D::Draw(
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
 	if (!m_primitive) return;
+
+	// flicker during invincibility
+	if (m_invincibleTimer > 0.0f) {
+		const int flickerFrame = static_cast<int>(m_invincibleTimer * 20.0f);
+		if (flickerFrame % 2 == 0) return;
+	}
 
 	using DirectX::SimpleMath::Matrix;
 
@@ -85,4 +99,26 @@ void Player3D::SetMovementBounds(
 	m_maxX = maxX;
 	m_minZ = minZ;
 	m_maxZ = maxZ;
+}
+
+SphereBounds Player3D::GetBounds() const noexcept {
+	return SphereBounds{ m_position,CollisionRadius };
+}
+
+bool Player3D::IsInvincible() const noexcept {
+	return m_invincibleTimer > 0.0f;
+}
+
+void Player3D::StartInvincibility() noexcept {
+	m_invincibleTimer = InvincibleDuration;
+}
+
+DirectX::SimpleMath::Vector3 Player3D::GetForwardDirection() const noexcept {
+	return m_forwardDir;
+}
+
+DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
+	return m_position +
+		m_forwardDir * 1.4f +
+		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
 }

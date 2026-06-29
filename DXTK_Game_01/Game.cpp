@@ -244,7 +244,181 @@ void Game::Update(float deltaTime) {
 	if (keyboardState.Escape)
 		PostQuitMessage(0);
 
-	// ! updating 3D objects
+	// for 2D gae
+	switch (m_gameState) {
+	case GameState::Title: {
+		if (m_keyboardTracker.pressed.D1)
+			Start2DGame();
+		if (m_keyboardTracker.pressed.D2)
+			Start3DGame();
+		break;
+	}
+
+	case GameState::Playing: {
+		if (m_gameMode == GameMode::Shooter2D)
+			Update2D(deltaTime, keyboardState);
+		if (m_gameMode == GameMode::Arena3D)
+			Update3D(deltaTime, keyboardState);
+		break;
+	}
+
+	case GameState::GameOver: {
+		if (m_keyboardTracker.pressed.R) {
+			if (m_gameMode == GameMode::Shooter2D)
+				Start2DGame();
+			if (m_gameMode == GameMode::Arena3D)
+				Start3DGame();
+		}
+		if (m_keyboardTracker.pressed.Back)
+			ReturnToTitle();
+		break;
+	}
+
+	default:
+		break;
+	}
+}
+
+void Game::UpdateCamera() {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	const Vector3 cubePos = m_player3D.GetPosition();
+
+	const Vector3 cameraOffset(0.0f, 3.0f, 8.0f);
+
+	const Vector3 cameraPos = cubePos + cameraOffset;
+	const Vector3 cameraTarget = cubePos;
+
+	m_view = Matrix::CreateLookAt(cameraPos, cameraTarget, Vector3::Up);
+}
+
+void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState) {
+	// update objects
+	m_player->Update(keyboardState, deltaTime, m_windowWidth, m_windowHeight);
+
+	// spawn bullet only once when space changes from released to pressed
+	if (m_keyboardTracker.pressed.Space) {
+		// emplace_back constructs the object and push at the back
+		m_bullets.emplace_back(m_player->GetBulletSpawnPosition());
+
+		// sfx
+		m_audioManager.PlayShoot();
+	}
+
+	// update bullets
+	for (Bullet& bullet : m_bullets)
+		bullet.Update(deltaTime);
+
+	// spawn enemies
+	m_enemySpawnTimer += deltaTime;
+	if (m_enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
+		m_enemySpawnTimer -= ENEMY_SPAWN_INTERVAL;
+		SpawnEnemy();
+	}
+
+	// update enemies
+	for (Enemy& enemy : m_enemies)
+		enemy.Update(deltaTime);
+
+	// enemy reaching bottom damages the player
+	for (Enemy& enemy : m_enemies) {
+		if (!enemy.IsActive())
+			continue;
+
+		if (enemy.IsOutsideScreen(m_windowHeight)) {
+			enemy.Destroy();
+			--m_playerHp;
+
+			// sfx
+			m_audioManager.PlayDamage();
+
+			if (m_playerHp <= 0) {
+				m_playerHp = 0;
+				m_gameState = GameState::GameOver;
+			}
+		}
+	}
+
+	// bullet vs enemy collision
+	for (Bullet& bullet : m_bullets) {
+		if (!bullet.IsActive())
+			continue;
+
+		for (Enemy& enemy : m_enemies) {
+			if (!enemy.IsActive())
+				continue;
+
+			if (Intersects(bullet.GetBounds(), enemy.GetBounds())) {
+				OutputDebugStringA("COLLIDED!!!\n");
+				bullet.Destroy();
+				enemy.Destroy();
+				m_score += 100;
+
+				// sfx
+				m_audioManager.PlayHit();
+
+				break;
+			}
+		}
+	}
+
+	// player vs enemy collision
+	for (Enemy& enemy : m_enemies) {
+		if (!enemy.IsActive())
+			continue;
+
+		if (Intersects(m_player->GetBounds(), enemy.GetBounds())) {
+			enemy.Destroy();
+
+			// sfx
+			m_audioManager.PlayDamage();
+
+			if (!m_player->IsInvincible()) {
+				m_playerHp--;
+				m_player->StartInvincibility();
+
+				// end the game
+				if (m_playerHp <= 0)
+					m_gameState = GameState::GameOver;
+			}
+		}
+	}
+
+
+	// or instead use erase_if for shorter version
+	m_bullets.erase(
+		// rearranges the vector so unwanted objects are moved to the end, then returns the beginning of that unwanted range
+		// after that, erase truly removes them
+		std::remove_if(
+			m_bullets.begin(),
+			m_bullets.end(),
+			[](const Bullet& bullet) {
+				return
+					!bullet.IsActive() ||
+					bullet.IsOutsideScreen();
+			}
+		),
+		m_bullets.end()
+	);
+
+	// erase enemies if not active
+	m_enemies.erase(
+		// rearranges the vector so unwanted objects are moved to the end, then returns the beginning of that unwanted range
+		// after that, erase truly removes them
+		std::remove_if(
+			m_enemies.begin(),
+			m_enemies.end(),
+			[](const Enemy& enemy) {
+				return
+					!enemy.IsActive();
+			}
+		),
+		m_enemies.end()
+	);
+}
+
+void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardState) {
 	m_player3D.Update(keyboardState, deltaTime);
 
 	// fire bullet3D
@@ -329,165 +503,6 @@ void Game::Update(float deltaTime) {
 		),
 		m_bullets3D.end()
 	);
-
-	// for 2D gae
-	switch (m_gameState) {
-	case GameState::Title: {
-		if (m_keyboardTracker.pressed.Enter)
-			StartGame();
-		break;
-	}
-
-						 // update things
-	case GameState::Playing: {
-		// update objects
-		m_player->Update(keyboardState, deltaTime, m_windowWidth, m_windowHeight);
-
-		// spawn bullet only once when space changes from released to pressed
-		if (m_keyboardTracker.pressed.Space) {
-			// emplace_back constructs the object and push at the back
-			m_bullets.emplace_back(m_player->GetBulletSpawnPosition());
-
-			// sfx
-			m_audioManager.PlayShoot();
-		}
-
-		// update bullets
-		for (Bullet& bullet : m_bullets)
-			bullet.Update(deltaTime);
-
-		// spawn enemies
-		m_enemySpawnTimer += deltaTime;
-		if (m_enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
-			m_enemySpawnTimer -= ENEMY_SPAWN_INTERVAL;
-			SpawnEnemy();
-		}
-
-		// update enemies
-		for (Enemy& enemy : m_enemies)
-			enemy.Update(deltaTime);
-
-		// enemy reaching bottom damages the player
-		for (Enemy& enemy : m_enemies) {
-			if (!enemy.IsActive())
-				continue;
-
-			if (enemy.IsOutsideScreen(m_windowHeight)) {
-				enemy.Destroy();
-				--m_playerHp;
-
-				// sfx
-				m_audioManager.PlayDamage();
-
-				if (m_playerHp <= 0) {
-					m_playerHp = 0;
-					m_gameState = GameState::GameOver;
-				}
-			}
-		}
-
-		// bullet vs enemy collision
-		for (Bullet& bullet : m_bullets) {
-			if (!bullet.IsActive())
-				continue;
-
-			for (Enemy& enemy : m_enemies) {
-				if (!enemy.IsActive())
-					continue;
-
-				if (Intersects(bullet.GetBounds(), enemy.GetBounds())) {
-					OutputDebugStringA("COLLIDED!!!\n");
-					bullet.Destroy();
-					enemy.Destroy();
-					m_score += 100;
-
-					// sfx
-					m_audioManager.PlayHit();
-
-					break;
-				}
-			}
-		}
-
-		// player vs enemy collision
-		for (Enemy& enemy : m_enemies) {
-			if (!enemy.IsActive())
-				continue;
-
-			if (Intersects(m_player->GetBounds(), enemy.GetBounds())) {
-				enemy.Destroy();
-
-				// sfx
-				m_audioManager.PlayDamage();
-
-				if (!m_player->IsInvincible()) {
-					m_playerHp--;
-					m_player->StartInvincibility();
-
-					// end the game
-					if (m_playerHp <= 0)
-						m_gameState = GameState::GameOver;
-				}
-			}
-		}
-
-
-		// or instead use erase_if for shorter version
-		m_bullets.erase(
-			// rearranges the vector so unwanted objects are moved to the end, then returns the beginning of that unwanted range
-			// after that, erase truly removes them
-			std::remove_if(
-				m_bullets.begin(),
-				m_bullets.end(),
-				[](const Bullet& bullet) {
-					return
-						!bullet.IsActive() ||
-						bullet.IsOutsideScreen();
-				}
-			),
-			m_bullets.end()
-		);
-
-		// erase enemies if not active
-		m_enemies.erase(
-			// rearranges the vector so unwanted objects are moved to the end, then returns the beginning of that unwanted range
-			// after that, erase truly removes them
-			std::remove_if(
-				m_enemies.begin(),
-				m_enemies.end(),
-				[](const Enemy& enemy) {
-					return
-						!enemy.IsActive();
-				}
-			),
-			m_enemies.end()
-		);
-		break;
-	}
-
-	case GameState::GameOver: {
-		if (m_keyboardTracker.pressed.R)
-			StartGame();
-		break;
-	}
-
-	default:
-		break;
-	}
-}
-
-void Game::UpdateCamera() {
-	using DirectX::SimpleMath::Matrix;
-	using DirectX::SimpleMath::Vector3;
-
-	const Vector3 cubePos = m_player3D.GetPosition();
-
-	const Vector3 cameraOffset(0.0f, 3.0f, 8.0f);
-
-	const Vector3 cameraPos = cubePos + cameraOffset;
-	const Vector3 cameraTarget = cubePos;
-
-	m_view = Matrix::CreateLookAt(cameraPos, cameraTarget, Vector3::Up);
 }
 
 void Game::Render() {
@@ -527,24 +542,19 @@ void Game::Render() {
 		0
 	);
 
-	// render 3d objects
-	Render3D();
+	// ! render 3d
+	if (m_gameMode == GameMode::Arena3D &&
+		(m_gameState == GameState::Playing ||
+			m_gameState == GameState::GameOver))
+		Render3D();
 
-	// DirectXTK SpriteBatch
+	// ! render 2d
 	m_spriteBatch->Begin();
 
-	if (m_gameState == GameState::Playing || m_gameState == GameState::GameOver) {
-		// draw enemies
-		for (const Enemy& enemy : m_enemies)
-			enemy.Draw(m_spriteBatch.get(), m_enemyTexture.Get());
-
-		// drawing bullets before player, so that the player overlap the bullets
-		for (const Bullet& bullet : m_bullets)
-			bullet.Draw(m_spriteBatch.get(), m_bulletTexture.Get());
-
-		// draw player
-		m_player->Draw(m_spriteBatch.get());
-	}
+	if (m_gameMode == GameMode::Shooter2D &&
+		(m_gameState == GameState::Playing ||
+			m_gameState == GameState::GameOver))
+		Render2D();
 
 	// draw ui
 	DrawUI();
@@ -552,6 +562,19 @@ void Game::Render() {
 	m_spriteBatch->End();
 
 	m_swapChain->Present(1, 0);
+}
+
+void Game::Render2D() {
+	// draw enemies
+	for (const Enemy& enemy : m_enemies)
+		enemy.Draw(m_spriteBatch.get(), m_enemyTexture.Get());
+
+	// drawing bullets before player, so that the player overlap the bullets
+	for (const Bullet& bullet : m_bullets)
+		bullet.Draw(m_spriteBatch.get(), m_bulletTexture.Get());
+
+	// draw player
+	m_player->Draw(m_spriteBatch.get());
 }
 
 void Game::Render3D() {
@@ -565,7 +588,10 @@ void Game::Render3D() {
 		bullet.Draw(m_bullet3DPrimitive.get(), m_view, m_projection);
 }
 
-void Game::StartGame() {
+void Game::Start2DGame() {
+	m_gameMode = GameMode::Shooter2D;
+	m_gameState = GameState::Playing;
+
 	m_score = 0;
 	m_playerHp = PLAYER_MAX_HP;
 
@@ -576,15 +602,37 @@ void Game::StartGame() {
 
 	if (m_player)
 		m_player->Reset(m_windowWidth, m_windowHeight);
+}
 
+void Game::Start3DGame() {
+	m_gameMode = GameMode::Arena3D;
 	m_gameState = GameState::Playing;
 
 	m_player3DHp = Player3DMaxHp;
+	m_score3D = 0;
+
 	m_enemies3D.clear();
+	m_bullets3D.clear();
+
 	m_enemy3DSpawnTimer = 0.0f;
 
-	m_score3D = 0;
+	m_player3D.SetPosition(DirectX::SimpleMath::Vector3::Zero);
+
+	UpdateCamera();
+}
+
+void Game::ReturnToTitle() {
+	m_gameMode = GameMode::None;
+	m_gameState = GameState::Title;
+
+	m_bullets.clear();
+	m_enemies.clear();
+
 	m_bullets3D.clear();
+	m_enemies3D.clear();
+
+	m_enemySpawnTimer = 0.0f;
+	m_enemy3DSpawnTimer = 0.0f;
 }
 
 void Game::SpawnEnemy() {
@@ -629,32 +677,40 @@ void Game::DrawUI() {
 		// title
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"DXTK SHOOTER",
+			L"DXTK GAME PROJECT",
 			Vector2(
-				m_windowWidth * 0.5f - 80.0f,
-				m_windowHeight * 0.5f - 150.0f
+				m_windowWidth * 0.5f - 180.0f,
+				m_windowHeight * 0.5f - 120.0f
 			),
 			DirectX::Colors::White
 		);
 
-		// instructon
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"Press ENTER to Start",
+			L"Press 1: 2D Shooter",
 			Vector2(
 				m_windowWidth * 0.5f - 170.0f,
-				m_windowHeight * 0.5f - 20.0f
+				m_windowHeight * 0.5f - 40.0f
 			),
 			DirectX::Colors::Yellow
 		);
 
-		// controls
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"WASD / Arrows: Move\nSpace: Shoot\nEsc: Quit",
+			L"Press 2: 3D Arena",
 			Vector2(
-				m_windowWidth * 0.5f - 400.0f,
-				m_windowHeight * 0.5f + 150.0f
+				m_windowWidth * 0.5f - 170.0f,
+				m_windowHeight * 0.5f + 10.0f
+			),
+			DirectX::Colors::LightBlue
+		);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			L"Esc : Quit",
+			Vector2(
+				m_windowWidth * 0.5f - 80.0f,
+				m_windowHeight * 0.5f + 80.0f
 			),
 			DirectX::Colors::White
 		);
@@ -662,44 +718,67 @@ void Game::DrawUI() {
 	}
 
 	case GameState::Playing: {
-		const std::wstring scoreText = L"Score: " + std::to_wstring(m_score);
-		const std::wstring hpText = L"HP: " + std::to_wstring(m_playerHp);
-		const std::wstring score3DText = L"3D Score: " + std::to_wstring(m_score3D);
-		const std::wstring hp3DText = L"HP: " + std::to_wstring(m_player3DHp);
+		if (m_gameMode == GameMode::Shooter2D) {
+			const std::wstring scoreText = L"Score: " + std::to_wstring(m_score);
+			const std::wstring hpText = L"HP: " + std::to_wstring(m_playerHp);
 
-		// draw strings
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			scoreText.c_str(),
-			Vector2(20.0f, 20.0f),
-			DirectX::Colors::White
-		);
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				scoreText.c_str(),
+				Vector2(20.0f, 20.0f),
+				DirectX::Colors::White
+			);
 
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			hpText.c_str(),
-			Vector2(20.0f, 60.0f),
-			DirectX::Colors::White
-		);
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				hpText.c_str(),
+				Vector2(20.0f, 60.0f),
+				DirectX::Colors::White
+			);
 
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			score3DText.c_str(),
-			Vector2(20.0f, 100.0f),
-			DirectX::Colors::LightBlue
-		);
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				L"WASD/Arrows: Move   Space: Shoot",
+				Vector2(20.0f, 100.0f),
+				DirectX::Colors::White
+			);
+		}
 
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			hp3DText.c_str(),
-			Vector2(20.0f, 140.0f),
-			DirectX::Colors::LightBlue
-		);
+		if (m_gameMode == GameMode::Arena3D) {
+			const std::wstring score3DText = L"3D Score: " + std::to_wstring(m_score3D);
+			const std::wstring hp3DText = L"HP: " + std::to_wstring(m_player3DHp);
+
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				score3DText.c_str(),
+				Vector2(20.0f, 20.0f),
+				DirectX::Colors::LightBlue
+			);
+
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				hp3DText.c_str(),
+				Vector2(20.0f, 60.0f),
+				DirectX::Colors::LightBlue
+			);
+
+			m_font->DrawString(
+				m_spriteBatch.get(),
+				L"IJKL: Move   U: Shoot",
+				Vector2(20.0f, 100.0f),
+				DirectX::Colors::White
+			);
+		}
 		break;
 	}
 
 	case GameState::GameOver: {
-		const std::wstring scoreText = L"Final Score:" + std::to_wstring(m_score);
+		std::wstring finalScoreText;
+
+		if (m_gameMode == GameMode::Shooter2D)
+			finalScoreText = L"Final Score:" + std::to_wstring(m_score);
+		else if (m_gameMode == GameMode::Arena3D)
+			finalScoreText = L"Final Score:" + std::to_wstring(m_score3D);
 
 		m_font->DrawString(
 			m_spriteBatch.get(),
@@ -713,7 +792,7 @@ void Game::DrawUI() {
 
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			scoreText.c_str(),
+			finalScoreText.c_str(),
 			Vector2(
 				m_windowWidth * 0.5f - 130.0f,
 				m_windowHeight * 0.5f - 40.0f
@@ -723,10 +802,20 @@ void Game::DrawUI() {
 
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"Press R to Restart",
+			L"R : Restart",
 			Vector2(
 				m_windowWidth * 0.5f - 150.0f,
 				m_windowHeight * 0.5f + 20.0f
+			),
+			DirectX::Colors::White
+		);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			L"Backspace : Title",
+			Vector2(
+				m_windowWidth * 0.5f - 150.0f,
+				m_windowHeight * 0.5f + 40.0f
 			),
 			DirectX::Colors::White
 		);

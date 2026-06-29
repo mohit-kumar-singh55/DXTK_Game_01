@@ -46,11 +46,19 @@ private:
 	void Initialize3D();			// for 3d purpose
 
 	void Update(float deltaTime);
-	void UpdateCamera();			// for 3d purpose
 	void Render();
-	void Render3D();				// for 3d purpose
 
-	void StartGame();
+	void Start2DGame();
+	void Start3DGame();
+	void ReturnToTitle();
+
+	void UpdateCamera();			// for 3d purpose
+
+	void Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
+	void Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
+
+	void Render2D();
+	void Render3D();
 
 	void SpawnEnemy();
 	void SpawnEnemy3D();
@@ -125,7 +133,14 @@ private:
 		GameOver
 	};
 
+	enum class GameMode {
+		None,
+		Shooter2D,
+		Arena3D
+	};
+
 	GameState m_gameState = GameState::Title;
+	GameMode m_gameMode = GameMode::None;
 
 	AudioManager m_audioManager;
 };

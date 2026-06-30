@@ -4,6 +4,7 @@
 
 #include <GeometricPrimitive.h>
 #include <SimpleMath.h>
+#include <Effects.h>
 
 class Bullet3D {
 public:
@@ -16,6 +17,8 @@ public:
 
 	void Draw(
 		DirectX::GeometricPrimitive* primitive,
+		DirectX::BasicEffect* effect,
+		ID3D11InputLayout* inputLayout,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& projection
 	) const;

@@ -38,9 +38,12 @@ void Player3D::Update(
 		m_forwardDir = move;
 
 		// face the movement dir
-		//m_yaw = std::atan2(move.x, -move.z);
-		float newRot = std::atan2(-move.x, -move.z);
-		m_yaw = std::lerp(m_yaw, newRot, deltaTime * 10);
+		// ! rotating through the short way (instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
+		float targetRot = std::atan2(-move.x, -move.z);
+		float diff = targetRot - m_yaw;
+		// wrap to [-PI, PI]
+		diff = std::remainder(diff, DirectX::XM_2PI);
+		m_yaw += diff * std::clamp(deltaTime * 10.0f, 0.0f, 1.0f);
 	}
 
 	// clamp cube inside the predifined area
@@ -49,6 +52,8 @@ void Player3D::Update(
 }
 
 void Player3D::Draw(
+	DirectX::BasicEffect* effect,
+	ID3D11InputLayout* inputLayout,
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
@@ -61,24 +66,20 @@ void Player3D::Draw(
 	}
 
 	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
 
 	const Matrix world =
 		Matrix::CreateRotationY(m_yaw) *
 		Matrix::CreateTranslation(m_position);
 
-	/*
-	* draw cube
-	* using this object transform (world)
-	* using this camera (view)
-	* using this perspective lens (projection)
-	* with this color
-	*/
-	m_primitive->Draw(
-		world,
-		view,
-		projection,
-		DirectX::Colors::CornflowerBlue
-	);
+	effect->SetWorld(world);
+	effect->SetView(view);
+	effect->SetProjection(projection);
+
+	effect->SetDiffuseColor(Vector3(0.2f, 0.45f, 1.0f));
+	effect->SetEmissiveColor(Vector3(0.02f, 0.04f, 0.08f));
+
+	m_primitive->Draw(effect, inputLayout);
 }
 
 void Player3D::SetPosition(const DirectX::SimpleMath::Vector3& position) noexcept {

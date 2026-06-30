@@ -187,6 +187,9 @@ void Game::Initialize3D() {
 	for (WallObject& wall : m_walls)
 		wall.Initialize(m_context.Get());
 
+	// initialize basic effect
+	InitializeBasicEffect();
+
 	// set walls pos
 	// back wall
 	m_walls[0].SetTransform(
@@ -218,6 +221,33 @@ void Game::Initialize3D() {
 
 	// update camera
 	m_cam.Follow(m_player3D.GetPosition());
+}
+
+void Game::InitializeBasicEffect() {
+	m_basicEffect = std::make_unique<DirectX::BasicEffect>(m_device.Get());
+
+	// lightning
+	m_basicEffect->SetLightingEnabled(true);
+	m_basicEffect->SetPerPixelLighting(true);
+	m_basicEffect->EnableDefaultLighting();
+
+	m_basicEffect->SetAmbientLightColor(DirectX::SimpleMath::Vector3(0.25f, 0.25f, 0.25f));
+	m_basicEffect->SetSpecularColor(DirectX::SimpleMath::Vector3(0.3f, 0.3f, 0.3f));
+
+	m_basicEffect->SetSpecularPower(16.0f);
+
+	// fog
+	m_basicEffect->SetFogEnabled(true);
+	m_basicEffect->SetFogStart(m_fogStart);
+	m_basicEffect->SetFogEnd(m_fogEnd);
+	m_basicEffect->SetFogColor(m_fogColor);
+
+	// ! because all GeometricPrimitive shapes use the same built-in "vertex data structure"
+	// ! so one input layout is enough for all of our current primitve objects
+	m_ground.CreateInputLayout(
+		m_basicEffect.get(),
+		m_basicEffectInputLayout.GetAddressOf()
+	);
 }
 
 void Game::Update(float deltaTime) {
@@ -480,9 +510,12 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 }
 
 void Game::Render() {
+	// bg color (just matching with the fog color, so fog could blend in
 	const float clearColor[4] = {
-		//0.1f, 0.15f, 0.25f, 1.0f
-		1.0f, 0.15f, 0.25f, 1.0f
+		m_fogColor.x,
+		m_fogColor.y,
+		m_fogColor.z,
+		1.0f
 	};
 
 	m_context->OMSetRenderTargets(
@@ -555,14 +588,17 @@ void Game::Render3D() {
 	const auto& view = m_cam.GetView();
 	const auto& projection = m_cam.GetProjection();
 
-	m_player3D.Draw(view, projection);
-	m_ground.Draw(view, projection);
+	DirectX::BasicEffect* effect = m_basicEffect.get();
+	ID3D11InputLayout* inputLayout = m_basicEffectInputLayout.Get();
+
+	m_player3D.Draw(effect, inputLayout, view, projection);
+	m_ground.Draw(effect, inputLayout, view, projection);
 	for (const WallObject& wall : m_walls)
-		wall.Draw(view, projection);
+		wall.Draw(effect, inputLayout, view, projection);
 	for (const Enemy3D& enemy : m_enemies3D)
-		enemy.Draw(view, projection);
+		enemy.Draw(effect, inputLayout, view, projection);
 	for (const Bullet3D& bullet : m_bullets3D)
-		bullet.Draw(m_bullet3DPrimitive.get(), view, projection);
+		bullet.Draw(m_bullet3DPrimitive.get(), effect, inputLayout, view, projection);
 }
 
 void Game::Start2DGame() {

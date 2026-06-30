@@ -27,6 +27,8 @@ void Bullet3D::Update(float deltaTime) noexcept {
 
 void Bullet3D::Draw(
 	DirectX::GeometricPrimitive* primitive,
+	DirectX::BasicEffect* effect,
+	ID3D11InputLayout* inputLayout,
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
@@ -40,12 +42,14 @@ void Bullet3D::Draw(
 		Matrix::CreateScale(Vector3(0.25f, 0.25f, 0.25f)) *
 		Matrix::CreateTranslation(m_position);
 
-	primitive->Draw(
-		world,
-		view,
-		projection,
-		DirectX::Colors::Yellow
-	);
+	effect->SetWorld(world);
+	effect->SetView(view);
+	effect->SetProjection(projection);
+
+	effect->SetDiffuseColor(Vector3(1.0f, 0.85f, 0.1f));
+	effect->SetEmissiveColor(Vector3(0.25f, 0.18f, 0.02f));
+
+	primitive->Draw(effect, inputLayout);
 }
 
 SphereBounds Bullet3D::GetBounds() const noexcept {

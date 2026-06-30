@@ -26,6 +26,7 @@
 #include <SpriteFont.h>
 #include <Keyboard.h>
 #include <GeometricPrimitive.h>
+#include <Effects.h>
 
 // game related
 #include <chrono>
@@ -45,6 +46,7 @@ private:
 	void InitializeDirect3D();
 	void CreateDepthBuffer();		// for 3d purpose
 	void Initialize3D();			// for 3d purpose
+	void InitializeBasicEffect();	// for dxtk's build-in matarial+shader
 
 	void Update(float deltaTime);
 	void Render();
@@ -92,6 +94,15 @@ private:
 
 	// for 3d purpose
 	Camera3D m_cam;
+
+	// dxtk's build-in material+shader
+	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_basicEffectInputLayout;
+
+	// fog purpose
+	DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(0.05f, 0.06f, 0.08f);
+	float m_fogStart = 6.0f;
+	float m_fogEnd = 18.0f;
 
 	Player3D m_player3D;
 	GroundObject m_ground;

@@ -35,28 +35,26 @@ void Enemy3D::Update(
 }
 
 void Enemy3D::Draw(
+	DirectX::BasicEffect* effect,
+	ID3D11InputLayout* inputLayout,
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
 	if (!m_primitive) return;
 
 	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
 
 	const Matrix world = Matrix::CreateTranslation(m_position);
 
-	/*
-	* draw cube
-	* using this object transform (world)
-	* using this camera (view)
-	* using this perspective lens (projection)
-	* with this color
-	*/
-	m_primitive->Draw(
-		world,
-		view,
-		projection,
-		DirectX::Colors::IndianRed
-	);
+	effect->SetWorld(world);
+	effect->SetView(view);
+	effect->SetProjection(projection);
+
+	effect->SetDiffuseColor(Vector3(1.0f, 0.2f, 0.15f));
+	effect->SetEmissiveColor(Vector3(0.08f, 0.01f, 0.01f));
+
+	m_primitive->Draw(effect, inputLayout);
 }
 
 DirectX::SimpleMath::Vector3 Enemy3D::GetPosition() const noexcept {

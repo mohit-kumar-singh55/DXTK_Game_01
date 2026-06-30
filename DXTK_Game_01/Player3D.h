@@ -3,6 +3,7 @@
 #include <GeometricPrimitive.h>
 #include <SimpleMath.h>
 #include <Keyboard.h>
+#include <Effects.h>
 
 #include <d3d11.h>
 #include <memory>
@@ -19,6 +20,8 @@ public:
 	);
 
 	void Draw(
+		DirectX::BasicEffect* effect,
+		ID3D11InputLayout* inputLayout,
 		const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& projection
 	) const;

@@ -13,16 +13,26 @@ void WallObject::Initialize(ID3D11DeviceContext* context) {
 }
 
 void WallObject::Draw(
+	DirectX::BasicEffect* effect,
+	ID3D11InputLayout* inputLayout,
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection
 ) const {
 	if (!m_primitive) return;
 
 	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
 
 	const Matrix world = Matrix::CreateScale(m_scale) * Matrix::CreateTranslation(m_position);
 
-	m_primitive->Draw(world, view, projection, DirectX::Colors::SlateGray);
+	effect->SetWorld(world);
+	effect->SetView(view);
+	effect->SetProjection(projection);
+
+	effect->SetDiffuseColor(Vector3(0.45f, 0.45f, 0.50f));
+	effect->SetEmissiveColor(Vector3(0.02f, 0.02f, 0.025f));
+
+	m_primitive->Draw(effect, inputLayout);
 }
 
 void WallObject::SetTransform(

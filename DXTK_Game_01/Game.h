@@ -10,6 +10,7 @@
 #include "Bullet3D.h"
 #include "GroundObject.h"
 #include "WallObject.h"
+#include "Camera3D.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -52,8 +53,6 @@ private:
 	void Start3DGame();
 	void ReturnToTitle();
 
-	void UpdateCamera();			// for 3d purpose
-
 	void Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
 	void Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
 
@@ -92,8 +91,7 @@ private:
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 
 	// for 3d purpose
-	DirectX::SimpleMath::Matrix m_view;
-	DirectX::SimpleMath::Matrix m_projection;
+	Camera3D m_cam;
 
 	Player3D m_player3D;
 	GroundObject m_ground;

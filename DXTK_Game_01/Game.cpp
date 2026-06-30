@@ -209,27 +209,15 @@ void Game::Initialize3D() {
 		Vector3(0.3f, 2.0f, 20.0f)
 	);
 
-	// create camera (eye looking at the target)
-	//m_view = Matrix::CreateLookAt(
-	//	Vector3(0.0f, 2.0f, 6.0f),		// camera pos
-	//	Vector3::Zero,					// look target
-	//	Vector3::Up						// up direction
-	//);
-
 	const float aspectRatio =
 		static_cast<float>(m_windowWidth) /
 		static_cast<float>(m_windowHeight);
 
 	// 3D perspective lens (camera lens)
-	m_projection = Matrix::CreatePerspectiveFieldOfView(
-		DirectX::XMConvertToRadians(60.0f),
-		aspectRatio,
-		0.1f,
-		100.0f
-	);
+	m_cam.SetPerspective(60.0f, aspectRatio, 0.1f, 100.0f);
 
-	// create and update camera here
-	UpdateCamera();
+	// update camera
+	m_cam.Follow(m_player3D.GetPosition());
 }
 
 void Game::Update(float deltaTime) {
@@ -277,20 +265,6 @@ void Game::Update(float deltaTime) {
 	default:
 		break;
 	}
-}
-
-void Game::UpdateCamera() {
-	using DirectX::SimpleMath::Matrix;
-	using DirectX::SimpleMath::Vector3;
-
-	const Vector3 cubePos = m_player3D.GetPosition();
-
-	const Vector3 cameraOffset(0.0f, 3.0f, 8.0f);
-
-	const Vector3 cameraPos = cubePos + cameraOffset;
-	const Vector3 cameraTarget = cubePos;
-
-	m_view = Matrix::CreateLookAt(cameraPos, cameraTarget, Vector3::Up);
 }
 
 void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState) {
@@ -432,7 +406,7 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 	}
 
 	// update camera to follow cube
-	UpdateCamera();
+	m_cam.Follow(m_player3D.GetPosition());
 
 	// spawning enemies3D
 	m_enemy3DSpawnTimer += deltaTime;
@@ -578,14 +552,17 @@ void Game::Render2D() {
 }
 
 void Game::Render3D() {
-	m_player3D.Draw(m_view, m_projection);
-	m_ground.Draw(m_view, m_projection);
+	const auto& view = m_cam.GetView();
+	const auto& projection = m_cam.GetProjection();
+
+	m_player3D.Draw(view, projection);
+	m_ground.Draw(view, projection);
 	for (const WallObject& wall : m_walls)
-		wall.Draw(m_view, m_projection);
+		wall.Draw(view, projection);
 	for (const Enemy3D& enemy : m_enemies3D)
-		enemy.Draw(m_view, m_projection);
+		enemy.Draw(view, projection);
 	for (const Bullet3D& bullet : m_bullets3D)
-		bullet.Draw(m_bullet3DPrimitive.get(), m_view, m_projection);
+		bullet.Draw(m_bullet3DPrimitive.get(), view, projection);
 }
 
 void Game::Start2DGame() {
@@ -618,7 +595,7 @@ void Game::Start3DGame() {
 
 	m_player3D.SetPosition(DirectX::SimpleMath::Vector3::Zero);
 
-	UpdateCamera();
+	m_cam.Follow(m_player3D.GetPosition());
 }
 
 void Game::ReturnToTitle() {

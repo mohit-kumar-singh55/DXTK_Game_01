@@ -1,6 +1,5 @@
 - create movement/rotation using mouse
 
-- fix sfx
 - put files in their respective folders
 
 - added safe deletion cleanups when quit

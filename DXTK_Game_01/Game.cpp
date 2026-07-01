@@ -481,6 +481,8 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 			// if the player is invincible, skip the damage
 			if (m_player3D.IsInvincible()) continue;
 
+			m_audioManager.PlayDamage();
+
 			// end the game
 			if (--m_player3DHp <= 0) {
 				m_player3DHp = 0;

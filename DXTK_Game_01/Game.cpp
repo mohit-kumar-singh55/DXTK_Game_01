@@ -426,7 +426,7 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 	m_player3D.Update(keyboardState, deltaTime);
 
 	// fire bullet3D
-	if (m_keyboardTracker.pressed.U) {
+	if (m_keyboardTracker.pressed.Space) {
 		m_bullets3D.emplace_back(
 			m_player3D.GetBulletSpawnPosition(),
 			m_player3D.GetForwardDirection()
@@ -692,10 +692,10 @@ void Game::DrawUI() {
 			m_spriteBatch.get(),
 			L"DXTK GAME PROJECT",
 			Vector2(
-				m_windowWidth * 0.5f - 180.0f,
+				m_windowWidth * 0.5f - 150.0f,
 				m_windowHeight * 0.5f - 120.0f
 			),
-			DirectX::Colors::White
+			DirectX::Colors::DarkBlue
 		);
 
 		m_font->DrawString(
@@ -705,7 +705,7 @@ void Game::DrawUI() {
 				m_windowWidth * 0.5f - 170.0f,
 				m_windowHeight * 0.5f - 40.0f
 			),
-			DirectX::Colors::Yellow
+			DirectX::Colors::DarkMagenta
 		);
 
 		m_font->DrawString(
@@ -715,7 +715,7 @@ void Game::DrawUI() {
 				m_windowWidth * 0.5f - 170.0f,
 				m_windowHeight * 0.5f + 10.0f
 			),
-			DirectX::Colors::LightBlue
+			DirectX::Colors::DarkMagenta
 		);
 
 		m_font->DrawString(
@@ -725,61 +725,61 @@ void Game::DrawUI() {
 				m_windowWidth * 0.5f - 80.0f,
 				m_windowHeight * 0.5f + 80.0f
 			),
-			DirectX::Colors::White
+			DirectX::Colors::DarkRed
 		);
 		break;
 	}
 
 	case GameState::Playing: {
 		if (m_gameMode == GameMode::Shooter2D) {
-			const std::wstring scoreText = L"Score: " + std::to_wstring(m_score);
-			const std::wstring hpText = L"HP: " + std::to_wstring(m_playerHp);
+			const std::wstring scoreText = L"Score : " + std::to_wstring(m_score);
+			const std::wstring hpText = L"HP    : " + std::to_wstring(m_playerHp);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
 				scoreText.c_str(),
 				Vector2(20.0f, 20.0f),
-				DirectX::Colors::White
+				DirectX::Colors::DarkGreen
 			);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
 				hpText.c_str(),
 				Vector2(20.0f, 60.0f),
-				DirectX::Colors::White
+				DirectX::Colors::DarkGreen
 			);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
-				L"WASD/Arrows: Move   Space: Shoot",
+				L"WASD/Arrows : Move\nSPACE       : Shoot",
 				Vector2(20.0f, 100.0f),
-				DirectX::Colors::White
+				DirectX::Colors::DarkMagenta
 			);
 		}
 
 		if (m_gameMode == GameMode::Arena3D) {
-			const std::wstring score3DText = L"3D Score: " + std::to_wstring(m_score3D);
-			const std::wstring hp3DText = L"HP: " + std::to_wstring(m_player3DHp);
+			const std::wstring score3DText = L"3D Score : " + std::to_wstring(m_score3D);
+			const std::wstring hp3DText = L"HP       : " + std::to_wstring(m_player3DHp);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
 				score3DText.c_str(),
 				Vector2(20.0f, 20.0f),
-				DirectX::Colors::LightBlue
+				DirectX::Colors::DarkGreen
 			);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
 				hp3DText.c_str(),
 				Vector2(20.0f, 60.0f),
-				DirectX::Colors::LightBlue
+				DirectX::Colors::DarkGreen
 			);
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
-				L"IJKL: Move   U: Shoot",
+				L"WASD/Arrows : Move\nSPACE       : Shoot",
 				Vector2(20.0f, 100.0f),
-				DirectX::Colors::White
+				DirectX::Colors::DarkMagenta
 			);
 		}
 		break;
@@ -800,7 +800,7 @@ void Game::DrawUI() {
 				m_windowWidth * 0.5f - 80.0f,
 				m_windowHeight * 0.5f - 100.0f
 			),
-			DirectX::Colors::Yellow
+			DirectX::Colors::DarkOrange
 		);
 
 		m_font->DrawString(
@@ -810,17 +810,17 @@ void Game::DrawUI() {
 				m_windowWidth * 0.5f - 130.0f,
 				m_windowHeight * 0.5f - 40.0f
 			),
-			DirectX::Colors::White
+			DirectX::Colors::DarkGreen
 		);
 
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"R : Restart",
+			L"R         : Restart",
 			Vector2(
 				m_windowWidth * 0.5f - 150.0f,
 				m_windowHeight * 0.5f + 20.0f
 			),
-			DirectX::Colors::White
+			DirectX::Colors::DarkMagenta
 		);
 
 		m_font->DrawString(
@@ -828,9 +828,9 @@ void Game::DrawUI() {
 			L"Backspace : Title",
 			Vector2(
 				m_windowWidth * 0.5f - 150.0f,
-				m_windowHeight * 0.5f + 40.0f
+				m_windowHeight * 0.5f + 50.0f
 			),
-			DirectX::Colors::White
+			DirectX::Colors::DarkMagenta
 		);
 		break;
 	}

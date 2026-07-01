@@ -1,7 +1,5 @@
 #include "Player3D.h"
 
-#include <DirectXColors.h>
-
 #include <algorithm>
 #include <stdexcept>
 
@@ -25,10 +23,14 @@ void Player3D::Update(
 
 	Vector3 move = Vector3::Zero;
 
-	if (keyboardState.I) move.z -= 1.0f;
-	if (keyboardState.K) move.z += 1.0f;
-	if (keyboardState.J) move.x -= 1.0f;
-	if (keyboardState.L) move.x += 1.0f;
+	if (keyboardState.W || keyboardState.Up)
+		move.z -= 1.0f;
+	if (keyboardState.S || keyboardState.Down)
+		move.z += 1.0f;
+	if (keyboardState.A || keyboardState.Left)
+		move.x -= 1.0f;
+	if (keyboardState.D || keyboardState.Right)
+		move.x += 1.0f;
 
 	if (move.LengthSquared() > 0.0f) {
 		move.Normalize();
@@ -38,7 +40,7 @@ void Player3D::Update(
 		m_forwardDir = move;
 
 		// face the movement dir
-		// ! rotating through the short way (instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
+		// ! rotating through the short way (Ex: instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
 		float targetRot = std::atan2(-move.x, -move.z);
 		float diff = targetRot - m_yaw;
 		// wrap to [-PI, PI]

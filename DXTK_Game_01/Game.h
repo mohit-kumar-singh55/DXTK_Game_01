@@ -100,7 +100,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_basicEffectInputLayout;
 
 	// fog purpose
-	DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(0.05f, 0.06f, 0.08f);
+	//DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(0.05f, 0.06f, 0.08f);
+	DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	float m_fogStart = 6.0f;
 	float m_fogEnd = 18.0f;
 

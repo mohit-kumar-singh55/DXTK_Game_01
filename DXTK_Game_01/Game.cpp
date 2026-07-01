@@ -733,9 +733,9 @@ void Game::DrawUI() {
 		// title
 		m_font->DrawString(
 			m_spriteBatch.get(),
-			L"DXTK GAME PROJECT",
+			L"PROTOTYPE ALPHA",
 			Vector2(
-				m_windowWidth * 0.5f - 150.0f,
+				m_windowWidth * 0.5f - 130.0f,
 				m_windowHeight * 0.5f - 120.0f
 			),
 			DirectX::Colors::DarkBlue

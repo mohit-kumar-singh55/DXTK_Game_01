@@ -21,34 +21,33 @@ void Player3D::Update(
 	// movement & rotation
 	using DirectX::SimpleMath::Vector3;
 
+	// forward dir
+	Vector3 forward = m_forwardDir;
+	forward.y = 0.0f;
+
+	if (forward.LengthSquared() <= 0.0001f)
+		forward = Vector3(0.0f, 0.0f, -1.0f);	// default forward
+
+	forward.Normalize();
+
+	// right dir
+	Vector3 right = forward.Cross(Vector3::Up);
+	right.Normalize();
+
 	Vector3 move = Vector3::Zero;
 
 	if (keyboardState.W || keyboardState.Up)
-		move.z -= 1.0f;
+		move += forward;
 	if (keyboardState.S || keyboardState.Down)
-		move.z += 1.0f;
+		move -= forward;
 	if (keyboardState.A || keyboardState.Left)
-		move.x -= 1.0f;
+		move -= right;
 	if (keyboardState.D || keyboardState.Right)
-		move.x += 1.0f;
+		move += right;
 
 	if (move.LengthSquared() > 0.0f) {
 		move.Normalize();
 		m_position += move * MoveSpeed * deltaTime;
-
-		// ! now rotation is handled by the aim direction, so we don't need to rotate the player based on movement anymore
-		/*
-			// setting forward dir
-			m_forwardDir = move;
-
-			// face the movement dir
-			// ! rotating through the short way (Ex: instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
-			float targetRot = std::atan2(-move.x, -move.z);
-			float diff = targetRot - m_yaw;
-			// wrap to [-PI, PI]
-			diff = std::remainder(diff, DirectX::XM_2PI);
-			m_yaw += diff * std::clamp(deltaTime * 10.0f, 0.0f, 1.0f);
-		*/
 	}
 
 	// clamp cube inside the predifined area
@@ -129,17 +128,19 @@ DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
 		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
 }
 
-void Player3D::SetAimDirection(const DirectX::SimpleMath::Vector3& aimDirection) noexcept {
-	DirectX::SimpleMath::Vector3 aimDir = aimDirection;
+// mouse movement changes yaw
+// yaw creates forward dir
+// foward dir controls player facing, camera dir, and bullet dir
+void Player3D::RotateYaw(float radians) noexcept {
+	m_yaw += radians;
 
-	aimDir.y = 0.0f; // ignore y component for rotation
+	m_forwardDir = DirectX::SimpleMath::Vector3::Transform(
+		DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f),
+		DirectX::SimpleMath::Matrix::CreateRotationY(m_yaw)
+	);
 
-	if (aimDir.LengthSquared() <= 0.0001f)
-		return;
+	m_forwardDir.y = 0.0f; // ensure forward dir is horizontal
 
-	aimDir.Normalize();
-	m_forwardDir = aimDir;
-
-	// rotate the player to face the aim direction
-	m_yaw = std::atan2(aimDir.x, aimDir.z);
+	if (m_forwardDir.LengthSquared() > 0.0001f)
+		m_forwardDir.Normalize();
 }

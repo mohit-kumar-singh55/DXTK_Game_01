@@ -104,6 +104,8 @@ private:
 	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
 	DirectX::Mouse::ButtonStateTracker m_mouseTracker;
 
+	static constexpr float MouseSensitivity = 0.0035f;
+
 	// for 3d purpose
 	Camera3D m_cam;
 

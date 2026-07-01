@@ -226,7 +226,10 @@ void Game::Initialize3D() {
 	m_cam.SetFollowOffset(Vector3(0.0f, 6.0f, 8.0f));
 
 	// update camera
-	m_cam.Follow(m_player3D.GetPosition());
+	m_cam.FollowBehind(
+		m_player3D.GetPosition(),
+		m_player3D.GetForwardDirection()
+	);
 }
 
 void Game::InitializeBasicEffect() {
@@ -438,23 +441,14 @@ void Game::Update3D(
 	const DirectX::Keyboard::State& keyboardState,
 	const DirectX::Mouse::State& mouseState
 ) {
+	// rotate player3D with mouse movement
+	const float yawDelta = static_cast<float>(mouseState.x) * MouseSensitivity;
+	m_player3D.RotateYaw(-yawDelta);
+
+	// update player3D
 	m_player3D.Update(keyboardState, deltaTime);
-	// mouse aiming for player
-	DirectX::SimpleMath::Vector3 mouseGroundPos;
-	if (m_cam.ScreenPointToGround(
-		static_cast<float>(mouseState.x),
-		static_cast<float>(mouseState.y),
-		static_cast<float>(m_windowWidth),
-		static_cast<float>(m_windowHeight),
-		0.0f,	 // actual ground y position
-		mouseGroundPos
-	)) {
-		const DirectX::SimpleMath::Vector3 aimDir = mouseGroundPos - m_player3D.GetPosition();
-		m_player3D.SetAimDirection(aimDir);
-	}
 
 	// fire bullet3D
-	//if (m_keyboardTracker.pressed.Space) {
 	if (m_mouseTracker.leftButton == DirectX::Mouse::ButtonStateTracker::ButtonState::PRESSED) {
 		m_bullets3D.emplace_back(
 			m_player3D.GetBulletSpawnPosition(),
@@ -465,7 +459,10 @@ void Game::Update3D(
 	}
 
 	// update camera to follow player
-	m_cam.Follow(m_player3D.GetPosition());
+	m_cam.FollowBehind(
+		m_player3D.GetPosition(),
+		m_player3D.GetForwardDirection()
+	);
 
 	// spawning enemies3D
 	m_enemy3DSpawnTimer += deltaTime;
@@ -666,7 +663,14 @@ void Game::Start3DGame() {
 
 	m_player3D.SetPosition(DirectX::SimpleMath::Vector3::Zero);
 
-	m_cam.Follow(m_player3D.GetPosition());
+	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
+	if (m_mouse)
+		m_mouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
+
+	m_cam.FollowBehind(
+		m_player3D.GetPosition(),
+		m_player3D.GetForwardDirection()
+	);
 }
 
 void Game::ReturnToTitle() {
@@ -681,6 +685,10 @@ void Game::ReturnToTitle() {
 
 	m_enemySpawnTimer = 0.0f;
 	m_enemy3DSpawnTimer = 0.0f;
+
+	// reset mouse mode to absolute, so the mouse cursor can be used to click buttons
+	if (m_mouse)
+		m_mouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
 }
 
 void Game::SpawnEnemy() {
@@ -812,7 +820,7 @@ void Game::DrawUI() {
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
-				L"WASD/Arrows : Move\nSPACE       : Shoot",
+				L"WASD/Arrows : Move\nMOUSE       : Look\nLEFT CLICK  : Shoot",
 				Vector2(20.0f, 100.0f),
 				DirectX::Colors::DarkMagenta
 			);

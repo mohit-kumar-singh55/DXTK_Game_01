@@ -15,6 +15,12 @@ public:
 
 	void Follow(const DirectX::SimpleMath::Vector3& targetPosition) noexcept;
 
+	// 3rd person camera that also rotates towards the forward dir
+	void FollowBehind(
+		const DirectX::SimpleMath::Vector3& targetPosition,
+		const DirectX::SimpleMath::Vector3& forwardDirection
+	) noexcept;
+
 	[[nodiscard]]
 	const DirectX::SimpleMath::Matrix& GetView() const noexcept;
 

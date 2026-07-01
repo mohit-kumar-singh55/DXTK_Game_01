@@ -33,6 +33,46 @@ void Camera3D::Follow(const DirectX::SimpleMath::Vector3& targetPosition) noexce
 	);
 }
 
+void Camera3D::FollowBehind(
+	const DirectX::SimpleMath::Vector3& targetPosition,
+	const DirectX::SimpleMath::Vector3& forwardDirection
+) noexcept {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	Vector3 forward = forwardDirection;
+	forward.y = 0.0f;	// ignore y component
+
+	if (forward.LengthSquared() <= 0.0001f)
+		forward = Vector3(0.0f, 0.0f, -1.0f);	// default forward direction
+
+	forward.Normalize();
+
+	const float cameraDistance = m_followOffset.Length();
+	const float cameraHeight = m_followOffset.y;
+	//const float cameraDistance = 8.0f;
+	//const float cameraHeight = 3.0f;
+	const float lookAheadDistance = 4.0f;	// how far ahead to look
+
+	// set camera behind the player
+	const Vector3 cameraPos =
+		targetPosition
+		- forward * cameraDistance
+		+ Vector3(0.0f, cameraHeight, 0.0f);
+
+	// set camera to look slightly in front of the player
+	const Vector3 cameraTarget =
+		targetPosition
+		+ forward * lookAheadDistance
+		+ Vector3(0.0f, 1.0f, 0.0f);	// look slightly above the target
+
+	m_view = Matrix::CreateLookAt(
+		cameraPos,
+		cameraTarget,
+		Vector3::Up
+	);
+}
+
 const DirectX::SimpleMath::Matrix& Camera3D::GetView() const noexcept {
 	return m_view;
 }

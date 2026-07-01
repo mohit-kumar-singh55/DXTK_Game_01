@@ -52,6 +52,8 @@ public:
 	[[nodiscard]]
 	DirectX::SimpleMath::Vector3 GetBulletSpawnPosition() const noexcept;
 
+	void SetAimDirection(const DirectX::SimpleMath::Vector3& aimDirection) noexcept;
+
 private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_primitive;
 

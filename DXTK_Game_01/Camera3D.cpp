@@ -1,5 +1,7 @@
 #include "Camera3D.h"
 
+#include <cmath>
+
 void Camera3D::SetPerspective(
 	float fovDegrees,
 	float aspectRatio,
@@ -37,4 +39,64 @@ const DirectX::SimpleMath::Matrix& Camera3D::GetView() const noexcept {
 
 const DirectX::SimpleMath::Matrix& Camera3D::GetProjection() const noexcept {
 	return m_projection;
+}
+
+// raycasting from mouse's screen position to the ground plane (y = groundY)
+bool Camera3D::ScreenPointToGround(
+	float screenX,
+	float screenY,
+	float screenWidth,
+	float screenHeight,
+	float groundY,
+	DirectX::SimpleMath::Vector3& result
+) const noexcept {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	const Matrix world = Matrix::Identity;
+
+	// unproject the screen point to world space (near point)
+	const DirectX::XMVECTOR nearPoint = DirectX::XMVector3Unproject(
+		DirectX::XMVectorSet(screenX, screenY, 0.0f, 1.0f),
+		0.0f, 0.0f, screenWidth, screenHeight,
+		0.0f, 1.0f,
+		m_projection, m_view, world
+	);
+
+	// unproject the screen point to world space (far point)
+	const DirectX::XMVECTOR farPoint = DirectX::XMVector3Unproject(
+		DirectX::XMVectorSet(screenX, screenY, 1.0f, 1.0f),
+		0.0f, 0.0f, screenWidth, screenHeight,
+		0.0f, 1.0f,
+		m_projection, m_view, world
+	);
+
+	Vector3 rayStart, rayEnd;
+
+	// store the unprojected points into Vector3
+	DirectX::XMStoreFloat3(&rayStart, nearPoint);
+	DirectX::XMStoreFloat3(&rayEnd, farPoint);
+
+	Vector3 rayDir = rayEnd - rayStart;
+
+	// ray direction is too small
+	if (rayDir.LengthSquared() <= 0.0001f)
+		return false;
+
+	// normalize the ray direction
+	rayDir.Normalize();
+
+	// ray is parallel to the ground plane
+	if (std::abs(rayDir.y) <= 0.0001f)
+		return false;
+
+	// calculate the intersection point with the ground plane
+	const float t = (groundY - rayStart.y) / rayDir.y;
+
+	// intersection point is behind the camera
+	if (t < 0.0f)
+		return false;
+
+	result = rayStart + rayDir * t;
+	return true;
 }

@@ -9,14 +9,18 @@
 #include <stdexcept>
 
 #include <Keyboard.h>
+#include <Mouse.h>
 
 // ! this is IMP
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
 // -----------------------------------------------------------------------------
-// Global variables for now.
-// Later we will move these into Game / DeviceResources classes.
+// TODO: Later move DeviceResources / Rendering things into their respective classes.
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// Global variables
 // -----------------------------------------------------------------------------
 
 HWND g_window = nullptr;								// window handle, needs a window before we can render it
@@ -34,6 +38,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
 {
 	// DirectXTK Keyboard needs this to receive keyboard messages.
 	DirectX::Keyboard::ProcessMessage(message, wParam, lParam);
+	DirectX::Mouse::ProcessMessage(message, wParam, lParam);
 
 	switch (message)
 	{

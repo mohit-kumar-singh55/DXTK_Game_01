@@ -36,16 +36,19 @@ void Player3D::Update(
 		move.Normalize();
 		m_position += move * MoveSpeed * deltaTime;
 
-		// setting forward dir
-		m_forwardDir = move;
+		// ! now rotation is handled by the aim direction, so we don't need to rotate the player based on movement anymore
+		/*
+			// setting forward dir
+			m_forwardDir = move;
 
-		// face the movement dir
-		// ! rotating through the short way (Ex: instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
-		float targetRot = std::atan2(-move.x, -move.z);
-		float diff = targetRot - m_yaw;
-		// wrap to [-PI, PI]
-		diff = std::remainder(diff, DirectX::XM_2PI);
-		m_yaw += diff * std::clamp(deltaTime * 10.0f, 0.0f, 1.0f);
+			// face the movement dir
+			// ! rotating through the short way (Ex: instead of going 350 to 10 by substracting 340, going 350 to 370 and substrct 360)
+			float targetRot = std::atan2(-move.x, -move.z);
+			float diff = targetRot - m_yaw;
+			// wrap to [-PI, PI]
+			diff = std::remainder(diff, DirectX::XM_2PI);
+			m_yaw += diff * std::clamp(deltaTime * 10.0f, 0.0f, 1.0f);
+		*/
 	}
 
 	// clamp cube inside the predifined area
@@ -124,4 +127,19 @@ DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
 	return m_position +
 		m_forwardDir * 1.4f +
 		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
+}
+
+void Player3D::SetAimDirection(const DirectX::SimpleMath::Vector3& aimDirection) noexcept {
+	DirectX::SimpleMath::Vector3 aimDir = aimDirection;
+
+	aimDir.y = 0.0f; // ignore y component for rotation
+
+	if (aimDir.LengthSquared() <= 0.0001f)
+		return;
+
+	aimDir.Normalize();
+	m_forwardDir = aimDir;
+
+	// rotate the player to face the aim direction
+	m_yaw = std::atan2(aimDir.x, aimDir.z);
 }

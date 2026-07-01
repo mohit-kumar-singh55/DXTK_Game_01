@@ -114,7 +114,10 @@ void Game::InitializeDirect3D() {
 	// TODO:  from here create DirectXTK objects.
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_context.Get());
 	m_keyboard = std::make_unique<DirectX::Keyboard>();
+	m_mouse = std::make_unique<DirectX::Mouse>();
 	m_font = std::make_unique<DirectX::SpriteFont>(m_device.Get(), L"Assets/gamefont.spritefont");
+
+	m_mouse->SetWindow(m_window);
 
 	// create player and its texture
 	m_player = std::make_unique<Player>();
@@ -219,6 +222,9 @@ void Game::Initialize3D() {
 	// 3D perspective lens (camera lens)
 	m_cam.SetPerspective(60.0f, aspectRatio, 0.1f, 100.0f);
 
+	// camera offset from the player
+	m_cam.SetFollowOffset(Vector3(0.0f, 6.0f, 8.0f));
+
 	// update camera
 	m_cam.Follow(m_player3D.GetPosition());
 }
@@ -254,9 +260,11 @@ void Game::Update(float deltaTime) {
 	// use keyboardState for continuous actions (will be true for all frame if the key is held)
 	// use keyboardTracker for per frame actions (will be true only for the frame when the key is pressed)
 	const auto keyboardState = m_keyboard->GetState();
+	const auto mouseState = m_mouse->GetState();
 
 	// compare the current keyboard state with the previous frame
 	m_keyboardTracker.Update(keyboardState);
+	m_mouseTracker.Update(mouseState);
 
 	// close window
 	if (keyboardState.Escape)
@@ -276,7 +284,7 @@ void Game::Update(float deltaTime) {
 		if (m_gameMode == GameMode::Shooter2D)
 			Update2D(deltaTime, keyboardState);
 		if (m_gameMode == GameMode::Arena3D)
-			Update3D(deltaTime, keyboardState);
+			Update3D(deltaTime, keyboardState, mouseState);
 		break;
 	}
 
@@ -297,7 +305,10 @@ void Game::Update(float deltaTime) {
 	}
 }
 
-void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState) {
+void Game::Update2D(
+	float deltaTime,
+	const DirectX::Keyboard::State& keyboardState
+) {
 	// update objects
 	m_player->Update(keyboardState, deltaTime, m_windowWidth, m_windowHeight);
 
@@ -422,11 +433,29 @@ void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 	);
 }
 
-void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardState) {
+void Game::Update3D(
+	float deltaTime,
+	const DirectX::Keyboard::State& keyboardState,
+	const DirectX::Mouse::State& mouseState
+) {
 	m_player3D.Update(keyboardState, deltaTime);
+	// mouse aiming for player
+	DirectX::SimpleMath::Vector3 mouseGroundPos;
+	if (m_cam.ScreenPointToGround(
+		static_cast<float>(mouseState.x),
+		static_cast<float>(mouseState.y),
+		static_cast<float>(m_windowWidth),
+		static_cast<float>(m_windowHeight),
+		0.0f,	 // actual ground y position
+		mouseGroundPos
+	)) {
+		const DirectX::SimpleMath::Vector3 aimDir = mouseGroundPos - m_player3D.GetPosition();
+		m_player3D.SetAimDirection(aimDir);
+	}
 
 	// fire bullet3D
-	if (m_keyboardTracker.pressed.Space) {
+	//if (m_keyboardTracker.pressed.Space) {
+	if (m_mouseTracker.leftButton == DirectX::Mouse::ButtonStateTracker::ButtonState::PRESSED) {
 		m_bullets3D.emplace_back(
 			m_player3D.GetBulletSpawnPosition(),
 			m_player3D.GetForwardDirection()

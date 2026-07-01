@@ -21,6 +21,16 @@ public:
 	[[nodiscard]]
 	const DirectX::SimpleMath::Matrix& GetProjection() const noexcept;
 
+	[[nodiscard]]
+	bool ScreenPointToGround(
+		float screenX,
+		float screenY,
+		float screenWidth,
+		float screenHeight,
+		float groundY,
+		DirectX::SimpleMath::Vector3& result
+	) const noexcept;
+
 private:
 	DirectX::SimpleMath::Matrix m_view = DirectX::SimpleMath::Matrix::Identity;
 	DirectX::SimpleMath::Matrix m_projection = DirectX::SimpleMath::Matrix::Identity;

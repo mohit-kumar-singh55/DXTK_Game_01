@@ -25,6 +25,7 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <Keyboard.h>
+#include <Mouse.h>
 #include <GeometricPrimitive.h>
 #include <Effects.h>
 
@@ -55,8 +56,15 @@ private:
 	void Start3DGame();
 	void ReturnToTitle();
 
-	void Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
-	void Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardState);
+	void Update2D(
+		float deltaTime,
+		const DirectX::Keyboard::State& keyboardState
+	);
+	void Update3D(
+		float deltaTime,
+		const DirectX::Keyboard::State& keyboardState,
+		const DirectX::Mouse::State& mouseState
+	);
 
 	void Render2D();
 	void Render3D();
@@ -91,6 +99,10 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> m_font;	// ui text renderer
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+	std::unique_ptr<DirectX::Mouse> m_mouse;
+
+	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
+	DirectX::Mouse::ButtonStateTracker m_mouseTracker;
 
 	// for 3d purpose
 	Camera3D m_cam;
@@ -124,7 +136,6 @@ private:
 
 	std::vector<Bullet> m_bullets;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_bulletTexture;
-	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
 
 	std::vector<Enemy> m_enemies;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;

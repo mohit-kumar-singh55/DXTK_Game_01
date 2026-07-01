@@ -332,12 +332,11 @@ void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 
 		if (enemy.IsOutsideScreen(m_windowHeight)) {
 			enemy.Destroy();
-			--m_playerHp;
 
 			// sfx
 			m_audioManager.PlayDamage();
 
-			if (m_playerHp <= 0) {
+			if (--m_playerHp <= 0) {
 				m_playerHp = 0;
 				m_gameState = GameState::GameOver;
 			}
@@ -378,14 +377,15 @@ void Game::Update2D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 			// sfx
 			m_audioManager.PlayDamage();
 
-			if (!m_player->IsInvincible()) {
-				m_playerHp--;
-				m_player->StartInvincibility();
+			// if the player is invincible, skip the damage
+			if (m_player->IsInvincible()) continue;
 
-				// end the game
-				if (m_playerHp <= 0)
-					m_gameState = GameState::GameOver;
+			// end the game
+			if (--m_playerHp <= 0) {
+				m_playerHp = 0;
+				m_gameState = GameState::GameOver;
 			}
+			else m_player->StartInvincibility();
 		}
 	}
 
@@ -435,7 +435,7 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 		m_audioManager.PlayShoot();
 	}
 
-	// update camera to follow cube
+	// update camera to follow player
 	m_cam.Follow(m_player3D.GetPosition());
 
 	// spawning enemies3D
@@ -478,11 +478,15 @@ void Game::Update3D(float deltaTime, const DirectX::Keyboard::State& keyboardSta
 		if (Intersects(enemy.GetBounds(), m_player3D.GetBounds())) {
 			enemy.Destroy();
 
-			if (!m_player3D.IsInvincible()) {
-				m_player3DHp = m_player3DHp > 0 ? --m_player3DHp : 0;
-				m_audioManager.PlayDamage();
-				m_player3D.StartInvincibility();
+			// if the player is invincible, skip the damage
+			if (m_player3D.IsInvincible()) continue;
+
+			// end the game
+			if (--m_player3DHp <= 0) {
+				m_player3DHp = 0;
+				m_gameState = GameState::GameOver;
 			}
+			else m_player3D.StartInvincibility();
 		}
 	}
 

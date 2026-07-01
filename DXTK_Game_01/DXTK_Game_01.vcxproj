@@ -159,6 +159,7 @@
       <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/;%(DestinationFolders)</DestinationFolders>
     </CopyFileToFolders>
     <None Include="packages.config" />
+    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />

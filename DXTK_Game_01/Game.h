@@ -11,6 +11,7 @@
 #include "GroundObject.h"
 #include "WallObject.h"
 #include "Camera3D.h"
+#include "ModelObject3D.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -28,6 +29,7 @@
 #include <Mouse.h>
 #include <GeometricPrimitive.h>
 #include <Effects.h>
+#include <CommonStates.h>
 
 // game related
 #include <chrono>
@@ -132,6 +134,11 @@ private:
 	static constexpr int Player3DMaxHp = 3;
 	int m_player3DHp = Player3DMaxHp;
 	int m_score3D = 0;
+
+	std::unique_ptr<DirectX::CommonStates> m_commonStates;
+	std::unique_ptr<DirectX::EffectFactory> m_modelEffectfactory;
+
+	ModelObject3D m_testModel;
 	// upto here
 
 	std::unique_ptr<Player> m_player;

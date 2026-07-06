@@ -193,6 +193,23 @@ void Game::Initialize3D() {
 	// initialize basic effect
 	InitializeBasicEffect();
 
+	// initialize common states & effect factory
+	m_commonStates = std::make_unique<DirectX::CommonStates>(m_device.Get());
+	m_modelEffectfactory = std::make_unique<DirectX::EffectFactory>(m_device.Get());
+
+	// setting 3d model texture directory
+	m_modelEffectfactory->SetDirectory(L"Assets\\Models");
+
+	// ! creating test model
+	if (m_testModel.LoadFromCMO(m_device.Get(),
+		*m_modelEffectfactory,
+		L"Assets\\Models\\test.cmo"
+	)) {
+		m_testModel.SetPosition(Vector3(0.0f, 0.0f, -4.0f));
+		m_testModel.SetScale(1.0f);
+		m_testModel.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
+	}
+
 	// set walls pos
 	// back wall
 	m_walls[0].SetTransform(
@@ -631,6 +648,10 @@ void Game::Render3D() {
 		enemy.Draw(effect, inputLayout, view, projection);
 	for (const Bullet3D& bullet : m_bullets3D)
 		bullet.Draw(m_bullet3DPrimitive.get(), effect, inputLayout, view, projection);
+
+	// ! rendering test model
+	if (m_commonStates)
+		m_testModel.Draw(m_context.Get(), *m_commonStates, view, projection);
 }
 
 void Game::Start2DGame() {

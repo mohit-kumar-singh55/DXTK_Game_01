@@ -129,6 +129,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +150,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -183,6 +185,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelObject3D.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player3D.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
@@ -198,6 +201,7 @@
     <ClInclude Include="Enemy3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundObject.h" />
+    <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player3D.h" />
     <ClInclude Include="TextureFactory.h" />

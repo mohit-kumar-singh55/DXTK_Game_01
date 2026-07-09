@@ -198,15 +198,15 @@ void Game::Initialize3D() {
 	m_modelEffectfactory = std::make_unique<DirectX::EffectFactory>(m_device.Get());
 
 	// setting 3d model texture directory
-	m_modelEffectfactory->SetDirectory(L"Assets\\Models");
+	m_modelEffectfactory->SetDirectory(L"Assets\\Models\\Runtime\\Tank\\textures");
 
 	// ! creating test model
-	if (m_testModel.LoadFromCMO(m_device.Get(),
+	if (m_testModel.LoadFromSDKMESH(m_device.Get(),
 		*m_modelEffectfactory,
-		L"Assets\\Models\\test.cmo"
+		L"Assets\\Models\\Runtime\\Tank\\Tank.sdkmesh"
 	)) {
 		m_testModel.SetPosition(Vector3(0.0f, 0.0f, -4.0f));
-		m_testModel.SetScale(1.0f);
+		m_testModel.SetScale(0.4f);
 		m_testModel.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
 	}
 

@@ -27,6 +27,28 @@ bool ModelObject3D::LoadFromCMO(
 	}
 }
 
+bool ModelObject3D::LoadFromSDKMESH(
+	ID3D11Device* device,
+	DirectX::IEffectFactory& effectFactory,
+	const wchar_t* filePath
+) noexcept {
+	if (!device || !filePath) return false;
+
+	try {
+		m_model = DirectX::Model::CreateFromSDKMESH(
+			device,
+			filePath,
+			effectFactory
+		);
+
+		return m_model != nullptr;
+	}
+	catch (const std::exception&) {
+		m_model.reset();
+		return false;
+	}
+}
+
 void ModelObject3D::UpdateEffects(
 	const DirectX::SimpleMath::Vector3& fogColor,
 	float fogStart,
@@ -39,6 +61,7 @@ void ModelObject3D::UpdateEffects(
 			if (auto* lights = dynamic_cast<DirectX::IEffectLights*>(effect)) {
 				lights->SetLightingEnabled(true);
 				lights->SetPerPixelLighting(true);
+				lights->EnableDefaultLighting();
 
 				lights->SetAmbientLightColor(
 					DirectX::XMVectorSet(
@@ -63,7 +86,7 @@ void ModelObject3D::UpdateEffects(
 					)
 				);
 
-				lights->SetLightDiffuseColor(0, DirectX::Colors::White);
+				lights->SetLightDiffuseColor(0, DirectX::Colors::GhostWhite);
 
 				lights->SetLightEnabled(1, false);
 				lights->SetLightEnabled(2, false);

@@ -17,6 +17,12 @@ public:
 		const wchar_t* filePath
 	) noexcept;
 
+	bool LoadFromSDKMESH(
+		ID3D11Device* device,
+		DirectX::IEffectFactory& effectFactory,
+		const wchar_t* filePath
+	) noexcept;
+
 	void UpdateEffects(
 		const DirectX::SimpleMath::Vector3& fogColor,
 		float fogStart,

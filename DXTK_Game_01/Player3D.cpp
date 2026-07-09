@@ -128,6 +128,10 @@ DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
 		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
 }
 
+float Player3D::GetYaw() const noexcept {
+	return m_yaw;
+}
+
 // mouse movement changes yaw
 // yaw creates forward dir
 // foward dir controls player facing, camera dir, and bullet dir

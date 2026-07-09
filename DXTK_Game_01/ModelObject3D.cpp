@@ -134,8 +134,36 @@ void ModelObject3D::Draw(
 	);
 }
 
+void ModelObject3D::DrawWithTransform(
+	ID3D11DeviceContext* context,
+	DirectX::CommonStates& states,
+	const DirectX::SimpleMath::Matrix& world,
+	const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& projection
+) const {
+	if (!context || !m_model) return;
+
+	m_model->Draw(
+		context,
+		states,
+		world,
+		view,
+		projection
+	);
+}
+
 void ModelObject3D::SetPosition(const DirectX::SimpleMath::Vector3& position) noexcept {
 	m_position = position;
+}
+
+void ModelObject3D::SetTransform(
+	const DirectX::SimpleMath::Vector3& position,
+	float yaw,
+	float scale
+) noexcept {
+	m_position = position;
+	m_yaw = yaw;
+	m_scale = scale;
 }
 
 void ModelObject3D::SetScale(float scale) noexcept {

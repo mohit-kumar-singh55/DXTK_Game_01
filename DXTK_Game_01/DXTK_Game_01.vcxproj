@@ -188,6 +188,7 @@
     <ClCompile Include="ModelObject3D.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player3D.cpp" />
+    <ClCompile Include="TankVisual.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="WallObject.cpp" />
   </ItemGroup>
@@ -204,6 +205,7 @@
     <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player3D.h" />
+    <ClInclude Include="TankVisual.h" />
     <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="WallObject.h" />
   </ItemGroup>

@@ -36,8 +36,22 @@ public:
 		const DirectX::SimpleMath::Matrix& projection
 	) const;
 
+	void DrawWithTransform(
+		ID3D11DeviceContext* context,
+		DirectX::CommonStates& states,
+		const DirectX::SimpleMath::Matrix& world,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& projection
+	) const;
+
 	void SetPosition(
 		const DirectX::SimpleMath::Vector3& position
+	) noexcept;
+
+	void SetTransform(
+		const DirectX::SimpleMath::Vector3& position,
+		float yaw,
+		float scale
 	) noexcept;
 
 	void SetScale(float scale) noexcept;

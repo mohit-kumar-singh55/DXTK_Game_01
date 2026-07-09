@@ -12,6 +12,7 @@
 #include "WallObject.h"
 #include "Camera3D.h"
 #include "ModelObject3D.h"
+#include "TankVisual.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -138,7 +139,7 @@ private:
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
 	std::unique_ptr<DirectX::EffectFactory> m_modelEffectfactory;
 
-	ModelObject3D m_testModel;
+	TankVisual m_tankVisual;
 	// upto here
 
 	std::unique_ptr<Player> m_player;

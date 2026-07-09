@@ -54,6 +54,9 @@ public:
 
 	//void SetAimDirection(const DirectX::SimpleMath::Vector3& aimDirection) noexcept;
 
+	[[nodiscard]]
+	float GetYaw() const noexcept;
+
 	void RotateYaw(float radians) noexcept;
 
 private:

@@ -200,15 +200,9 @@ void Game::Initialize3D() {
 	// setting 3d model texture directory
 	m_modelEffectfactory->SetDirectory(L"Assets\\Models\\Runtime\\Tank\\textures");
 
-	// ! creating test model
-	if (m_testModel.LoadFromSDKMESH(m_device.Get(),
-		*m_modelEffectfactory,
-		L"Assets\\Models\\Runtime\\Tank\\Tank.sdkmesh"
-	)) {
-		m_testModel.SetPosition(Vector3(0.0f, 0.0f, -4.0f));
-		m_testModel.SetScale(0.4f);
-		m_testModel.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
-	}
+	// ! creating tank model
+	if (m_tankVisual.Load(m_device.Get(), *m_modelEffectfactory))
+		m_tankVisual.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
 
 	// set walls pos
 	// back wall
@@ -640,8 +634,22 @@ void Game::Render3D() {
 	DirectX::BasicEffect* effect = m_basicEffect.get();
 	ID3D11InputLayout* inputLayout = m_basicEffectInputLayout.Get();
 
-	m_player3D.Draw(effect, inputLayout, view, projection);
+	// render player model if available
+	if (m_tankVisual.IsLoaded() && m_commonStates) {
+		m_tankVisual.SetWorldTransform(
+			m_player3D.GetPosition(),
+			m_player3D.GetYaw(),
+			m_player3D.GetYaw()
+		);
+
+		m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
+	}
+	// render default cube
+	else
+		m_player3D.Draw(effect, inputLayout, view, projection);
+
 	m_ground.Draw(effect, inputLayout, view, projection);
+
 	for (const WallObject& wall : m_walls)
 		wall.Draw(effect, inputLayout, view, projection);
 	for (const Enemy3D& enemy : m_enemies3D)
@@ -651,7 +659,7 @@ void Game::Render3D() {
 
 	// ! rendering test model
 	if (m_commonStates)
-		m_testModel.Draw(m_context.Get(), *m_commonStates, view, projection);
+		m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
 }
 
 void Game::Start2DGame() {

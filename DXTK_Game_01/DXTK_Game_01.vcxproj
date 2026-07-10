@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BlobShadow.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Bullet3D.cpp" />
     <ClCompile Include="Camera3D.cpp" />
@@ -194,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BlobShadow.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Bullet3D.h" />
     <ClInclude Include="Camera3D.h" />

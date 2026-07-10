@@ -204,6 +204,9 @@ void Game::Initialize3D() {
 	if (m_tankVisual.Load(m_device.Get(), *m_modelEffectfactory))
 		m_tankVisual.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
 
+	// fake tank shadow
+	m_playerShadow.Initialize(m_context.Get());
+
 	// set walls pos
 	// back wall
 	m_walls[0].SetTransform(
@@ -649,6 +652,9 @@ void Game::Render3D() {
 		m_player3D.Draw(effect, inputLayout, view, projection);
 
 	m_ground.Draw(effect, inputLayout, view, projection);
+
+	// draw fake tank shadow
+	m_playerShadow.Draw(effect, inputLayout, m_player3D.GetPosition(), view, projection);
 
 	for (const WallObject& wall : m_walls)
 		wall.Draw(effect, inputLayout, view, projection);

@@ -60,6 +60,9 @@
     <ClCompile Include="TankVisual.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BlobShadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TankVisual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlobShadow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

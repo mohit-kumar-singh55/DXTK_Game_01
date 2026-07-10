@@ -11,8 +11,8 @@
 #include "GroundObject.h"
 #include "WallObject.h"
 #include "Camera3D.h"
-#include "ModelObject3D.h"
 #include "TankVisual.h"
+#include "BlobShadow.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -140,6 +140,7 @@ private:
 	std::unique_ptr<DirectX::EffectFactory> m_modelEffectfactory;
 
 	TankVisual m_tankVisual;
+	BlobShadow m_playerShadow;
 	// upto here
 
 	std::unique_ptr<Player> m_player;

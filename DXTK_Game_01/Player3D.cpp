@@ -18,32 +18,31 @@ void Player3D::Update(
 	if (m_invincibleTimer > 0.0f)
 		m_invincibleTimer -= deltaTime;
 
-	// movement & rotation
+	using DirectX::SimpleMath::Matrix;
 	using DirectX::SimpleMath::Vector3;
 
-	// forward dir
-	Vector3 forward = m_forwardDir;
-	forward.y = 0.0f;
+	// body forward dir
+	if (keyboardState.A || keyboardState.Left)
+		m_bodyYaw += BodyTurnSpeed * deltaTime;
+	if (keyboardState.D || keyboardState.Right)
+		m_bodyYaw -= BodyTurnSpeed * deltaTime;
 
-	if (forward.LengthSquared() <= 0.0001f)
-		forward = Vector3(0.0f, 0.0f, -1.0f);	// default forward
+	// rotate difauld forward dir vector by m_bodyYaw angle
+	m_bodyForwardDir = Vector3::Transform(
+		Vector3(0.0f, 0.0f, -1.0f),
+		Matrix::CreateRotationY(m_bodyYaw)
+	);
 
-	forward.Normalize();
+	m_bodyForwardDir.y = 0.0f;
+	m_bodyForwardDir.Normalize();
 
-	// right dir
-	Vector3 right = forward.Cross(Vector3::Up);
-	right.Normalize();
-
+	// move in the body forward dir
 	Vector3 move = Vector3::Zero;
 
 	if (keyboardState.W || keyboardState.Up)
-		move += forward;
+		move += m_bodyForwardDir;
 	if (keyboardState.S || keyboardState.Down)
-		move -= forward;
-	if (keyboardState.A || keyboardState.Left)
-		move -= right;
-	if (keyboardState.D || keyboardState.Right)
-		move += right;
+		move -= m_bodyForwardDir;
 
 	if (move.LengthSquared() > 0.0f) {
 		move.Normalize();
@@ -73,7 +72,7 @@ void Player3D::Draw(
 	using DirectX::SimpleMath::Vector3;
 
 	const Matrix world =
-		Matrix::CreateRotationY(m_yaw) *
+		Matrix::CreateRotationY(m_bodyYaw) *
 		Matrix::CreateTranslation(m_position);
 
 	effect->SetWorld(world);
@@ -128,23 +127,34 @@ DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
 		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
 }
 
-float Player3D::GetYaw() const noexcept {
-	return m_yaw;
-}
-
 // mouse movement changes yaw
 // yaw creates forward dir
 // foward dir controls player facing, camera dir, and bullet dir
-void Player3D::RotateYaw(float radians) noexcept {
-	m_yaw += radians;
+void Player3D::RotateTurretYaw(float radians) noexcept {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
 
-	m_forwardDir = DirectX::SimpleMath::Vector3::Transform(
-		DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f),
-		DirectX::SimpleMath::Matrix::CreateRotationY(m_yaw)
+	m_turretYaw += radians;
+
+	m_forwardDir = Vector3::Transform(
+		Vector3(0.0f, 0.0f, -1.0f),
+		Matrix::CreateRotationY(m_turretYaw)
 	);
 
 	m_forwardDir.y = 0.0f; // ensure forward dir is horizontal
 
 	if (m_forwardDir.LengthSquared() > 0.0001f)
 		m_forwardDir.Normalize();
+}
+
+float Player3D::GetBodyYaw() const noexcept {
+	return m_bodyYaw;
+}
+
+float Player3D::GetTurretYaw() const noexcept {
+	return m_turretYaw;
+}
+
+DirectX::SimpleMath::Vector3 Player3D::GetBodyForwardDir() const noexcept {
+	return m_bodyForwardDir;
 }

@@ -457,7 +457,7 @@ void Game::Update3D(
 ) {
 	// rotate player3D with mouse movement
 	const float yawDelta = static_cast<float>(mouseState.x) * MouseSensitivity;
-	m_player3D.RotateYaw(-yawDelta);
+	m_player3D.RotateTurretYaw(-yawDelta);
 
 	// update player3D
 	m_player3D.Update(keyboardState, deltaTime);
@@ -641,8 +641,8 @@ void Game::Render3D() {
 	if (m_tankVisual.IsLoaded() && m_commonStates) {
 		m_tankVisual.SetWorldTransform(
 			m_player3D.GetPosition(),
-			m_player3D.GetYaw(),
-			m_player3D.GetYaw()
+			m_player3D.GetBodyYaw(),
+			m_player3D.GetTurretYaw()
 		);
 
 		m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
@@ -653,7 +653,7 @@ void Game::Render3D() {
 
 	m_ground.Draw(effect, inputLayout, view, projection);
 
-	// draw fake tank shadow
+	// draw tank's fake shadow
 	m_playerShadow.Draw(effect, inputLayout, m_player3D.GetPosition(), view, projection);
 
 	for (const WallObject& wall : m_walls)

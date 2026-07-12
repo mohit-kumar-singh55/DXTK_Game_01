@@ -54,17 +54,26 @@ public:
 
 	//void SetAimDirection(const DirectX::SimpleMath::Vector3& aimDirection) noexcept;
 
-	[[nodiscard]]
-	float GetYaw() const noexcept;
+	void RotateTurretYaw(float radians) noexcept;
 
-	void RotateYaw(float radians) noexcept;
+	[[nodiscard]]
+	float GetBodyYaw() const noexcept;
+
+	[[nodiscard]]
+	float GetTurretYaw() const noexcept;
+
+	[[nodiscard]]
+	DirectX::SimpleMath::Vector3 GetBodyForwardDir() const noexcept;
 
 private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_primitive;
 
 	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
-	DirectX::SimpleMath::Vector3 m_forwardDir{ 0.0f,0.0f,-1.0f };
-	float m_yaw = 0.0f;
+	DirectX::SimpleMath::Vector3 m_forwardDir{ 0.0f, 0.0f, -1.0f };
+
+	float m_bodyYaw = 0.0f;
+	float m_turretYaw = 0.0f;
+	DirectX::SimpleMath::Vector3 m_bodyForwardDir{ 0.0f, 0.0f, -1.0f };
 
 	float m_minX = -9.0f;
 	float m_maxX = 9.0f;
@@ -74,6 +83,7 @@ private:
 	float m_invincibleTimer = 0.0f;
 
 	static constexpr float MoveSpeed = 4.0f;
+	static constexpr float BodyTurnSpeed = 2.5f;
 	static constexpr float CollisionRadius = 1.0f;
 	static constexpr float InvincibleDuration = 1.5f;
 };

@@ -640,7 +640,7 @@ void Game::Render3D() {
 	// render player model if available
 	if (m_tankVisual.IsLoaded() && m_commonStates) {
 		m_tankVisual.SetWorldTransform(
-			m_player3D.GetPosition(),
+			m_player3D.GetPosition() + DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f),
 			m_player3D.GetBodyYaw(),
 			m_player3D.GetTurretYaw()
 		);

@@ -122,9 +122,19 @@ DirectX::SimpleMath::Vector3 Player3D::GetForwardDirection() const noexcept {
 }
 
 DirectX::SimpleMath::Vector3 Player3D::GetBulletSpawnPosition() const noexcept {
+	using DirectX::SimpleMath::Vector3;
+
+	Vector3 forward = m_forwardDir;
+	forward.y = 0.0f;
+
+	if (forward.LengthSquared() <= 0.0001f)
+		forward = Vector3(0.0f, 0.0f, -1.0f);
+
+	forward.Normalize();
+
 	return m_position +
-		m_forwardDir * 1.4f +
-		DirectX::SimpleMath::Vector3(0.0f, 0.2f, 0.0f);
+		forward * BulletSpawnDistance +
+		Vector3(0.0f, BulletSpawnHeight, 0.0f);
 }
 
 // mouse movement changes yaw

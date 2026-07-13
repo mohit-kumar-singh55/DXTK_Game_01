@@ -13,7 +13,7 @@ void Enemy3D::Initialize(ID3D11DeviceContext* context) {
 	if (!context)
 		throw std::invalid_argument("Enemy3D::Initialize received a null context");
 
-	m_primitive = DirectX::GeometricPrimitive::CreateSphere(context, 1.0f);
+	m_primitive = DirectX::GeometricPrimitive::CreateSphere(context, CollisionRadius * 2.0f);
 }
 
 void Enemy3D::Update(
@@ -45,7 +45,9 @@ void Enemy3D::Draw(
 	using DirectX::SimpleMath::Matrix;
 	using DirectX::SimpleMath::Vector3;
 
-	const Matrix world = Matrix::CreateTranslation(m_position);
+	const Matrix world =
+		Matrix::CreateScale(Vector3::One * CollisionRadius * 2) *
+		Matrix::CreateTranslation(m_position);
 
 	effect->SetWorld(world);
 	effect->SetView(view);

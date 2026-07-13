@@ -86,4 +86,6 @@ private:
 	static constexpr float BodyTurnSpeed = 2.5f;
 	static constexpr float CollisionRadius = 1.0f;
 	static constexpr float InvincibleDuration = 1.5f;
+	static constexpr float BulletSpawnDistance = 3.0f;
+	static constexpr float BulletSpawnHeight = 0.8f;
 };

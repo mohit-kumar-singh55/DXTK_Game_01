@@ -46,5 +46,5 @@ private:
 	bool m_isActive = true;
 
 	static constexpr float MoveSpeed = 2.0f;
-	static constexpr float CollisionRadius = 0.5f;
+	static constexpr float CollisionRadius = 0.75f;
 };

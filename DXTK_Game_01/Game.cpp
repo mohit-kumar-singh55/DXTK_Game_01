@@ -207,6 +207,9 @@ void Game::Initialize3D() {
 	// fake tank shadow
 	m_playerShadow.Initialize(m_context.Get());
 
+	// muzzle flash
+	m_muzzleFlash.Initialize(m_context.Get());
+
 	// set walls pos
 	// back wall
 	m_walls[0].SetTransform(
@@ -464,13 +467,20 @@ void Game::Update3D(
 
 	// fire bullet3D
 	if (m_mouseTracker.leftButton == DirectX::Mouse::ButtonStateTracker::ButtonState::PRESSED) {
-		m_bullets3D.emplace_back(
-			m_player3D.GetBulletSpawnPosition(),
-			m_player3D.GetForwardDirection()
-		);
+		const DirectX::SimpleMath::Vector3 bulletSpawnPos = m_player3D.GetBulletSpawnPosition();
+		const DirectX::SimpleMath::Vector3 bulletDir = m_player3D.GetForwardDirection();
+
+		// spawn bullet and shoot
+		m_bullets3D.emplace_back(bulletSpawnPos, bulletDir);
+
+		// show muzzle flash
+		m_muzzleFlash.Trigger(bulletSpawnPos, bulletDir);
 
 		m_audioManager.PlayShoot();
 	}
+
+	// update muzzle flash
+	m_muzzleFlash.Update(deltaTime);
 
 	// update camera to follow player
 	m_cam.FollowBehind(
@@ -663,9 +673,8 @@ void Game::Render3D() {
 	for (const Bullet3D& bullet : m_bullets3D)
 		bullet.Draw(m_bullet3DPrimitive.get(), effect, inputLayout, view, projection);
 
-	// ! rendering test model
-	if (m_commonStates)
-		m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
+	// draw muzzle flash
+	m_muzzleFlash.Draw(effect, inputLayout, view, projection);
 }
 
 void Game::Start2DGame() {

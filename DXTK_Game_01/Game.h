@@ -13,6 +13,7 @@
 #include "Camera3D.h"
 #include "TankVisual.h"
 #include "BlobShadow.h"
+#include "MuzzleFlash3D.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -141,6 +142,7 @@ private:
 
 	TankVisual m_tankVisual;
 	BlobShadow m_playerShadow;
+	MuzzleFlash3D m_muzzleFlash;
 	// upto here
 
 	std::unique_ptr<Player> m_player;

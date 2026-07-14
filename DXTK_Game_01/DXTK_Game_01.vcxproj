@@ -187,6 +187,7 @@
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelObject3D.cpp" />
+    <ClCompile Include="MuzzleFlash3D.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player3D.cpp" />
     <ClCompile Include="TankVisual.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="ModelObject3D.h" />
+    <ClInclude Include="MuzzleFlash3D.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player3D.h" />
     <ClInclude Include="TankVisual.h" />

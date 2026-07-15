@@ -181,6 +181,7 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Bullet3D.cpp" />
     <ClCompile Include="Camera3D.cpp" />
+    <ClCompile Include="DamageFlash3D.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy3D.cpp" />
     <ClCompile Include="Explosion3D.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Bullet3D.h" />
     <ClInclude Include="Camera3D.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="DamageFlash3D.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy3D.h" />
     <ClInclude Include="Explosion3D.h" />

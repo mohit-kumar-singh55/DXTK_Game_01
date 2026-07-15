@@ -216,6 +216,9 @@ void Game::Initialize3D() {
 	// muzzle flash
 	m_muzzleFlash.Initialize(m_context.Get());
 
+	// damage flash
+	m_damageFlash.Initialize(m_context.Get());
+
 	// set walls pos
 	// back wall
 	m_walls[0].SetTransform(
@@ -495,6 +498,9 @@ void Game::Update3D(
 	// update muzzle flash
 	m_muzzleFlash.Update(deltaTime);
 
+	// update damage flash
+	m_damageFlash.Update(deltaTime);
+
 	// spawning enemies3D
 	m_enemy3DSpawnTimer += deltaTime;
 	if (m_enemy3DSpawnTimer >= Enemy3DSpawnInterval) {
@@ -547,6 +553,9 @@ void Game::Update3D(
 
 			// camera shake
 			m_cam.StartShake(0.25f, 0.22f);
+
+			// damage flash
+			m_damageFlash.Trigger();
 
 			// sfx
 			m_audioManager.PlayDamage();
@@ -712,6 +721,9 @@ void Game::Render3D() {
 
 	// draw muzzle flash
 	m_muzzleFlash.Draw(effect, inputLayout, view, projection);
+
+	// draw damage flash
+	m_damageFlash.Draw(effect, inputLayout, m_player3D.GetPosition(), view, projection);
 }
 
 void Game::Start2DGame() {

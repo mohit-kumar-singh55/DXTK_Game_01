@@ -844,12 +844,50 @@ void Game::SpawnEnemy() {
 }
 
 void Game::SpawnEnemy3D() {
-	std::uniform_real_distribution<float> distribution(-8.0f, 8.0f);
+	using DirectX::SimpleMath::Vector3;
 
-	const float x = distribution(m_randomEngine);
-	const float z = distribution(m_randomEngine);
+	std::uniform_real_distribution<float> posDistribution(-Enemy3DSpawnEdge, Enemy3DSpawnEdge);
+	std::uniform_int_distribution<int> sideDistribution(0, 3);
 
-	DirectX::SimpleMath::Vector3 spawnPos(x, 0.0f, z);
+	const Vector3 playerPos = m_player3D.GetPosition();
+
+	Vector3 spawnPos = Vector3::Zero;
+
+	const int MaxAttempts = 20;
+
+	for (int attempt = 0;attempt < MaxAttempts;attempt++) {
+		const int side = sideDistribution(m_randomEngine);
+		const int randomVal = posDistribution(m_randomEngine);
+
+		switch (side) {
+		case 0:
+			// back edge
+			spawnPos = Vector3(randomVal, 0.0f, -Enemy3DSpawnEdge);
+			break;
+		case 1:
+			// front edge
+			spawnPos = Vector3(randomVal, 0.0f, Enemy3DSpawnEdge);
+			break;
+		case 2:
+			// left edge
+			spawnPos = Vector3(-Enemy3DSpawnEdge, 0.0f, randomVal);
+			break;
+		case 3:
+		default:
+			// right edge
+			spawnPos = Vector3(Enemy3DSpawnEdge, 0.0f, randomVal);
+			break;
+		}
+
+		// check if enemy spawn pos is far enough from player
+		const float distanceSquared = Vector3::DistanceSquared(spawnPos, playerPos);
+		const float minDistanceSquared =
+			Enemy3DSpawnMinDistanceFromPlayer *
+			Enemy3DSpawnMinDistanceFromPlayer;
+
+		if (distanceSquared >= minDistanceSquared)
+			break;
+	}
 
 	Enemy3D enemy(spawnPos);
 

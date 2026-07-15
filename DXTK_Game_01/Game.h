@@ -140,12 +140,14 @@ private:
 
 	float m_enemy3DSpawnTimer = 0.0f;
 	static constexpr float Enemy3DSpawnInterval = 2.0f;
+	static constexpr float Enemy3DSpawnMinDistanceFromPlayer = 6.0f;
+	static constexpr float Enemy3DSpawnEdge = 8.5f;
 
 	static constexpr int Player3DMaxHp = 3;
 	int m_player3DHp = Player3DMaxHp;
 
 	int m_score3D = 0;
-
+	
 	bool m_isTankDestroyed = false;
 	float m_tankDeathTimer = 0.0f;
 

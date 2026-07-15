@@ -11,6 +11,10 @@ public:
 		float farPlane
 	) noexcept;
 
+	void Update(float deltaTime) noexcept;
+
+	void StartShake(float duration, float strength) noexcept;
+
 	void SetFollowOffset(const DirectX::SimpleMath::Vector3& offset) noexcept;
 
 	void Follow(const DirectX::SimpleMath::Vector3& targetPosition) noexcept;
@@ -41,4 +45,10 @@ private:
 	DirectX::SimpleMath::Matrix m_view = DirectX::SimpleMath::Matrix::Identity;
 	DirectX::SimpleMath::Matrix m_projection = DirectX::SimpleMath::Matrix::Identity;
 	DirectX::SimpleMath::Vector3 m_followOffset = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 8.0f);
+
+	// impulse
+	float m_shakeTimer = 0.0f;
+	float m_shakeDuration = 0.0f;
+	float m_shakeStrength = 0.0f;
+	float m_shakeTime = 0.0f;
 };

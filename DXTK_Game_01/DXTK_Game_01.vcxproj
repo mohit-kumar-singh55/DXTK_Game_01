@@ -183,6 +183,7 @@
     <ClCompile Include="Camera3D.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy3D.cpp" />
+    <ClCompile Include="Explosion3D.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy3D.h" />
+    <ClInclude Include="Explosion3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="ModelObject3D.h" />

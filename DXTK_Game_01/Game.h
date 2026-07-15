@@ -14,6 +14,7 @@
 #include "TankVisual.h"
 #include "BlobShadow.h"
 #include "MuzzleFlash3D.h"
+#include "Explosion3D.h"
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -128,8 +129,10 @@ private:
 	std::array<WallObject, 4> m_walls;
 	std::vector<Enemy3D> m_enemies3D;
 	std::vector<Bullet3D> m_bullets3D;
+	std::vector<Explosion3D> m_explosions3D;
 
 	std::unique_ptr<DirectX::GeometricPrimitive> m_bullet3DPrimitive;
+	std::unique_ptr<DirectX::GeometricPrimitive> m_explosion3DPrimitive;
 
 	float m_enemy3DSpawnTimer = 0.0f;
 	static constexpr float Enemy3DSpawnInterval = 2.0f;

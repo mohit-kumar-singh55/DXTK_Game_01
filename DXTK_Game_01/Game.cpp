@@ -183,6 +183,12 @@ void Game::Initialize3D() {
 		1.0f
 	);
 
+	// initialize explosion shape
+	m_explosion3DPrimitive = DirectX::GeometricPrimitive::CreateSphere(
+		m_context.Get(),
+		1.0f
+	);
+
 	// create ground
 	m_ground.Initialize(m_context.Get());
 
@@ -458,6 +464,9 @@ void Game::Update3D(
 	const DirectX::Keyboard::State& keyboardState,
 	const DirectX::Mouse::State& mouseState
 ) {
+	// update camera
+	m_cam.Update(deltaTime);
+
 	// rotate player3D with mouse movement
 	const float yawDelta = static_cast<float>(mouseState.x) * MouseSensitivity;
 	m_player3D.RotateTurretYaw(-yawDelta);
@@ -476,17 +485,15 @@ void Game::Update3D(
 		// show muzzle flash
 		m_muzzleFlash.Trigger(bulletSpawnPos, bulletDir);
 
+		// shake camera
+		m_cam.StartShake(0.08f, 0.04f);
+
+		// sfx
 		m_audioManager.PlayShoot();
 	}
 
 	// update muzzle flash
 	m_muzzleFlash.Update(deltaTime);
-
-	// update camera to follow player
-	m_cam.FollowBehind(
-		m_player3D.GetPosition(),
-		m_player3D.GetForwardDirection()
-	);
 
 	// spawning enemies3D
 	m_enemy3DSpawnTimer += deltaTime;
@@ -503,6 +510,10 @@ void Game::Update3D(
 	for (Bullet3D& bullet : m_bullets3D)
 		bullet.Update(deltaTime);
 
+	// update explosion
+	for (Explosion3D& explosion : m_explosions3D)
+		explosion.Update(deltaTime);
+
 	// Bullet3D vs Enemy3D collision
 	for (Bullet3D& bullet : m_bullets3D) {
 		if (!bullet.IsActive()) continue;
@@ -511,6 +522,9 @@ void Game::Update3D(
 			if (!enemy.IsActive()) continue;
 
 			if (Intersects(bullet.GetBounds(), enemy.GetBounds())) {
+				// spawn explosion
+				m_explosions3D.emplace_back(enemy.GetPosition());
+
 				bullet.Destroy();
 				enemy.Destroy();
 
@@ -531,6 +545,10 @@ void Game::Update3D(
 			// if the player is invincible, skip the damage
 			if (m_player3D.IsInvincible()) continue;
 
+			// camera shake
+			m_cam.StartShake(0.25f, 0.22f);
+
+			// sfx
 			m_audioManager.PlayDamage();
 
 			// end the game
@@ -562,6 +580,23 @@ void Game::Update3D(
 			}
 		),
 		m_bullets3D.end()
+	);
+
+	m_explosions3D.erase(
+		std::remove_if(
+			m_explosions3D.begin(),
+			m_explosions3D.end(),
+			[](const Explosion3D& explosion) {
+				return !explosion.IsActive();
+			}
+		),
+		m_explosions3D.end()
+	);
+
+	// update camera to follow player
+	m_cam.FollowBehind(
+		m_player3D.GetPosition(),
+		m_player3D.GetForwardDirection()
 	);
 }
 
@@ -672,6 +707,8 @@ void Game::Render3D() {
 		enemy.Draw(effect, inputLayout, view, projection);
 	for (const Bullet3D& bullet : m_bullets3D)
 		bullet.Draw(m_bullet3DPrimitive.get(), effect, inputLayout, view, projection);
+	for (const Explosion3D& explosion : m_explosions3D)
+		explosion.Draw(m_explosion3DPrimitive.get(), effect, inputLayout, view, projection);
 
 	// draw muzzle flash
 	m_muzzleFlash.Draw(effect, inputLayout, view, projection);
@@ -702,6 +739,7 @@ void Game::Start3DGame() {
 
 	m_enemies3D.clear();
 	m_bullets3D.clear();
+	m_explosions3D.clear();
 
 	m_enemy3DSpawnTimer = 0.0f;
 
@@ -726,6 +764,7 @@ void Game::ReturnToTitle() {
 
 	m_bullets3D.clear();
 	m_enemies3D.clear();
+	m_explosions3D.clear();
 
 	m_enemySpawnTimer = 0.0f;
 	m_enemy3DSpawnTimer = 0.0f;

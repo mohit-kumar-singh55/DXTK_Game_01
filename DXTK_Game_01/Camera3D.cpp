@@ -16,6 +16,19 @@ void Camera3D::SetPerspective(
 	);
 }
 
+void Camera3D::Update(float deltaTime) noexcept {
+	if (m_shakeTimer > 0.0f) {
+		m_shakeTimer -= deltaTime;
+		m_shakeTime += deltaTime;
+	}
+}
+
+void Camera3D::StartShake(float duration, float strength) noexcept {
+	m_shakeDuration = duration;
+	m_shakeTimer = duration;
+	m_shakeStrength = strength;
+}
+
 void Camera3D::SetFollowOffset(const DirectX::SimpleMath::Vector3& offset) noexcept {
 	m_followOffset = offset;
 }
@@ -40,6 +53,7 @@ void Camera3D::FollowBehind(
 	using DirectX::SimpleMath::Matrix;
 	using DirectX::SimpleMath::Vector3;
 
+	// forward dir
 	Vector3 forward = forwardDirection;
 	forward.y = 0.0f;	// ignore y component
 
@@ -48,23 +62,43 @@ void Camera3D::FollowBehind(
 
 	forward.Normalize();
 
+	// right dir
+	Vector3 right = forward.Cross(Vector3::Up);
+
+	if (right.LengthSquared() <= 0.0001f)
+		right = Vector3(1.0f, 0.0f, 0.0f);
+
+	right.Normalize();
+
 	const float cameraDistance = m_followOffset.Length();
 	const float cameraHeight = m_followOffset.y;
-	//const float cameraDistance = 8.0f;
-	//const float cameraHeight = 3.0f;
 	const float lookAheadDistance = 4.0f;	// how far ahead to look
 
 	// set camera behind the player
-	const Vector3 cameraPos =
+	Vector3 cameraPos =
 		targetPosition
 		- forward * cameraDistance
 		+ Vector3(0.0f, cameraHeight, 0.0f);
 
 	// set camera to look slightly in front of the player
-	const Vector3 cameraTarget =
+	Vector3 cameraTarget =
 		targetPosition
 		+ forward * lookAheadDistance
 		+ Vector3(0.0f, 1.0f, 0.0f);	// look slightly above the target
+
+	// camera shake
+	if (m_shakeTimer > 0.0f && m_shakeDuration > 0.0f) {
+		const float lifeRate = m_shakeTimer / m_shakeDuration;
+		const float shakePower = m_shakeStrength * lifeRate;
+
+		const float shakeX = std::sin(m_shakeTime * 85.0f) * shakePower;
+		const float shakeY = std::sin(m_shakeTime * 120.0f) * shakePower * 0.6f;
+
+		const Vector3 shakeOffset = right * shakeX + Vector3::Up * shakeY;
+
+		cameraPos += shakeOffset;
+		cameraTarget += shakeOffset;
+	}
 
 	m_view = Matrix::CreateLookAt(
 		cameraPos,

@@ -9,9 +9,14 @@
 
 #include "Collision.h"
 
+enum class Enemy3DType { Normal, Fast, Heavy };
+
 class Enemy3D {
 public:
-	explicit Enemy3D(const DirectX::SimpleMath::Vector3& position) noexcept;
+	explicit Enemy3D(
+		const DirectX::SimpleMath::Vector3& position,
+		Enemy3DType type = Enemy3DType::Normal
+	) noexcept;
 
 	void Initialize(ID3D11DeviceContext* context);
 
@@ -38,13 +43,27 @@ public:
 	[[nodiscard]]
 	SphereBounds GetBounds() const noexcept;
 
+	[[nodiscard]]
+	int GetScoreValue() const noexcept;
+
+private:
+	void ApplyTypeSettings() noexcept;
+
 private:
 	std::unique_ptr<DirectX::GeometricPrimitive> m_primitive;
 
 	DirectX::SimpleMath::Vector3 m_position;
 
+	Enemy3DType m_type = Enemy3DType::Normal;
+
 	bool m_isActive = true;
 
-	static constexpr float MoveSpeed = 2.0f;
-	static constexpr float CollisionRadius = 0.75f;
+	float m_moveSpeed = 2.0f;
+	float m_collisionRadius = 0.75f;
+	float m_visualScale = m_collisionRadius * 2.0f;
+
+	int m_scorevalue = 100;
+
+	DirectX::SimpleMath::Vector3 m_diffuseColor = DirectX::SimpleMath::Vector3(1.0f, 0.2f, 0.15f);
+	DirectX::SimpleMath::Vector3 m_emissiveColor = DirectX::SimpleMath::Vector3(0.08f, 0.01f, 0.01f);
 };

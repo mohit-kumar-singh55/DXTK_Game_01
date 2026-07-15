@@ -569,7 +569,7 @@ void Game::Update3D(
 				bullet.Destroy();
 				enemy.Destroy();
 
-				m_score3D += 100;
+				m_score3D += enemy.GetScoreValue();
 				m_audioManager.PlayHit();
 				break;
 			}
@@ -848,7 +848,21 @@ void Game::SpawnEnemy3D() {
 
 	std::uniform_real_distribution<float> posDistribution(-Enemy3DSpawnEdge, Enemy3DSpawnEdge);
 	std::uniform_int_distribution<int> sideDistribution(0, 3);
+	std::uniform_int_distribution<int> typeDistribution(0, 9);
 
+	// decide type of enemy
+	const int typeRoll = typeDistribution(m_randomEngine);
+
+	Enemy3DType enemyType = Enemy3DType::Normal;
+
+	if (typeRoll <= 5)
+		enemyType = Enemy3DType::Normal;
+	else if (typeRoll <= 7)
+		enemyType = Enemy3DType::Fast;
+	else
+		enemyType = Enemy3DType::Heavy;
+
+	// calc spawn pos
 	const Vector3 playerPos = m_player3D.GetPosition();
 
 	Vector3 spawnPos = Vector3::Zero;
@@ -889,7 +903,7 @@ void Game::SpawnEnemy3D() {
 			break;
 	}
 
-	Enemy3D enemy(spawnPos);
+	Enemy3D enemy(spawnPos, enemyType);
 
 	enemy.Initialize(m_context.Get());
 

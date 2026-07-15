@@ -48,7 +48,7 @@ private:
 
 	// impulse
 	float m_shakeTimer = 0.0f;
-	float m_shakeDuration = 0.0f;
+	float m_shakem_duration = 0.0f;
 	float m_shakeStrength = 0.0f;
 	float m_shakeTime = 0.0f;
 };

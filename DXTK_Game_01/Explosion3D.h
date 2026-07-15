@@ -6,7 +6,12 @@
 
 class Explosion3D {
 public:
-	explicit Explosion3D(const DirectX::SimpleMath::Vector3& position) noexcept;
+	explicit Explosion3D(
+		const DirectX::SimpleMath::Vector3& position,
+		float duration = 0.35f,
+		float maxScale = 1.8f,
+		float heightOffset = 0.6f
+	) noexcept;
 
 	void Update(float deltaTime) noexcept;
 
@@ -26,5 +31,7 @@ private:
 
 	float m_timer = 0.0f;
 
-	static constexpr float Duration = 0.35f;
+	float m_duration = 0.35f;
+	float m_maxScale = 1.8f;
+	float m_heightOffset = 0.6f;
 };

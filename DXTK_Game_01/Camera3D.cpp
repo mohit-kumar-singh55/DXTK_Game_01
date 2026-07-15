@@ -24,7 +24,7 @@ void Camera3D::Update(float deltaTime) noexcept {
 }
 
 void Camera3D::StartShake(float duration, float strength) noexcept {
-	m_shakeDuration = duration;
+	m_shakem_duration = duration;
 	m_shakeTimer = duration;
 	m_shakeStrength = strength;
 }
@@ -87,8 +87,8 @@ void Camera3D::FollowBehind(
 		+ Vector3(0.0f, 1.0f, 0.0f);	// look slightly above the target
 
 	// camera shake
-	if (m_shakeTimer > 0.0f && m_shakeDuration > 0.0f) {
-		const float lifeRate = m_shakeTimer / m_shakeDuration;
+	if (m_shakeTimer > 0.0f && m_shakem_duration > 0.0f) {
+		const float lifeRate = m_shakeTimer / m_shakem_duration;
 		const float shakePower = m_shakeStrength * lifeRate;
 
 		const float shakeX = std::sin(m_shakeTime * 85.0f) * shakePower;

@@ -86,6 +86,8 @@ private:
 
 	static void ThrowIfFailed(HRESULT result);
 
+	void DestroyTank3D();
+
 private:
 	HWND m_window = nullptr;								// window handle, needs a window before we can render it
 
@@ -138,9 +140,16 @@ private:
 
 	float m_enemy3DSpawnTimer = 0.0f;
 	static constexpr float Enemy3DSpawnInterval = 2.0f;
+
 	static constexpr int Player3DMaxHp = 3;
 	int m_player3DHp = Player3DMaxHp;
+
 	int m_score3D = 0;
+
+	bool m_isTankDestroyed = false;
+	float m_tankDeathTimer = 0.0f;
+
+	static constexpr float TankDeathGameOverDelay = 1.4f;
 
 	std::unique_ptr<DirectX::CommonStates> m_commonStates;
 	std::unique_ptr<DirectX::EffectFactory> m_modelEffectfactory;

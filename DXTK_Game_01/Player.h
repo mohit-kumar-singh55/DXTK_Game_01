@@ -44,5 +44,5 @@ private:
 
 	static constexpr float Speed = 300.0f;
 	static constexpr int Size = 64;
-	static constexpr float InvincibleDuration = 1.5f;
+	static constexpr float Invinciblem_duration = 1.5f;
 };

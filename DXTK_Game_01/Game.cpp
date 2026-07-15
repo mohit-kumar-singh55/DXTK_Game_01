@@ -470,6 +470,41 @@ void Game::Update3D(
 	// update camera
 	m_cam.Update(deltaTime);
 
+	// ! if tank is destroyed, update necessary things only
+	if (m_isTankDestroyed) {
+		m_tankDeathTimer -= deltaTime;
+
+		m_muzzleFlash.Update(deltaTime);
+		m_damageFlash.Update(deltaTime);
+
+		// update explosion
+		for (Explosion3D& explosion : m_explosions3D)
+			explosion.Update(deltaTime);
+
+		m_explosions3D.erase(
+			std::remove_if(
+				m_explosions3D.begin(),
+				m_explosions3D.end(),
+				[](const Explosion3D& explosion) {
+					return !explosion.IsActive();
+				}
+			),
+			m_explosions3D.end()
+		);
+
+		// update camera to follow player
+		m_cam.FollowBehind(
+			m_player3D.GetPosition(),
+			m_player3D.GetForwardDirection()
+		);
+
+		// move to gameover state, if all explosions are over
+		if (m_tankDeathTimer <= 0.0f)
+			m_gameState = GameState::GameOver;
+
+		return;
+	}
+
 	// rotate player3D with mouse movement
 	const float yawDelta = static_cast<float>(mouseState.x) * MouseSensitivity;
 	m_player3D.RotateTurretYaw(-yawDelta);
@@ -563,7 +598,7 @@ void Game::Update3D(
 			// end the game
 			if (--m_player3DHp <= 0) {
 				m_player3DHp = 0;
-				m_gameState = GameState::GameOver;
+				DestroyTank3D();	// ! game over
 			}
 			else m_player3D.StartInvincibility();
 		}
@@ -691,24 +726,26 @@ void Game::Render3D() {
 	DirectX::BasicEffect* effect = m_basicEffect.get();
 	ID3D11InputLayout* inputLayout = m_basicEffectInputLayout.Get();
 
-	// render player model if available
-	if (m_tankVisual.IsLoaded() && m_commonStates) {
-		m_tankVisual.SetWorldTransform(
-			m_player3D.GetPosition() + DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f),
-			m_player3D.GetBodyYaw(),
-			m_player3D.GetTurretYaw()
-		);
+	if (!m_isTankDestroyed) {
+		// render player model if available
+		if (m_tankVisual.IsLoaded() && m_commonStates) {
+			m_tankVisual.SetWorldTransform(
+				m_player3D.GetPosition() + DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f),
+				m_player3D.GetBodyYaw(),
+				m_player3D.GetTurretYaw()
+			);
 
-		m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
+			m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
+		}
+		// render default cube
+		else
+			m_player3D.Draw(effect, inputLayout, view, projection);
+
+		// draw tank's fake shadow
+		m_playerShadow.Draw(effect, inputLayout, m_player3D.GetPosition(), view, projection);
 	}
-	// render default cube
-	else
-		m_player3D.Draw(effect, inputLayout, view, projection);
 
 	m_ground.Draw(effect, inputLayout, view, projection);
-
-	// draw tank's fake shadow
-	m_playerShadow.Draw(effect, inputLayout, m_player3D.GetPosition(), view, projection);
 
 	for (const WallObject& wall : m_walls)
 		wall.Draw(effect, inputLayout, view, projection);
@@ -748,6 +785,9 @@ void Game::Start3DGame() {
 
 	m_player3DHp = Player3DMaxHp;
 	m_score3D = 0;
+
+	m_isTankDestroyed = false;
+	m_tankDeathTimer = 0.0f;
 
 	m_enemies3D.clear();
 	m_bullets3D.clear();
@@ -919,6 +959,15 @@ void Game::DrawUI() {
 				Vector2(20.0f, 100.0f),
 				DirectX::Colors::DarkMagenta
 			);
+
+			if (m_isTankDestroyed) {
+				m_font->DrawString(
+					m_spriteBatch.get(),
+					L"TANK DESTROYED...",
+					Vector2(20.0f, 140.0f),
+					DirectX::Colors::Yellow
+				);
+			}
 		}
 		break;
 	}
@@ -1021,4 +1070,45 @@ void Game::ThrowIfFailed(HRESULT result) {
 	if (FAILED(result)) {
 		throw std::runtime_error("HRESULT failed.");
 	}
+}
+
+void Game::DestroyTank3D() {
+	if (m_isTankDestroyed) return;
+
+	using DirectX::SimpleMath::Vector3;
+
+	m_isTankDestroyed = true;
+	m_tankDeathTimer = TankDeathGameOverDelay;
+
+	const Vector3 tankPos = m_player3D.GetPosition();
+
+	// spawn multiple explosions
+	m_explosions3D.emplace_back(
+		tankPos,
+		1.2f,
+		4.0f,
+		0.8f
+	);
+	m_explosions3D.emplace_back(
+		tankPos + Vector3(0.8f, 0.0f, 0.4f),
+		0.8f,
+		2.5f,
+		0.7f
+	);
+	m_explosions3D.emplace_back(
+		tankPos + Vector3(-0.7f, 0.0f, -0.5f),
+		0.9f,
+		2.2f,
+		0.7f
+	);
+
+	// shake camera
+	m_cam.StartShake(0.6f, 0.45f);
+
+	// sfx
+	m_audioManager.PlayDamage();
+
+	// clean up
+	m_enemies3D.clear();
+	m_bullets3D.clear();
 }

@@ -37,5 +37,5 @@ private:
 	float m_yaw = 0.0f;
 	float m_timer = 0.0f;
 
-	static constexpr float Duration = 0.08f;
+	static constexpr float m_duration = 0.08f;
 };

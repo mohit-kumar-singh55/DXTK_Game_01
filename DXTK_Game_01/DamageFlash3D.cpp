@@ -27,7 +27,7 @@ void DamageFlash3D::Draw(
 	using DirectX::SimpleMath::Matrix;
 	using DirectX::SimpleMath::Vector3;
 
-	const float lifeRate = m_timer / Duration;
+	const float lifeRate = m_timer / m_duration;
 	const float scale = 4.2f + lifeRate * 0.5f;
 
 	const Matrix world =
@@ -45,7 +45,7 @@ void DamageFlash3D::Draw(
 }
 
 void DamageFlash3D::Trigger() noexcept {
-	m_timer = Duration;
+	m_timer = m_duration;
 }
 
 bool DamageFlash3D::IsActive() const noexcept {

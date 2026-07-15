@@ -34,7 +34,7 @@ void MuzzleFlash3D::Trigger(
 		m_yaw = std::atan2(forward.x, -forward.z);
 	}
 
-	m_timer = Duration;
+	m_timer = m_duration;
 }
 
 void MuzzleFlash3D::Draw(

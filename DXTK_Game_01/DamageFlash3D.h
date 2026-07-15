@@ -32,5 +32,5 @@ private:
 
 	float m_timer = 0.0f;
 
-	static constexpr float Duration = 0.25f;
+	static constexpr float m_duration = 0.25f;
 };

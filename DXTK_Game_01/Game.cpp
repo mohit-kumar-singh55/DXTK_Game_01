@@ -563,14 +563,18 @@ void Game::Update3D(
 			if (!enemy.IsActive()) continue;
 
 			if (Intersects(bullet.GetBounds(), enemy.GetBounds())) {
-				// spawn explosion
-				m_explosions3D.emplace_back(enemy.GetPosition());
-
 				bullet.Destroy();
-				enemy.Destroy();
+				enemy.TakeDamage(1);
 
-				m_score3D += enemy.GetScoreValue();
 				m_audioManager.PlayHit();
+
+				if (enemy.IsDead()) {
+					// spawn explosion
+					m_explosions3D.emplace_back(enemy.GetPosition());
+
+					m_score3D += enemy.GetScoreValue();
+				}
+
 				break;
 			}
 		}

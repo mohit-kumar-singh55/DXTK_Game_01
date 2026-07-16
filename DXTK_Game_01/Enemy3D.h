@@ -46,6 +46,14 @@ public:
 	[[nodiscard]]
 	int GetScoreValue() const noexcept;
 
+	void TakeDamage(int damage) noexcept;
+
+	[[nodiscard]]
+	bool IsDead() const noexcept;
+
+	[[nodiscard]]
+	int GetHP() const noexcept;
+
 private:
 	void ApplyTypeSettings() noexcept;
 
@@ -64,6 +72,13 @@ private:
 
 	int m_scorevalue = 100;
 
+	int m_hp = 1;
+	int m_maxHp = 1;
+
+	float m_hitFlashTimer = 0.0f;
+
 	DirectX::SimpleMath::Vector3 m_diffuseColor = DirectX::SimpleMath::Vector3(1.0f, 0.2f, 0.15f);
 	DirectX::SimpleMath::Vector3 m_emissiveColor = DirectX::SimpleMath::Vector3(0.08f, 0.01f, 0.01f);
+
+	static constexpr float HitFlashDuration = 0.12f;
 };

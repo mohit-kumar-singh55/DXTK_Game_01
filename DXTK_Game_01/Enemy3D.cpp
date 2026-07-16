@@ -24,6 +24,9 @@ void Enemy3D::Update(
 ) {
 	if (!m_isActive) return;
 
+	if (m_hitFlashTimer > 0.0f)
+		m_hitFlashTimer -= deltaTime;
+
 	using DirectX::SimpleMath::Vector3;
 
 	// move towards player
@@ -55,8 +58,15 @@ void Enemy3D::Draw(
 	effect->SetView(view);
 	effect->SetProjection(projection);
 
-	effect->SetDiffuseColor(m_diffuseColor);
-	effect->SetEmissiveColor(m_emissiveColor);
+	// damage flash
+	if (m_hitFlashTimer > 0.0f) {
+		effect->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
+		effect->SetEmissiveColor(Vector3(0.5f, 0.5f, 0.5f));
+	}
+	else {
+		effect->SetDiffuseColor(m_diffuseColor);
+		effect->SetEmissiveColor(m_emissiveColor);
+	}
 
 	m_primitive->Draw(effect, inputLayout);
 }
@@ -81,6 +91,27 @@ int Enemy3D::GetScoreValue() const noexcept {
 	return m_scorevalue;
 }
 
+void Enemy3D::TakeDamage(int damage) noexcept {
+	if (!IsActive()) return;
+
+	m_hp -= damage;
+	m_hitFlashTimer = HitFlashDuration;
+
+	if (m_hp > 0) return;
+
+	// destroy if no hp remaining
+	m_hp = 0;
+	Destroy();
+}
+
+bool Enemy3D::IsDead() const noexcept {
+	return m_hp <= 0;
+}
+
+int Enemy3D::GetHP() const noexcept {
+	return m_hp;
+}
+
 void Enemy3D::ApplyTypeSettings() noexcept {
 	using DirectX::SimpleMath::Vector3;
 
@@ -90,6 +121,9 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_collisionRadius = 0.75f;
 		m_visualScale = m_collisionRadius * 2.0f;
 		m_scorevalue = 100;
+
+		m_maxHp = 1;
+		m_hp = m_maxHp;
 
 		m_diffuseColor = Vector3(1.0f, 0.2f, 0.15f);
 		m_emissiveColor = Vector3(0.08f, 0.01f, 0.01f);
@@ -101,6 +135,9 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_visualScale = m_collisionRadius * 2.0f;
 		m_scorevalue = 150;
 
+		m_maxHp = 1;
+		m_hp = m_maxHp;
+
 		m_diffuseColor = Vector3(1.0f, 0.9f, 0.1f);
 		m_emissiveColor = Vector3(0.12f, 0.08f, 0.01f);
 		break;
@@ -110,6 +147,9 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_collisionRadius = 1.0f;
 		m_visualScale = m_collisionRadius * 2.0f;
 		m_scorevalue = 250;
+
+		m_maxHp = 3;
+		m_hp = m_maxHp;
 
 		m_diffuseColor = Vector3(0.6f, 0.1f, 1.0f);
 		m_emissiveColor = Vector3(0.06f, 0.01f, 0.12f);

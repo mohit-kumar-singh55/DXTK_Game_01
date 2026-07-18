@@ -1,5 +1,6 @@
 #include "Enemy3D.h"
 
+#include <algorithm>
 #include <stdexcept>
 
 Enemy3D::Enemy3D(
@@ -9,6 +10,7 @@ Enemy3D::Enemy3D(
 	m_position(position),
 	m_type(type) {
 	ApplyTypeSettings();
+	m_hp = m_maxHp;
 }
 
 void Enemy3D::Initialize(ID3D11DeviceContext* context) {
@@ -61,7 +63,7 @@ void Enemy3D::Draw(
 	// damage flash
 	if (m_hitFlashTimer > 0.0f) {
 		effect->SetDiffuseColor(Vector3(1.0f, 1.0f, 1.0f));
-		effect->SetEmissiveColor(Vector3(0.5f, 0.5f, 0.5f));
+		effect->SetEmissiveColor(Vector3(1.0f, 1.0f, 1.0f));
 	}
 	else {
 		effect->SetDiffuseColor(m_diffuseColor);
@@ -112,6 +114,27 @@ int Enemy3D::GetHP() const noexcept {
 	return m_hp;
 }
 
+int Enemy3D::GetMaxHP() const noexcept {
+	return m_maxHp;
+}
+
+float Enemy3D::GetHealthRatio() const noexcept {
+	if (m_maxHp <= 0) return 0.0f;
+
+	const float ratio =
+		static_cast<float>(m_hp) /
+		static_cast<float>(m_maxHp);
+
+	return std::clamp(ratio, 0.0f, 1.0f);
+}
+
+bool Enemy3D::ShouldShowHealthBar() const noexcept {
+	//return m_type == Enemy3DType::Heavy
+	return !IsDead()
+		&& m_maxHp > 1
+		&& m_hp <= m_maxHp;
+}
+
 void Enemy3D::ApplyTypeSettings() noexcept {
 	using DirectX::SimpleMath::Vector3;
 
@@ -123,7 +146,6 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_scorevalue = 100;
 
 		m_maxHp = 1;
-		m_hp = m_maxHp;
 
 		m_diffuseColor = Vector3(1.0f, 0.2f, 0.15f);
 		m_emissiveColor = Vector3(0.08f, 0.01f, 0.01f);
@@ -136,7 +158,6 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_scorevalue = 150;
 
 		m_maxHp = 1;
-		m_hp = m_maxHp;
 
 		m_diffuseColor = Vector3(1.0f, 0.9f, 0.1f);
 		m_emissiveColor = Vector3(0.12f, 0.08f, 0.01f);
@@ -149,7 +170,6 @@ void Enemy3D::ApplyTypeSettings() noexcept {
 		m_scorevalue = 250;
 
 		m_maxHp = 3;
-		m_hp = m_maxHp;
 
 		m_diffuseColor = Vector3(0.6f, 0.1f, 1.0f);
 		m_emissiveColor = Vector3(0.06f, 0.01f, 0.12f);

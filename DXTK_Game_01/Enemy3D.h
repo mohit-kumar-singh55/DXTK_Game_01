@@ -54,6 +54,15 @@ public:
 	[[nodiscard]]
 	int GetHP() const noexcept;
 
+	[[nodiscard]]
+	int GetMaxHP() const noexcept;
+
+	[[nodiscard]]
+	float GetHealthRatio() const noexcept;
+
+	[[nodiscard]]
+	bool ShouldShowHealthBar() const noexcept;
+
 private:
 	void ApplyTypeSettings() noexcept;
 

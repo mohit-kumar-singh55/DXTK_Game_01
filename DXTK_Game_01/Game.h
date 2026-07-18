@@ -87,6 +87,12 @@ private:
 	static void ThrowIfFailed(HRESULT result);
 
 	void DestroyTank3D();
+	void DrawEnemyHealthBar(
+		const Enemy3D& enemy,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& projection,
+		const DirectX::SimpleMath::Vector3& cameraPosition
+	);
 
 private:
 	HWND m_window = nullptr;								// window handle, needs a window before we can render it
@@ -137,6 +143,7 @@ private:
 
 	std::unique_ptr<DirectX::GeometricPrimitive> m_bullet3DPrimitive;
 	std::unique_ptr<DirectX::GeometricPrimitive> m_explosion3DPrimitive;
+	std::unique_ptr<DirectX::GeometricPrimitive> m_healthBarPrimitive;
 
 	float m_enemy3DSpawnTimer = 0.0f;
 	static constexpr float Enemy3DSpawnInterval = 2.0f;
@@ -147,7 +154,7 @@ private:
 	int m_player3DHp = Player3DMaxHp;
 
 	int m_score3D = 0;
-	
+
 	bool m_isTankDestroyed = false;
 	float m_tankDeathTimer = 0.0f;
 

@@ -186,6 +186,7 @@
     <ClCompile Include="Enemy3D.cpp" />
     <ClCompile Include="Explosion3D.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay\Health.cpp" />
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelObject3D.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Enemy3D.h" />
     <ClInclude Include="Explosion3D.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Gameplay\Health.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="MuzzleFlash3D.h" />

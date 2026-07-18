@@ -114,7 +114,7 @@ bool Player3D::IsInvincible() const noexcept {
 }
 
 void Player3D::StartInvincibility() noexcept {
-	m_invincibleTimer = Invinciblem_duration;
+	m_invincibleTimer = InvincibleDuration;
 }
 
 DirectX::SimpleMath::Vector3 Player3D::GetForwardDirection() const noexcept {

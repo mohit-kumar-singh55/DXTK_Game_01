@@ -196,6 +196,12 @@ void Game::Initialize3D() {
 	for (WallObject& wall : m_walls)
 		wall.Initialize(m_context.Get());
 
+	// shared primitive for health bar
+	m_healthBarPrimitive = DirectX::GeometricPrimitive::CreateCube(
+		m_context.Get(),
+		1.0f
+	);
+
 	// initialize basic effect
 	InitializeBasicEffect();
 
@@ -753,8 +759,13 @@ void Game::Render3D() {
 
 	for (const WallObject& wall : m_walls)
 		wall.Draw(effect, inputLayout, view, projection);
-	for (const Enemy3D& enemy : m_enemies3D)
+	for (const Enemy3D& enemy : m_enemies3D) {
+		// draw enemy
 		enemy.Draw(effect, inputLayout, view, projection);
+
+		// draw enemy's health bar
+		DrawEnemyHealthBar(enemy, view, projection, m_cam.GetPosition());
+	}
 	for (const Bullet3D& bullet : m_bullets3D)
 		bullet.Draw(m_bullet3DPrimitive.get(), effect, inputLayout, view, projection);
 	for (const Explosion3D& explosion : m_explosions3D)
@@ -1167,4 +1178,63 @@ void Game::DestroyTank3D() {
 	// clean up
 	m_enemies3D.clear();
 	m_bullets3D.clear();
+}
+
+void Game::DrawEnemyHealthBar(
+	const Enemy3D& enemy,
+	const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& projection,
+	const DirectX::SimpleMath::Vector3& cameraPosition
+) {
+	using DirectX::SimpleMath::Matrix;
+	using DirectX::SimpleMath::Vector3;
+
+	if (!m_healthBarPrimitive || !enemy.ShouldShowHealthBar())
+		return;
+
+	constexpr float totalWidth = 1.4f;
+	constexpr float barHeight = 0.14f;
+	constexpr float barDepth = 0.04f;
+	constexpr float heightOffset = 1.8f;
+
+	const float healthRatio = enemy.GetHealthRatio();
+
+	// position the bar above the enemy
+	const Vector3 barPos = enemy.GetPosition() + Vector3(0.0f, heightOffset, 0.0f);
+
+	// rotate the bar so that it always faces the cmaera (billboarding)
+	const Matrix billboard = Matrix::CreateBillboard(barPos, cameraPosition, Vector3::Up);
+
+	// draw the black bg
+	const Matrix bgWorld = Matrix::CreateScale(totalWidth, barHeight, barDepth) * billboard;
+
+	m_healthBarPrimitive->Draw(bgWorld, view, projection, DirectX::Colors::Black);
+
+	// current width of the health portion
+	const float currentWidth = totalWidth * healthRatio;
+
+	// moving the pivot to the left
+	const float leftOffset = (totalWidth - currentWidth) * 0.5f;
+
+	// move the colored part slightly towards the camera
+	Vector3 dirToCam = cameraPosition - barPos;
+	dirToCam.Normalize();
+	const Vector3 fillPos = barPos + dirToCam * 0.03f;
+
+	// draw filled part
+	const Matrix fillBillboard = Matrix::CreateBillboard(fillPos, cameraPosition, Vector3::Up);
+
+	const Matrix fillWorld =
+		Matrix::CreateScale(currentWidth, barHeight * 0.65f, barDepth) *
+		Matrix::CreateTranslation(leftOffset, 0.0f, 0.0f) *
+		fillBillboard;
+
+	DirectX::XMVECTORF32 fillColor = DirectX::Colors::Green;
+
+	if (healthRatio <= 0.34f)
+		fillColor = DirectX::Colors::Red;
+	else if (healthRatio <= 0.67f)
+		fillColor = DirectX::Colors::Orange;
+
+	m_healthBarPrimitive->Draw(fillWorld, view, projection, fillColor);
 }

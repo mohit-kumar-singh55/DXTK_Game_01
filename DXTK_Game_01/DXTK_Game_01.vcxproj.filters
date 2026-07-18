@@ -11,6 +11,9 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{e29bd614-0022-42ad-aad0-2e00408533a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Gameplay">
+      <UniqueIdentifier>{26e3ed64-7681-4a6c-a242-92283123adda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -72,6 +75,9 @@
     <ClCompile Include="DamageFlash3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Gameplay\Health.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -130,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="DamageFlash3D.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay\Health.h">
+      <Filter>Gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

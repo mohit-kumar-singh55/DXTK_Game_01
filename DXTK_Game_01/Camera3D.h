@@ -41,10 +41,14 @@ public:
 		DirectX::SimpleMath::Vector3& result
 	) const noexcept;
 
+	[[nodiscard]]
+	DirectX::SimpleMath::Vector3 GetPosition() const noexcept;
+
 private:
 	DirectX::SimpleMath::Matrix m_view = DirectX::SimpleMath::Matrix::Identity;
 	DirectX::SimpleMath::Matrix m_projection = DirectX::SimpleMath::Matrix::Identity;
 	DirectX::SimpleMath::Vector3 m_followOffset = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 8.0f);
+	DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3::Zero;
 
 	// impulse
 	float m_shakeTimer = 0.0f;

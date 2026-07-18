@@ -75,7 +75,7 @@ void Camera3D::FollowBehind(
 	const float lookAheadDistance = 4.0f;	// how far ahead to look
 
 	// set camera behind the player
-	Vector3 cameraPos =
+	m_position =
 		targetPosition
 		- forward * cameraDistance
 		+ Vector3(0.0f, cameraHeight, 0.0f);
@@ -96,12 +96,12 @@ void Camera3D::FollowBehind(
 
 		const Vector3 shakeOffset = right * shakeX + Vector3::Up * shakeY;
 
-		cameraPos += shakeOffset;
+		m_position += shakeOffset;
 		cameraTarget += shakeOffset;
 	}
 
 	m_view = Matrix::CreateLookAt(
-		cameraPos,
+		m_position,
 		cameraTarget,
 		Vector3::Up
 	);
@@ -173,4 +173,8 @@ bool Camera3D::ScreenPointToGround(
 
 	result = rayStart + rayDir * t;
 	return true;
+}
+
+DirectX::SimpleMath::Vector3 Camera3D::GetPosition() const noexcept {
+	return m_position;
 }

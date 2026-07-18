@@ -113,7 +113,7 @@ bool Player::IsInvincible() const noexcept {
 }
 
 void Player::StartInvincibility() noexcept {
-	m_invincibleTimer = Invinciblem_duration;
+	m_invincibleTimer = InvincibleDuration;
 }
 
 // create a simple blue square with white border

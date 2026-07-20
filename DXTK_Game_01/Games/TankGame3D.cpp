@@ -137,9 +137,6 @@ void TankGame3D::Start() {
 void TankGame3D::Clear() {
 	m_bullets.clear();
 	m_enemies.clear();
-
-	m_bullets.clear();
-	m_enemies.clear();
 	m_explosions.clear();
 
 	m_enemySpawnTimer = 0.0f;

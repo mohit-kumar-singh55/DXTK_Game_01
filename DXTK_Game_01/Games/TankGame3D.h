@@ -43,9 +43,6 @@ public:
 
 	void Update(
 		float deltaTime,
-		const DirectX::Keyboard::State& keyboardState,
-		const DirectX::Mouse::State& mouseState,
-		const DirectX::Mouse::ButtonStateTracker& mouseTracker,
 		AudioManager& audioManager
 	);
 

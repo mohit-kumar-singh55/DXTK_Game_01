@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <algorithm>
 
+#include <Input/InputManager.h>
+
 void TankGame3D::Initialize(
 	ID3D11Device* device,
 	ID3D11DeviceContext* context,
@@ -149,11 +151,14 @@ void TankGame3D::Clear() {
 
 void TankGame3D::Update(
 	float deltaTime,
-	const DirectX::Keyboard::State& keyboardState,
-	const DirectX::Mouse::State& mouseState,
-	const DirectX::Mouse::ButtonStateTracker& mouseTracker,
 	AudioManager& audioManager
 ) {
+	auto& input = InputManager::Get();
+
+	const auto& keyboardState = input.GetKeyboardState();
+	const auto& mouseState = input.GetMouseState();
+	const auto& mouseTracker = input.GetMouseTracker();
+
 	// update camera
 	m_cam.Update(deltaTime);
 

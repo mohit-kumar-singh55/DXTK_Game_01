@@ -10,9 +10,12 @@ void Game::Initialize(HWND window, int width, int height) {
 
 	m_deviceResources.Initialize(window, width, height);
 
-	m_audioManager.Initialize();
+	// init singleton input manager
+	InputManager::Get().Initialize(window);
 
 	InitializeGameResources();
+
+	m_audioManager.Initialize();
 
 	m_previousTime = Clock::now();
 }
@@ -42,11 +45,7 @@ void Game::InitializeGameResources() {
 
 	// create DirectXTK objects
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
-	m_keyboard = std::make_unique<DirectX::Keyboard>();
-	m_mouse = std::make_unique<DirectX::Mouse>();
 	m_font = std::make_unique<DirectX::SpriteFont>(device, L"Assets/gamefont.spritefont");
-
-	m_mouse->SetWindow(m_deviceResources.GetWindow());
 
 	// ! 2d shooter game
 	m_shooterGame.Initialize(device, m_windowWidth, m_windowHeight);
@@ -61,25 +60,19 @@ void Game::InitializeGameResources() {
 }
 
 void Game::Update(float deltaTime) {
-	// use keyboardState for continuous actions (will be true for all frame if the key is held)
-	// use keyboardTracker for per frame actions (will be true only for the frame when the key is pressed)
-	const auto keyboardState = m_keyboard->GetState();
-	const auto mouseState = m_mouse->GetState();
-
-	// compare the current keyboard state with the previous frame
-	m_keyboardTracker.Update(keyboardState);
-	m_mouseTracker.Update(mouseState);
+	auto& input = InputManager::Get();
+	input.Update();		// ! update input manage only once here, not in any other class
 
 	// close window
-	if (keyboardState.Escape)
+	if (input.IsKeyPressed(DirectX::Keyboard::Escape))
 		PostQuitMessage(0);
 
 	// for 2D gae
 	switch (m_gameState) {
 	case GameState::Title: {
-		if (m_keyboardTracker.pressed.D1)
+		if (input.IsKeyPressed(DirectX::Keyboard::D1))
 			Start2DGame();
-		if (m_keyboardTracker.pressed.D2)
+		if (input.IsKeyPressed(DirectX::Keyboard::D2))
 			Start3DGame();
 		break;
 	}
@@ -88,8 +81,6 @@ void Game::Update(float deltaTime) {
 		if (m_gameMode == GameMode::Shooter2D) {
 			m_shooterGame.Update(
 				deltaTime,
-				keyboardState,
-				m_keyboardTracker.pressed.Space,	// spawn bullet only once when space changes from released to pressed
 				m_audioManager
 			);
 
@@ -100,9 +91,6 @@ void Game::Update(float deltaTime) {
 		if (m_gameMode == GameMode::Arena3D) {
 			m_tankGame.Update(
 				deltaTime,
-				keyboardState,
-				mouseState,
-				m_mouseTracker,
 				m_audioManager
 			);
 
@@ -113,13 +101,13 @@ void Game::Update(float deltaTime) {
 	}
 
 	case GameState::GameOver: {
-		if (m_keyboardTracker.pressed.R) {
+		if (input.IsKeyPressed(DirectX::Keyboard::R)) {
 			if (m_gameMode == GameMode::Shooter2D)
 				Start2DGame();
 			if (m_gameMode == GameMode::Arena3D)
 				Start3DGame();
 		}
-		if (m_keyboardTracker.pressed.Back)
+		if (input.IsKeyPressed(DirectX::Keyboard::Back))
 			ReturnToTitle();
 		break;
 	}
@@ -171,6 +159,8 @@ void Game::Start2DGame() {
 	m_gameState = GameState::Playing;
 
 	m_shooterGame.Start();
+
+	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
 }
 
 void Game::Start3DGame() {
@@ -180,8 +170,7 @@ void Game::Start3DGame() {
 	m_tankGame.Start();
 
 	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
-	if (m_mouse)
-		m_mouse->SetMode(DirectX::Mouse::MODE_RELATIVE);
+	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);
 }
 
 void Game::ReturnToTitle() {
@@ -192,8 +181,7 @@ void Game::ReturnToTitle() {
 	m_shooterGame.Clear();
 
 	// reset mouse mode to absolute, so the mouse cursor can be used to click buttons
-	if (m_mouse)
-		m_mouse->SetMode(DirectX::Mouse::MODE_ABSOLUTE);
+	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
 }
 
 void Game::DrawUI() {

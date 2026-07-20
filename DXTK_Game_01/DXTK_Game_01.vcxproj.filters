@@ -20,6 +20,9 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{5dd4eb4d-7f66-4cbd-87c6-b184d7d94813}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{d2e75130-6db0-438c-b9b6-19a4839d4e29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -93,6 +96,9 @@
     <ClCompile Include="Games\ShooterGame2D.cpp">
       <Filter>Games</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -163,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="Games\ShooterGame2D.h">
       <Filter>Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputManager.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

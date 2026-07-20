@@ -11,7 +11,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-// ! this is IMP
+// ! IMP
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -36,12 +36,16 @@ std::unique_ptr<Game> g_game;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	// DirectXTK Keyboard needs this to receive keyboard messages.
+	// DirectXTK Keyboard needs every keyboard and mouse message.
 	DirectX::Keyboard::ProcessMessage(message, wParam, lParam);
 	DirectX::Mouse::ProcessMessage(message, wParam, lParam);
 
 	switch (message)
 	{
+	case WM_ACTIVATEAPP:
+		InputManager::Get().Reset();
+		return 0;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;

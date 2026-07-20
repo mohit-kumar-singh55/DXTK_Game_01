@@ -10,8 +10,8 @@
 // DirectXTK
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
-#include <Keyboard.h>
-#include <Mouse.h>
+
+#include <Input/InputManager.h>
 
 #include <chrono>
 
@@ -54,11 +54,6 @@ private:
 	// DirectXTK objects
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> m_font;	// ui text renderer
-	std::unique_ptr<DirectX::Keyboard> m_keyboard;
-	std::unique_ptr<DirectX::Mouse> m_mouse;
-
-	DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
-	DirectX::Mouse::ButtonStateTracker m_mouseTracker;
 
 	static constexpr float MouseSensitivity = 0.0035f;
 

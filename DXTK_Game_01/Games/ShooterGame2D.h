@@ -4,7 +4,6 @@
 #include "Bullet.h"
 #include "Enemy.h"
 
-#include <Keyboard.h>
 #include <SpriteBatch.h>
 
 #include <memory>
@@ -26,8 +25,6 @@ public:
 
 	void Update(
 		float deltaTime,
-		const DirectX::Keyboard::State& keyboardState,
-		bool shootPressed,
 		AudioManager& audioManager
 	);
 

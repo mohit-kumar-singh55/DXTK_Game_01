@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <Input/InputManager.h>
+
 void ShooterGame2D::Initialize(
 	ID3D11Device* device,
 	int screenWidth,
@@ -55,15 +57,17 @@ void ShooterGame2D::Clear() {
 
 void ShooterGame2D::Update(
 	float deltaTime,
-	const DirectX::Keyboard::State& keyboardState,
-	bool shootPressed,
 	AudioManager& audioManager
 ) {
+	auto& input = InputManager::Get();
+
+	const auto& keyboardState = input.GetKeyboardState();
+
 	// update objects
 	m_player->Update(keyboardState, deltaTime, m_screenWidth, m_screenHeight);
 
 	// spawn bullet only once
-	if (shootPressed) {
+	if (input.IsKeyPressed(DirectX::Keyboard::Space)) {
 		// emplace_back constructs the object and push at the back
 		m_bullets.emplace_back(m_player->GetBulletSpawnPosition());
 

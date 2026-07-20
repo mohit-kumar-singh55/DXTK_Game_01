@@ -193,6 +193,7 @@
     <ClCompile Include="Games\TankGame3D.cpp" />
     <ClCompile Include="Graphics\DeviceResources.cpp" />
     <ClCompile Include="GroundObject.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelObject3D.cpp" />
     <ClCompile Include="MuzzleFlash3D.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Games\TankGame3D.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="GroundObject.h" />
+    <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="MuzzleFlash3D.h" />
     <ClInclude Include="Player.h" />

@@ -14,6 +14,9 @@
     <Filter Include="Gameplay">
       <UniqueIdentifier>{26e3ed64-7681-4a6c-a242-92283123adda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games">
+      <UniqueIdentifier>{6839d178-7dde-4aeb-859b-648c9c2e40ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -78,6 +81,9 @@
     <ClCompile Include="Gameplay\Health.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="Games\TankGame3D.cpp">
+      <Filter>Games</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -139,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="Gameplay\Health.h">
       <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\TankGame3D.h">
+      <Filter>Games</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

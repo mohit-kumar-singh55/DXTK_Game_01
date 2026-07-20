@@ -5,18 +5,7 @@
 #include "Enemy.h"
 #include "AudioManager.h"
 
-#include "Player3D.h"
-#include "Enemy3D.h"
-#include "Bullet3D.h"
-#include "GroundObject.h"
-#include "WallObject.h"
-#include "Camera3D.h"
-#include "TankVisual.h"
-
-#include "BlobShadow.h"
-#include "MuzzleFlash3D.h"
-#include "Explosion3D.h"
-#include "DamageFlash3D.h"
+#include <Games/TankGame3D.h>
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -53,8 +42,6 @@ public:
 private:
 	void InitializeDirect3D();
 	void CreateDepthBuffer();		// for 3d purpose
-	void Initialize3D();			// for 3d purpose
-	void InitializeBasicEffect();	// for dxtk's build-in matarial+shader
 
 	void Update(float deltaTime);
 	void Render();
@@ -67,17 +54,10 @@ private:
 		float deltaTime,
 		const DirectX::Keyboard::State& keyboardState
 	);
-	void Update3D(
-		float deltaTime,
-		const DirectX::Keyboard::State& keyboardState,
-		const DirectX::Mouse::State& mouseState
-	);
 
 	void Render2D();
-	void Render3D();
 
 	void SpawnEnemy();
-	void SpawnEnemy3D();
 
 	void DrawUI();
 
@@ -85,14 +65,6 @@ private:
 	void CreateEnemyTexture();
 
 	static void ThrowIfFailed(HRESULT result);
-
-	void DestroyTank3D();
-	void DrawEnemyHealthBar(
-		const Enemy3D& enemy,
-		const DirectX::SimpleMath::Matrix& view,
-		const DirectX::SimpleMath::Matrix& projection,
-		const DirectX::SimpleMath::Vector3& cameraPosition
-	);
 
 private:
 	HWND m_window = nullptr;								// window handle, needs a window before we can render it
@@ -121,53 +93,8 @@ private:
 
 	static constexpr float MouseSensitivity = 0.0035f;
 
-	// for 3d purpose
-	Camera3D m_cam;
-
-	// dxtk's build-in material+shader
-	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_basicEffectInputLayout;
-
-	// fog purpose
-	//DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(0.05f, 0.06f, 0.08f);
-	DirectX::SimpleMath::Vector3 m_fogColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
-	float m_fogStart = 6.0f;
-	float m_fogEnd = 18.0f;
-
-	Player3D m_player3D;
-	GroundObject m_ground;
-	std::array<WallObject, 4> m_walls;
-	std::vector<Enemy3D> m_enemies3D;
-	std::vector<Bullet3D> m_bullets3D;
-	std::vector<Explosion3D> m_explosions3D;
-
-	std::unique_ptr<DirectX::GeometricPrimitive> m_bullet3DPrimitive;
-	std::unique_ptr<DirectX::GeometricPrimitive> m_explosion3DPrimitive;
-	std::unique_ptr<DirectX::GeometricPrimitive> m_healthBarPrimitive;
-
-	float m_enemy3DSpawnTimer = 0.0f;
-	static constexpr float Enemy3DSpawnInterval = 2.0f;
-	static constexpr float Enemy3DSpawnMinDistanceFromPlayer = 6.0f;
-	static constexpr float Enemy3DSpawnEdge = 8.5f;
-
-	static constexpr int Player3DMaxHp = 3;
-	int m_player3DHp = Player3DMaxHp;
-
-	int m_score3D = 0;
-
-	bool m_isTankDestroyed = false;
-	float m_tankDeathTimer = 0.0f;
-
-	static constexpr float TankDeathGameOverDelay = 1.4f;
-
-	std::unique_ptr<DirectX::CommonStates> m_commonStates;
-	std::unique_ptr<DirectX::EffectFactory> m_modelEffectfactory;
-
-	TankVisual m_tankVisual;
-	BlobShadow m_playerShadow;
-	MuzzleFlash3D m_muzzleFlash;
-	DamageFlash3D m_damageFlash;
-	// upto here
+	// 3D tank game
+	TankGame3D m_tankGame;
 
 	std::unique_ptr<Player> m_player;
 

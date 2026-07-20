@@ -130,6 +130,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,6 +152,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalIncludeDirectories>$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -187,6 +189,7 @@
     <ClCompile Include="Explosion3D.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\Health.cpp" />
+    <ClCompile Include="Games\TankGame3D.cpp" />
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelObject3D.cpp" />
@@ -210,6 +213,7 @@
     <ClInclude Include="Explosion3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gameplay\Health.h" />
+    <ClInclude Include="Games\TankGame3D.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="MuzzleFlash3D.h" />

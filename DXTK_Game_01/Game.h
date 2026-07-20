@@ -11,12 +11,10 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 
-#include <Input/InputManager.h>
-
 #include <chrono>
 
 // game related
-#include <AudioManager.h>
+#include <Audio/AudioManager.h>
 #include <Games/TankGame3D.h>
 #include <Games/ShooterGame2D.h>
 

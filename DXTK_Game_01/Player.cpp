@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "TextureFactory.h"
+#include <Core/TextureFactory.h>
 
 void Player::Initialize(ID3D11Device* device) {
 	if (!device)

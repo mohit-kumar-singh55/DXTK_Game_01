@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Collision.h"
+#include <Core/Collision.h>
 
 #include <d3d11.h>
 

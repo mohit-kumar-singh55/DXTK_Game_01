@@ -2,6 +2,8 @@
 
 #include <DirectXColors.h>
 
+#include <Input/InputManager.h>
+
 #include <string>
 
 void Game::Initialize(HWND window, int width, int height) {

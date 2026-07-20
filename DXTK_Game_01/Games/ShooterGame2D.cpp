@@ -1,8 +1,8 @@
 #include <Games/ShooterGame2D.h>
 
-#include <AudioManager.h>
-#include <Collision.h>
-#include <TextureFactory.h>
+#include <Audio/AudioManager.h>
+#include <Core/Collision.h>
+#include <Core/TextureFactory.h>
 
 #include <algorithm>
 #include <stdexcept>

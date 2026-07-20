@@ -1,7 +1,5 @@
 #include "WallObject.h"
 
-#include <DirectXColors.h>
-
 #include <stdexcept>
 
 void WallObject::Initialize(ID3D11DeviceContext* context) {

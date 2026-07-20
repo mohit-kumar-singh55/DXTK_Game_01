@@ -178,11 +178,13 @@
     <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Audio\AudioManager.cpp" />
     <ClCompile Include="BlobShadow.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Bullet3D.cpp" />
-    <ClCompile Include="Camera3D.cpp" />
+    <ClCompile Include="Core\Camera3D.cpp" />
+    <ClCompile Include="Core\ModelObject3D.cpp" />
+    <ClCompile Include="Core\TextureFactory.cpp" />
     <ClCompile Include="DamageFlash3D.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy3D.cpp" />
@@ -195,21 +197,21 @@
     <ClCompile Include="GroundObject.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ModelObject3D.cpp" />
     <ClCompile Include="MuzzleFlash3D.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Player3D.cpp" />
     <ClCompile Include="TankVisual.cpp" />
-    <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="WallObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Audio\AudioManager.h" />
     <ClInclude Include="BlobShadow.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Bullet3D.h" />
-    <ClInclude Include="Camera3D.h" />
-    <ClInclude Include="Collision.h" />
+    <ClInclude Include="Core\Camera3D.h" />
+    <ClInclude Include="Core\Collision.h" />
+    <ClInclude Include="Core\ModelObject3D.h" />
+    <ClInclude Include="Core\TextureFactory.h" />
     <ClInclude Include="DamageFlash3D.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy3D.h" />
@@ -221,12 +223,10 @@
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="GroundObject.h" />
     <ClInclude Include="Input\InputManager.h" />
-    <ClInclude Include="ModelObject3D.h" />
     <ClInclude Include="MuzzleFlash3D.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Player3D.h" />
     <ClInclude Include="TankVisual.h" />
-    <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="WallObject.h" />
   </ItemGroup>
   <ItemGroup>

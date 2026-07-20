@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Camera3D.h>
+#include <Core/Camera3D.h>
 #include <Player3D.h>
 #include <GroundObject.h>
 #include <WallObject.h>
 #include <Bullet3D.h>
-#include <AudioManager.h>
+#include <Audio/AudioManager.h>
 #include <Enemy3D.h>
 #include <TankVisual.h>
 #include <BlobShadow.h>
@@ -16,8 +16,6 @@
 #include <CommonStates.h>
 #include <Effects.h>
 #include <GeometricPrimitive.h>
-#include <Keyboard.h>
-#include <Mouse.h>
 #include <SimpleMath.h>
 
 #include <wrl/client.h>

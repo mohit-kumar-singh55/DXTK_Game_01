@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Collision.h"
+#include <Core/Collision.h>
 
 #include <GeometricPrimitive.h>
 #include <SimpleMath.h>

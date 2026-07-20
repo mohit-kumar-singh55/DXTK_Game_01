@@ -1,7 +1,5 @@
 #include "GroundObject.h"
 
-#include <DirectXColors.h>
-
 #include <stdexcept>
 
 void GroundObject::Initialize(ID3D11DeviceContext* context) {

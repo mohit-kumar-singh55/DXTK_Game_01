@@ -8,7 +8,7 @@
 #include <d3d11.h>
 #include <memory>
 
-#include "Collision.h"
+#include <Core/Collision.h>
 
 class Player3D {
 public:

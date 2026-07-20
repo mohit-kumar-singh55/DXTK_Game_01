@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ModelObject3D.h"
+#include <Core/ModelObject3D.h>
 
 #include <CommonStates.h>
 #include <Effects.h>

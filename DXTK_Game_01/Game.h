@@ -14,22 +14,19 @@
 #include <wrl/client.h>
 
 #include <d3d11.h>
-#include <dxgi.h>
+
+#include <Graphics/DeviceResources.h>
 
 // DirectXTK
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <Keyboard.h>
 #include <Mouse.h>
-#include <GeometricPrimitive.h>
-#include <Effects.h>
-#include <CommonStates.h>
 
 // game related
 #include <chrono>
 #include <vector>
 #include <random>
-#include <array>
 
 class Game {
 public:
@@ -40,8 +37,7 @@ public:
 	void Tick();
 
 private:
-	void InitializeDirect3D();
-	void CreateDepthBuffer();		// for 3d purpose
+	void InitializeGameResources();
 
 	void Update(float deltaTime);
 	void Render();
@@ -64,21 +60,14 @@ private:
 	void CreateBulletTexture();
 	void CreateEnemyTexture();
 
-	static void ThrowIfFailed(HRESULT result);
-
 private:
-	HWND m_window = nullptr;								// window handle, needs a window before we can render it
-
 	int m_windowWidth = 1280;
 	int m_windowHeight = 720;
 
-	Microsoft::WRL::ComPtr<ID3D11Device> m_device;							// device creates GPU resources			(context sends commands to the GPU)
-	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context;					// context sends commands to the GPU		(Context = GPU command sender)
-	Microsoft::WRL::ComPtr<IDXGISwapChain> m_swapChain;						// swap chain owns the screen buffers	(Swap chain = screen buffer manager)
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_renderTargetView;		// This is the image we are drawing into	(In Unity terms, it is similar to )
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_depthStencilView;		// In 3d, depth buffer decides which object is in front and which object is behind
+	// device related
+	DeviceResources m_deviceResources;
 
-	// game related
+	// time related
 	using Clock = std::chrono::steady_clock;
 	Clock::time_point m_previousTime;						// used for delta time
 

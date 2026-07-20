@@ -17,6 +17,9 @@
     <Filter Include="Games">
       <UniqueIdentifier>{6839d178-7dde-4aeb-859b-648c9c2e40ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{5dd4eb4d-7f66-4cbd-87c6-b184d7d94813}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -84,6 +87,9 @@
     <ClCompile Include="Games\TankGame3D.cpp">
       <Filter>Games</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DeviceResources.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -148,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="Games\TankGame3D.h">
       <Filter>Games</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DeviceResources.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

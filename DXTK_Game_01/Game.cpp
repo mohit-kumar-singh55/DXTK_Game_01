@@ -11,11 +11,12 @@
 #include "TextureFactory.h"
 
 void Game::Initialize(HWND window, int width, int height) {
-	m_window = window;
 	m_windowWidth = width;
 	m_windowHeight = height;
 
-	InitializeDirect3D();
+	m_deviceResources.Initialize(window, width, height);
+
+	InitializeGameResources();
 
 	m_audioManager.Initialize();
 
@@ -41,87 +42,21 @@ void Game::Tick() {
 	Render();
 }
 
-void Game::InitializeDirect3D() {
-	// create swap chain settings instance
-	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+void Game::InitializeGameResources() {
+	ID3D11Device* device = m_deviceResources.GetDevice();
+	ID3D11DeviceContext* context = m_deviceResources.GetContext();
 
-	// swap chain buffer settings
-	swapChainDesc.BufferDesc.Width = m_windowWidth;
-	swapChainDesc.BufferDesc.Height = m_windowHeight;
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;			// ! FPS
-	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-
-	// swap chain sample settings
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.SampleDesc.Quality = 0;
-
-	// swap chain settings
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = 1;
-	swapChainDesc.OutputWindow = m_window;
-	swapChainDesc.Windowed = TRUE;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-	// define feature levels
-	D3D_FEATURE_LEVEL featureLevels[] = {
-		D3D_FEATURE_LEVEL_11_0,
-	};
-
-	// define created feature level
-	D3D_FEATURE_LEVEL createdFeatureLevel{};
-
-	// create device and swap chain
-	ThrowIfFailed(
-		D3D11CreateDeviceAndSwapChain(
-			nullptr,                    // Adapter (mean GPU) if nullptr -> DX will choose itself
-			D3D_DRIVER_TYPE_HARDWARE,   // Use GPU hardware
-			nullptr,                    // Software rasterizer (Rasterizer is the stage in the graphics pipeline that converts triangles into pixels (fragments))
-			0,                          // Flags
-			featureLevels,
-			1,
-			D3D11_SDK_VERSION,
-			&swapChainDesc,
-			&m_swapChain,
-			&m_device,
-			&createdFeatureLevel,
-			&m_context
-		)
-	);
-
-	// Get back buffer from swap chain
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
-
-	ThrowIfFailed(
-		m_swapChain->GetBuffer(
-			0,
-			IID_PPV_ARGS(&backBuffer)
-		)
-	);
-
-	// Create render target view
-	ThrowIfFailed(
-		m_device->CreateRenderTargetView(
-			backBuffer.Get(),
-			nullptr,
-			&m_renderTargetView
-		)
-	);
-
-	// create depth buffer for 3D purpose
-	CreateDepthBuffer();
-
-	// TODO:  from here create DirectXTK objects.
-	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(m_context.Get());
+	// create DirectXTK objects
+	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	m_keyboard = std::make_unique<DirectX::Keyboard>();
 	m_mouse = std::make_unique<DirectX::Mouse>();
-	m_font = std::make_unique<DirectX::SpriteFont>(m_device.Get(), L"Assets/gamefont.spritefont");
+	m_font = std::make_unique<DirectX::SpriteFont>(device, L"Assets/gamefont.spritefont");
 
-	m_mouse->SetWindow(m_window);
+	m_mouse->SetWindow(m_deviceResources.GetWindow());
 
 	// create player and its texture
 	m_player = std::make_unique<Player>();
-	m_player->Initialize(m_device.Get());
+	m_player->Initialize(device);
 
 	// create the shared bullet texture
 	CreateBulletTexture();
@@ -130,46 +65,10 @@ void Game::InitializeDirect3D() {
 
 	// ! 3d tank game
 	m_tankGame.Initialize(
-		m_device.Get(),
-		m_context.Get(),
+		device,
+		context,
 		m_windowWidth,
 		m_windowHeight
-	);
-}
-
-/*
-* Render target = color image (what color is this pixel?)
-* Depth buffer  = distance image (how far away is this pixel?)
-*/
-void Game::CreateDepthBuffer() {
-	D3D11_TEXTURE2D_DESC depthTextureDesc = {};
-
-	depthTextureDesc.Width = m_windowWidth;
-	depthTextureDesc.Height = m_windowHeight;
-	depthTextureDesc.MipLevels = 1;
-	depthTextureDesc.ArraySize = 1;
-	depthTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthTextureDesc.SampleDesc.Count = 1;
-	depthTextureDesc.SampleDesc.Quality = 0;
-	depthTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture;
-
-	ThrowIfFailed(
-		m_device->CreateTexture2D(
-			&depthTextureDesc,
-			nullptr,
-			&depthTexture
-		)
-	);
-
-	ThrowIfFailed(
-		m_device->CreateDepthStencilView(
-			depthTexture.Get(),
-			nullptr,
-			&m_depthStencilView
-		)
 	);
 }
 
@@ -371,36 +270,8 @@ void Game::Render() {
 		1.0f
 	};
 
-	m_context->OMSetRenderTargets(
-		1,
-		m_renderTargetView.GetAddressOf(),
-		m_depthStencilView.Get()
-	);
-
-	// set the viewport
-	D3D11_VIEWPORT viewport = {};
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
-	viewport.Width = static_cast<float>(m_windowWidth);
-	viewport.Height = static_cast<float>(m_windowHeight);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-
-	m_context->RSSetViewports(1, &viewport);
-
-	// clear render target view
-	m_context->ClearRenderTargetView(
-		m_renderTargetView.Get(),
-		clearColor
-	);
-
-	// clear depth stencil view
-	m_context->ClearDepthStencilView(
-		m_depthStencilView.Get(),
-		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-		1.0f,
-		0
-	);
+	// bind render targets, sets viewport and clears both buffers
+	m_deviceResources.BeginFrame(clearColor);
 
 	// ! render 3d
 	if (m_gameMode == GameMode::Arena3D &&
@@ -421,7 +292,8 @@ void Game::Render() {
 
 	m_spriteBatch->End();
 
-	m_swapChain->Present(1, 0);
+	// swape chain present
+	m_deviceResources.Present();
 }
 
 void Game::Render2D() {
@@ -603,7 +475,7 @@ void Game::DrawUI() {
 				m_font->DrawString(
 					m_spriteBatch.get(),
 					L"TANK DESTROYED...",
-					Vector2(20.0f, 140.0f),
+					Vector2(300.0f, 250.0f),
 					DirectX::Colors::Yellow
 				);
 			}
@@ -667,14 +539,14 @@ void Game::CreateBulletTexture() {
 	// actual image texture
 	try {
 		m_bulletTexture = TextureFactory::LoadTextureFromFile(
-			m_device.Get(),
+			m_deviceResources.GetDevice(),
 			L"Assets/Textures/bullet.png"
 		);
 	}
 	// fallback debug texture
 	catch (...) {
 		m_bulletTexture = TextureFactory::CreateRectangleTexture(
-			m_device.Get(),
+			m_deviceResources.GetDevice(),
 			Bullet::TextureWidth,
 			Bullet::TextureHeight,
 			TextureFactory::ColorRGBA{ 255, 210, 50, 255 },
@@ -688,25 +560,19 @@ void Game::CreateEnemyTexture() {
 	// actual image texture
 	try {
 		m_enemyTexture = TextureFactory::LoadTextureFromFile(
-			m_device.Get(),
+			m_deviceResources.GetDevice(),
 			L"Assets/Textures/enemy.png"
 		);
 	}
 	// fallback debug texture
 	catch (...) {
 		m_enemyTexture = TextureFactory::CreateRectangleTexture(
-			m_device.Get(),
+			m_deviceResources.GetDevice(),
 			Enemy::TextureWidth,
 			Enemy::TextureHeight,
 			TextureFactory::ColorRGBA{ 255, 80, 100, 255 },
 			TextureFactory::ColorRGBA{ 255, 255, 255, 255 },
 			4
 		);
-	}
-}
-
-void Game::ThrowIfFailed(HRESULT result) {
-	if (FAILED(result)) {
-		throw std::runtime_error("HRESULT failed.");
 	}
 }

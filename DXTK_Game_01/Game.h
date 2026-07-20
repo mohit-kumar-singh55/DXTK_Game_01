@@ -1,19 +1,9 @@
 #pragma once
 
-#include "Player.h"
-#include "Bullet.h"
-#include "Enemy.h"
-#include "AudioManager.h"
-
-#include <Games/TankGame3D.h>
-
 #define WIN32_LEAN_AND_MEAN
 
 // window related
 #include <windows.h>
-#include <wrl/client.h>
-
-#include <d3d11.h>
 
 #include <Graphics/DeviceResources.h>
 
@@ -23,10 +13,12 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-// game related
 #include <chrono>
-#include <vector>
-#include <random>
+
+// game related
+#include <AudioManager.h>
+#include <Games/TankGame3D.h>
+#include <Games/ShooterGame2D.h>
 
 class Game {
 public:
@@ -46,19 +38,7 @@ private:
 	void Start3DGame();
 	void ReturnToTitle();
 
-	void Update2D(
-		float deltaTime,
-		const DirectX::Keyboard::State& keyboardState
-	);
-
-	void Render2D();
-
-	void SpawnEnemy();
-
 	void DrawUI();
-
-	void CreateBulletTexture();
-	void CreateEnemyTexture();
 
 private:
 	int m_windowWidth = 1280;
@@ -84,22 +64,8 @@ private:
 
 	// 3D tank game
 	TankGame3D m_tankGame;
-
-	std::unique_ptr<Player> m_player;
-
-	std::vector<Bullet> m_bullets;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_bulletTexture;
-
-	std::vector<Enemy> m_enemies;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_enemyTexture;
-	float m_enemySpawnTimer = 0.0f;
-	static constexpr float ENEMY_SPAWN_INTERVAL = 1.0f;
-	std::mt19937 m_randomEngine{ std::random_device{}() };
-
-	int m_score = 0;
-
-	static constexpr int PLAYER_MAX_HP = 3;
-	int m_playerHp = PLAYER_MAX_HP;
+	// 2d shooter game
+	ShooterGame2D m_shooterGame;
 
 	enum class GameState {
 		Title,

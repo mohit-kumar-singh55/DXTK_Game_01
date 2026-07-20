@@ -189,6 +189,7 @@
     <ClCompile Include="Explosion3D.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\Health.cpp" />
+    <ClCompile Include="Games\ShooterGame2D.cpp" />
     <ClCompile Include="Games\TankGame3D.cpp" />
     <ClCompile Include="Graphics\DeviceResources.cpp" />
     <ClCompile Include="GroundObject.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Explosion3D.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gameplay\Health.h" />
+    <ClInclude Include="Games\ShooterGame2D.h" />
     <ClInclude Include="Games\TankGame3D.h" />
     <ClInclude Include="Graphics\DeviceResources.h" />
     <ClInclude Include="GroundObject.h" />

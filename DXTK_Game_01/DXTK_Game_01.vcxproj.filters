@@ -90,6 +90,9 @@
     <ClCompile Include="Graphics\DeviceResources.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Games\ShooterGame2D.cpp">
+      <Filter>Games</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\DeviceResources.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\ShooterGame2D.h">
+      <Filter>Games</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

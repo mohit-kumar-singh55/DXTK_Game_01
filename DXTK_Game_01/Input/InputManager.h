@@ -98,7 +98,7 @@ public:
 	int GetScrollWheelDelta() const noexcept { return m_scrollWheelDelta; }
 
 	[[nodiscard]]
-	bool getScrollWheelDelta() const noexcept {
+	bool IsRelativeMouseMode() const noexcept {
 		return m_mouseState.positionMode == DirectX::Mouse::MODE_RELATIVE;
 	}
 

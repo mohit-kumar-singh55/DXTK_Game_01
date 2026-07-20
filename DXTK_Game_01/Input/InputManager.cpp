@@ -9,6 +9,8 @@ void InputManager::Initialize(HWND window) {
 	if (!m_isInitialized) {
 		m_keyboard = std::make_unique<DirectX::Keyboard>();
 		m_mouse = std::make_unique<DirectX::Mouse>();
+
+		m_isInitialized = true;
 	}
 
 	m_mouse->SetWindow(window);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/ModelObject3D.h>
+#include <SNX/Core/ModelObject3D.h>
 
 #include <CommonStates.h>
 #include <Effects.h>

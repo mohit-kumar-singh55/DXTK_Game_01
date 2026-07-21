@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-#include <Input/InputManager.h>
+#include <SNX/Input/InputManager.h>
 
 void TankGame3D::Initialize(
 	ID3D11Device* device,

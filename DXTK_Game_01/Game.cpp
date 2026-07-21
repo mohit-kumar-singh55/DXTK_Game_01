@@ -2,7 +2,7 @@
 
 #include <DirectXColors.h>
 
-#include <Input/InputManager.h>
+#include <SNX/Input/InputManager.h>
 
 #include <string>
 

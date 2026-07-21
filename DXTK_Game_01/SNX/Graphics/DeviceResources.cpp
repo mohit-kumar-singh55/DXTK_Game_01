@@ -1,4 +1,4 @@
-#include <Graphics/DeviceResources.h>
+#include "DeviceResources.h"
 
 #include <stdexcept>
 #include <iterator>

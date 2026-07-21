@@ -7,7 +7,7 @@
 #include <d3d11.h>
 #include <memory>
 
-#include <Core/Collision.h>
+#include <SNX/Core/Collision.h>
 
 enum class Enemy3DType { Normal, Fast, Heavy };
 

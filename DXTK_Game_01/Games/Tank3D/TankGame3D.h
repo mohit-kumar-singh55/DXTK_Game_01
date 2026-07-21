@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Core/Camera3D.h>
+#include <SNX/Core/Camera3D.h>
 #include <Games/Tank3D/Player3D.h>
 #include <Games/Tank3D/GroundObject.h>
 #include <Games/Tank3D/WallObject.h>
 #include <Games/Tank3D/Bullet3D.h>
-#include <Audio/AudioManager.h>
+#include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/Enemy3D.h>
 #include <Games/Tank3D/TankVisual.h>
 #include <Games/Tank3D/BlobShadow.h>

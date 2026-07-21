@@ -6,7 +6,7 @@
 #include <SimpleMath.h>
 #include <SpriteBatch.h>
 
-#include <Core/Collision.h>
+#include <SNX/Core/Collision.h>
 
 class Player {
 public:

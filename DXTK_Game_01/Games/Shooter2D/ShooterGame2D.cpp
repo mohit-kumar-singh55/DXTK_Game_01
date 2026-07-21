@@ -1,13 +1,13 @@
 #include "ShooterGame2D.h"
 
-#include <Audio/AudioManager.h>
-#include <Core/Collision.h>
-#include <Core/TextureFactory.h>
+#include <SNX/Audio/AudioManager.h>
+#include <SNX/Core/Collision.h>
+#include <SNX/Core/TextureFactory.h>
 
 #include <algorithm>
 #include <stdexcept>
 
-#include <Input/InputManager.h>
+#include <SNX/Input/InputManager.h>
 
 void ShooterGame2D::Initialize(
 	ID3D11Device* device,

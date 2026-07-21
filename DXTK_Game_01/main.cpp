@@ -11,7 +11,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-#include <Input/InputManager.h>
+#include <SNX/Input/InputManager.h>
 
 // ! IMP
 #pragma comment(lib, "d3d11.lib")

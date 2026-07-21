@@ -5,7 +5,7 @@
 // window related
 #include <windows.h>
 
-#include <Graphics/DeviceResources.h>
+#include <SNX/Graphics/DeviceResources.h>
 
 // DirectXTK
 #include <SpriteBatch.h>
@@ -14,7 +14,7 @@
 #include <chrono>
 
 // game related
-#include <Audio/AudioManager.h>
+#include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/TankGame3D.h>
 #include <Games/Shooter2D/ShooterGame2D.h>
 

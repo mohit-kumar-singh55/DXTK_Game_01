@@ -178,10 +178,6 @@
     <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Audio\AudioManager.cpp" />
-    <ClCompile Include="Core\Camera3D.cpp" />
-    <ClCompile Include="Core\ModelObject3D.cpp" />
-    <ClCompile Include="Core\TextureFactory.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\Health.cpp" />
     <ClCompile Include="Games\Shooter2D\Bullet.cpp" />
@@ -199,16 +195,15 @@
     <ClCompile Include="Games\Tank3D\TankGame3D.cpp" />
     <ClCompile Include="Games\Tank3D\TankVisual.cpp" />
     <ClCompile Include="Games\Tank3D\WallObject.cpp" />
-    <ClCompile Include="Graphics\DeviceResources.cpp" />
-    <ClCompile Include="Input\InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SNX\Audio\AudioManager.cpp" />
+    <ClCompile Include="SNX\Core\Camera3D.cpp" />
+    <ClCompile Include="SNX\Core\ModelObject3D.cpp" />
+    <ClCompile Include="SNX\Core\TextureFactory.cpp" />
+    <ClCompile Include="SNX\Graphics\DeviceResources.cpp" />
+    <ClCompile Include="SNX\Input\InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Audio\AudioManager.h" />
-    <ClInclude Include="Core\Camera3D.h" />
-    <ClInclude Include="Core\Collision.h" />
-    <ClInclude Include="Core\ModelObject3D.h" />
-    <ClInclude Include="Core\TextureFactory.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gameplay\Health.h" />
     <ClInclude Include="Games\Shooter2D\Bullet.h" />
@@ -226,8 +221,13 @@
     <ClInclude Include="Games\Tank3D\TankGame3D.h" />
     <ClInclude Include="Games\Tank3D\TankVisual.h" />
     <ClInclude Include="Games\Tank3D\WallObject.h" />
-    <ClInclude Include="Graphics\DeviceResources.h" />
-    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="SNX\Audio\AudioManager.h" />
+    <ClInclude Include="SNX\Core\Camera3D.h" />
+    <ClInclude Include="SNX\Core\Collision.h" />
+    <ClInclude Include="SNX\Core\ModelObject3D.h" />
+    <ClInclude Include="SNX\Core\TextureFactory.h" />
+    <ClInclude Include="SNX\Graphics\DeviceResources.h" />
+    <ClInclude Include="SNX\Input\InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Assets\Textures\bullet.png">

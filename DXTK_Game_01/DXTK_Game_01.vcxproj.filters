@@ -11,23 +11,26 @@
     <Filter Include="Games">
       <UniqueIdentifier>{6839d178-7dde-4aeb-859b-648c9c2e40ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics">
-      <UniqueIdentifier>{5dd4eb4d-7f66-4cbd-87c6-b184d7d94813}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{d2e75130-6db0-438c-b9b6-19a4839d4e29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core">
-      <UniqueIdentifier>{ddb53e9d-9f4e-40c5-9c59-0ba724b66715}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Audio">
-      <UniqueIdentifier>{5fc2315e-afb9-4a68-98e2-ac933d14cd32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Games\Shooter2D">
       <UniqueIdentifier>{b7a055c1-a505-4563-b494-712b9b5922b5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Games\Tank3D">
       <UniqueIdentifier>{8d7f4ecf-f918-4651-9fd4-6154fe91a698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX">
+      <UniqueIdentifier>{f983cec6-e774-471b-8470-21e2a0617ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Input">
+      <UniqueIdentifier>{d2e75130-6db0-438c-b9b6-19a4839d4e29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Graphics">
+      <UniqueIdentifier>{5dd4eb4d-7f66-4cbd-87c6-b184d7d94813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Core">
+      <UniqueIdentifier>{ddb53e9d-9f4e-40c5-9c59-0ba724b66715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Audio">
+      <UniqueIdentifier>{5fc2315e-afb9-4a68-98e2-ac933d14cd32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -38,24 +41,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Gameplay\Health.cpp">
       <Filter>Gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\DeviceResources.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\InputManager.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Camera3D.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\ModelObject3D.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\TextureFactory.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio\AudioManager.cpp">
-      <Filter>Audio</Filter>
     </ClCompile>
     <ClCompile Include="Games\Tank3D\BlobShadow.cpp">
       <Filter>Games\Tank3D</Filter>
@@ -103,31 +88,28 @@
       <Filter>Games\Shooter2D</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="SNX\Audio\AudioManager.cpp">
+      <Filter>SNX\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Camera3D.cpp">
+      <Filter>SNX\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\ModelObject3D.cpp">
+      <Filter>SNX\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\TextureFactory.cpp">
+      <Filter>SNX\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Graphics\DeviceResources.cpp">
+      <Filter>SNX\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Input\InputManager.cpp">
+      <Filter>SNX\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
       <Filter>Gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\DeviceResources.h">
-      <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputManager.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Camera3D.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Collision.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\ModelObject3D.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\TextureFactory.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio\AudioManager.h">
-      <Filter>Audio</Filter>
     </ClInclude>
     <ClInclude Include="Games\Tank3D\BlobShadow.h">
       <Filter>Games\Tank3D</Filter>
@@ -175,6 +157,27 @@
       <Filter>Games\Shooter2D</Filter>
     </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="SNX\Audio\AudioManager.h">
+      <Filter>SNX\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Camera3D.h">
+      <Filter>SNX\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Collision.h">
+      <Filter>SNX\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\ModelObject3D.h">
+      <Filter>SNX\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\TextureFactory.h">
+      <Filter>SNX\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Graphics\DeviceResources.h">
+      <Filter>SNX\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Input\InputManager.h">
+      <Filter>SNX\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Assets\gamefont.spritefont" />

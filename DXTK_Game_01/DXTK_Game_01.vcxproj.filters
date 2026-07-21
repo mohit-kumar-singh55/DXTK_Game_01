@@ -5,12 +5,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{61aae0fb-3b1e-4d72-987c-94df202a251f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{e29bd614-0022-42ad-aad0-2e00408533a9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Gameplay">
       <UniqueIdentifier>{26e3ed64-7681-4a6c-a242-92283123adda}</UniqueIdentifier>
     </Filter>
@@ -29,6 +23,12 @@
     <Filter Include="Audio">
       <UniqueIdentifier>{5fc2315e-afb9-4a68-98e2-ac933d14cd32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Games\Shooter2D">
+      <UniqueIdentifier>{b7a055c1-a505-4563-b494-712b9b5922b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\Tank3D">
+      <UniqueIdentifier>{8d7f4ecf-f918-4651-9fd4-6154fe91a698}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -36,59 +36,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GroundObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WallObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TankVisual.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BlobShadow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MuzzleFlash3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Explosion3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DamageFlash3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Gameplay\Health.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
-    <ClCompile Include="Games\TankGame3D.cpp">
-      <Filter>Games</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DeviceResources.cpp">
       <Filter>Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Games\ShooterGame2D.cpp">
-      <Filter>Games</Filter>
     </ClCompile>
     <ClCompile Include="Input\InputManager.cpp">
       <Filter>Input</Filter>
@@ -105,61 +57,59 @@
     <ClCompile Include="Audio\AudioManager.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Games\Tank3D\BlobShadow.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\Bullet3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\DamageFlash3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\Enemy3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\Explosion3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\GroundObject.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\MuzzleFlash3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\Player3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\TankGame3D.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\TankVisual.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Tank3D\WallObject.cpp">
+      <Filter>Games\Tank3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Shooter2D\Bullet.cpp">
+      <Filter>Games\Shooter2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Shooter2D\Enemy.cpp">
+      <Filter>Games\Shooter2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Shooter2D\Player.cpp">
+      <Filter>Games\Shooter2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Games\Shooter2D\ShooterGame2D.cpp">
+      <Filter>Games\Shooter2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GroundObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WallObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TankVisual.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlobShadow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MuzzleFlash3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Explosion3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageFlash3D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Gameplay\Health.h">
       <Filter>Gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="Games\TankGame3D.h">
-      <Filter>Games</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\DeviceResources.h">
       <Filter>Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Games\ShooterGame2D.h">
-      <Filter>Games</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputManager.h">
       <Filter>Input</Filter>
@@ -179,6 +129,52 @@
     <ClInclude Include="Audio\AudioManager.h">
       <Filter>Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Games\Tank3D\BlobShadow.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\Bullet3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\DamageFlash3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\Enemy3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\Explosion3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\GroundObject.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\MuzzleFlash3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\Player3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\TankGame3D.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\TankVisual.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Tank3D\WallObject.h">
+      <Filter>Games\Tank3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Shooter2D\Bullet.h">
+      <Filter>Games\Shooter2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Shooter2D\Enemy.h">
+      <Filter>Games\Shooter2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Shooter2D\Player.h">
+      <Filter>Games\Shooter2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Shooter2D\ShooterGame2D.h">
+      <Filter>Games\Shooter2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Assets\gamefont.spritefont" />

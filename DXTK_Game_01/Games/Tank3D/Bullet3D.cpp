@@ -1,7 +1,5 @@
 #include "Bullet3D.h"
 
-#include <DirectXColors.h>
-
 Bullet3D::Bullet3D(
 	const DirectX::SimpleMath::Vector3& position,
 	const DirectX::SimpleMath::Vector3& direction

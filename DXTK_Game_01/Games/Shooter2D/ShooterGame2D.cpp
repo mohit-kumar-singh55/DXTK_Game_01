@@ -1,4 +1,4 @@
-#include <Games/ShooterGame2D.h>
+#include "ShooterGame2D.h"
 
 #include <Audio/AudioManager.h>
 #include <Core/Collision.h>

@@ -1,17 +1,17 @@
 #pragma once
 
 #include <Core/Camera3D.h>
-#include <Player3D.h>
-#include <GroundObject.h>
-#include <WallObject.h>
-#include <Bullet3D.h>
+#include <Games/Tank3D/Player3D.h>
+#include <Games/Tank3D/GroundObject.h>
+#include <Games/Tank3D/WallObject.h>
+#include <Games/Tank3D/Bullet3D.h>
 #include <Audio/AudioManager.h>
-#include <Enemy3D.h>
-#include <TankVisual.h>
-#include <BlobShadow.h>
-#include <Explosion3D.h>
-#include <MuzzleFlash3D.h>
-#include <DamageFlash3D.h>
+#include <Games/Tank3D/Enemy3D.h>
+#include <Games/Tank3D/TankVisual.h>
+#include <Games/Tank3D/BlobShadow.h>
+#include <Games/Tank3D/Explosion3D.h>
+#include <Games/Tank3D/MuzzleFlash3D.h>
+#include <Games/Tank3D/DamageFlash3D.h>
 
 #include <CommonStates.h>
 #include <Effects.h>

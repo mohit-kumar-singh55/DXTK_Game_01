@@ -15,8 +15,8 @@
 
 // game related
 #include <Audio/AudioManager.h>
-#include <Games/TankGame3D.h>
-#include <Games/ShooterGame2D.h>
+#include <Games/Tank3D/TankGame3D.h>
+#include <Games/Shooter2D/ShooterGame2D.h>
 
 class Game {
 public:

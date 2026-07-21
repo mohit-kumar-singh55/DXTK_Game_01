@@ -1,7 +1,5 @@
 #include "MuzzleFlash3D.h"
 
-#include <DirectXColors.h>
-
 #include <cmath>
 #include <stdexcept>
 

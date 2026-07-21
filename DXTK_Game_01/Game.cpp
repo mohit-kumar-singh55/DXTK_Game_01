@@ -69,8 +69,10 @@ void Game::Update(float deltaTime) {
 	switch (m_gameState) {
 	case GameState::Title: {
 		// close window
-		if (input.IsKeyPressed(DirectX::Keyboard::Escape))
+		if (input.IsKeyPressed(DirectX::Keyboard::Escape)) {
 			PostQuitMessage(0);
+			return;
+		}
 
 		if (input.IsKeyPressed(DirectX::Keyboard::D1))
 			Start2DGame();

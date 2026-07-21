@@ -20,6 +20,15 @@ void InputManager::Initialize(HWND window) {
 	Reset();
 }
 
+void InputManager::Shutdown() noexcept {
+	Reset();
+
+	m_mouse.reset();
+	m_keyboard.reset();
+
+	m_isInitialized = false;
+}
+
 void InputManager::Update() {
 	if (!m_isInitialized)
 		throw std::logic_error("InputManager must be initialized before Update");
@@ -54,7 +63,7 @@ void InputManager::Reset() noexcept {
 }
 
 void InputManager::SetMouseMode(DirectX::Mouse::Mode mode) {
-	if (!m_isInitialized)
+	if (!m_isInitialized || !m_mouse)
 		throw std::logic_error("InputManager must be initialized before setting mouse mode");
 
 	m_mouse->SetMode(mode);

@@ -27,6 +27,7 @@ public:
 	}
 
 	void Initialize(HWND window);
+	void Shutdown() noexcept;
 	void Update();
 	void Reset() noexcept;
 
@@ -125,8 +126,8 @@ private:
 	// disallow to copy or move
 	InputManager(const InputManager&) = delete;
 	InputManager& operator=(const InputManager&) = delete;
-	InputManager(const InputManager&&) = delete;
-	InputManager& operator=(const InputManager&&) = delete;
+	InputManager(InputManager&&) = delete;
+	InputManager& operator=(InputManager&&) = delete;
 
 private:
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;

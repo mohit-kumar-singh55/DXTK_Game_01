@@ -18,10 +18,6 @@
 #pragma comment(lib, "dxgi.lib")
 
 // -----------------------------------------------------------------------------
-// TODO: Later move DeviceResources / Rendering things into their respective classes.
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
 // Global variables
 // -----------------------------------------------------------------------------
 
@@ -139,10 +135,18 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCommand) {
 			else
 				g_game->Tick();
 		}
+
+		// release gameplay, audio and graphics resources
+		g_game.reset();
+		// InputManager is a singleton, so release its
+		// owned devices explicitly
+		InputManager::Get().Shutdown();
+
+		return static_cast<int>(msg.wParam);
 	}
 	catch (const std::exception& e) {
 		MessageBoxA(nullptr, e.what(), "Error", MB_OK | MB_ICONERROR);
-	}
 
-	return 0;
+		return -1;
+	}
 }

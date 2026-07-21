@@ -1,11 +1,21 @@
 #include "AudioManager.h"
 
 void AudioManager::Initialize() {
+	Shutdown();
+
 	m_audioEngine = std::make_unique<DirectX::AudioEngine>();
 
 	m_shootSound = LoadSoundEffectOrNull(L"Assets/Audios/shoot.wav");
 	m_hitSound = LoadSoundEffectOrNull(L"Assets/Audios/hit.wav");
 	m_damageSound = LoadSoundEffectOrNull(L"Assets/Audios/damage.wav");
+}
+
+void AudioManager::Shutdown() noexcept {
+	m_damageSound.reset();
+	m_hitSound.reset();
+	m_shootSound.reset();
+
+	m_audioEngine.reset();
 }
 
 void AudioManager::Update() {

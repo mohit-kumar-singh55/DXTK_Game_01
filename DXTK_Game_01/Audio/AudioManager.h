@@ -5,8 +5,17 @@
 
 class AudioManager {
 public:
-	void Initialize();
+	AudioManager() = default;
+	~AudioManager() { Shutdown(); }
 
+	// disallowing to copy or move
+	AudioManager(const AudioManager&) = delete;
+	AudioManager& operator=(const AudioManager&) = delete;
+	AudioManager(AudioManager&&) = delete;
+	AudioManager& operator=(AudioManager&&) = delete;
+
+	void Initialize();
+	void Shutdown() noexcept;
 	void Update();
 
 	void PlayShoot();

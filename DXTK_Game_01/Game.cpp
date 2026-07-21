@@ -65,13 +65,13 @@ void Game::Update(float deltaTime) {
 	auto& input = InputManager::Get();
 	input.Update();		// ! update input manage only once here, not in any other class
 
-	// close window
-	if (input.IsKeyPressed(DirectX::Keyboard::Escape))
-		PostQuitMessage(0);
-
 	// for 2D gae
 	switch (m_gameState) {
 	case GameState::Title: {
+		// close window
+		if (input.IsKeyPressed(DirectX::Keyboard::Escape))
+			PostQuitMessage(0);
+
 		if (input.IsKeyPressed(DirectX::Keyboard::D1))
 			Start2DGame();
 		if (input.IsKeyPressed(DirectX::Keyboard::D2))

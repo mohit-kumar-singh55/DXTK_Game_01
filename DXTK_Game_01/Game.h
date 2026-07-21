@@ -18,9 +18,16 @@
 #include <Games/Tank3D/TankGame3D.h>
 #include <Games/Shooter2D/ShooterGame2D.h>
 
-class Game {
+class Game final {
 public:
 	Game() = default;
+	~Game() = default;
+
+	// disallowing to copy or move
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
+	Game(Game&&) = delete;
+	Game& operator=(Game&&) = delete;
 
 	void Initialize(HWND window, int width, int height);
 

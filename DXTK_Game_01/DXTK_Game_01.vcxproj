@@ -200,6 +200,7 @@
     <ClCompile Include="SNX\Core\Camera3D.cpp" />
     <ClCompile Include="SNX\Core\ModelObject3D.cpp" />
     <ClCompile Include="SNX\Core\TextureFactory.cpp" />
+    <ClCompile Include="SNX\Core\Time.cpp" />
     <ClCompile Include="SNX\Graphics\DeviceResources.cpp" />
     <ClCompile Include="SNX\Input\InputManager.cpp" />
   </ItemGroup>
@@ -226,6 +227,7 @@
     <ClInclude Include="SNX\Core\Collision.h" />
     <ClInclude Include="SNX\Core\ModelObject3D.h" />
     <ClInclude Include="SNX\Core\TextureFactory.h" />
+    <ClInclude Include="SNX\Core\Time.h" />
     <ClInclude Include="SNX\Graphics\DeviceResources.h" />
     <ClInclude Include="SNX\Input\InputManager.h" />
   </ItemGroup>

@@ -11,8 +11,6 @@
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 
-#include <chrono>
-
 // game related
 #include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/TankGame3D.h>
@@ -36,7 +34,8 @@ public:
 private:
 	void InitializeGameResources();
 
-	void Update(float deltaTime);
+	void Update();
+	void FixedUpdate();
 	void Render();
 
 	void Start2DGame();
@@ -51,10 +50,6 @@ private:
 
 	// device related
 	DeviceResources m_deviceResources;
-
-	// time related
-	using Clock = std::chrono::steady_clock;
-	Clock::time_point m_previousTime;						// used for delta time
 
 	// DirectXTK objects
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;

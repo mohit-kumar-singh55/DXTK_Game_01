@@ -3,8 +3,8 @@
 #### High priority
 
 * Finish the core tank game
-* Organize files into proper folders
-* Separate gameplay logic from rendering
+* ~~Organize files into proper folders~~
+* ~~Separate gameplay logic from rendering~~
 * Use RAII for safe cleanup
 * Improve scene/game-state management
 * Add audio and HUD

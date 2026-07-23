@@ -4,6 +4,8 @@
 
 #include <SNX/Input/InputManager.h>
 
+#include <SNX/Core/Time.h>
+
 #include <string>
 
 void Game::Initialize(HWND window, int width, int height) {
@@ -19,24 +21,27 @@ void Game::Initialize(HWND window, int width, int height) {
 
 	m_audioManager.Initialize();
 
-	m_previousTime = Clock::now();
+	Time::Initialize();
 }
 
 void Game::Tick() {
-	// calculate delta time
-	auto currentTime = Clock::now();
+	Time::BeginFrame();
 
-	float deltaTime = std::chrono::duration<float>(
-		currentTime - m_previousTime
-	).count();
+	// read hardware input exactly once per rendered frame
+	InputManager::Get().Update();
 
-	m_previousTime = currentTime;
+	/*
+	* a slow rendered frame may required multiple fixed updates
+	* fixedupdate may run zero or multiple times,
+	* because physics requires to run exactly 1/60 s per update (as we defined in fixedDeltaTime)
+	* but each frame's deltaTime is different
+	*/
+	while (Time::HasFixedStep()) {
+		FixedUpdate();
+		Time::ConsumeFixedStep();
+	}
 
-	// ! safety clamp
-	// ! this prevents a huge jump if the program freezes for a moment
-	deltaTime = (deltaTime < 0.1f) ? deltaTime : 0.1f;	// min
-
-	Update(deltaTime);
+	Update();
 	m_audioManager.Update();
 	Render();
 }
@@ -61,9 +66,8 @@ void Game::InitializeGameResources() {
 	);
 }
 
-void Game::Update(float deltaTime) {
+void Game::Update() {
 	auto& input = InputManager::Get();
-	input.Update();		// ! update input manage only once here, not in any other class
 
 	// for 2D gae
 	switch (m_gameState) {
@@ -84,7 +88,7 @@ void Game::Update(float deltaTime) {
 	case GameState::Playing: {
 		if (m_gameMode == GameMode::Shooter2D) {
 			m_shooterGame.Update(
-				deltaTime,
+				Time::DeltaTime(),
 				m_audioManager
 			);
 
@@ -94,7 +98,7 @@ void Game::Update(float deltaTime) {
 
 		if (m_gameMode == GameMode::Arena3D) {
 			m_tankGame.Update(
-				deltaTime,
+				Time::DeltaTime(),
 				m_audioManager
 			);
 
@@ -119,6 +123,13 @@ void Game::Update(float deltaTime) {
 	default:
 		break;
 	}
+}
+
+void Game::FixedUpdate() {
+	if (m_gameState != GameState::Playing)
+		return;
+
+	// TODO: Physics simulation will be called here later
 }
 
 void Game::Render() {
@@ -155,7 +166,7 @@ void Game::Render() {
 	m_spriteBatch->End();
 
 	// swape chain present
-	m_deviceResources.Present();
+	m_deviceResources.Present();	// TODO: added a variable in config file, whether to use vsync or not
 }
 
 void Game::Start2DGame() {

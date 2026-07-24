@@ -32,6 +32,9 @@
     <Filter Include="SNX\Audio">
       <UniqueIdentifier>{5fc2315e-afb9-4a68-98e2-ac933d14cd32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SNX\Core\Object">
+      <UniqueIdentifier>{a3977474-ade8-4247-ab57-8b29f1b0af90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -109,6 +112,12 @@
     <ClCompile Include="SNX\Core\Time.cpp">
       <Filter>SNX\Core</Filter>
     </ClCompile>
+    <ClCompile Include="SNX\Core\Object\Component.cpp">
+      <Filter>SNX\Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Object\GameObject.cpp">
+      <Filter>SNX\Core\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -183,6 +192,15 @@
     </ClInclude>
     <ClInclude Include="SNX\Core\Time.h">
       <Filter>SNX\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Object\Transform.h">
+      <Filter>SNX\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Object\Component.h">
+      <Filter>SNX\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Object\GameObject.h">
+      <Filter>SNX\Core\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

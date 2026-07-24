@@ -30,6 +30,9 @@ void Game::Tick() {
 	// read hardware input exactly once per rendered frame
 	InputManager::Get().Update();
 
+	// register objects created before this frame
+	m_gameObjects.BeginFrame();
+
 	/*
 	* a slow rendered frame may required multiple fixed updates
 	* fixedupdate may run zero or multiple times,
@@ -38,12 +41,23 @@ void Game::Tick() {
 	*/
 	while (Time::HasFixedStep()) {
 		FixedUpdate();
+		m_gameObjects.FixedUpdate();
+
 		Time::ConsumeFixedStep();
 	}
 
 	Update();
+	m_gameObjects.Update();
+
+	m_gameObjects.LateUpdate();
+
 	m_audioManager.Update();
+
 	Render();
+
+	// objects requested for destruction during this 
+	// frame are actually removed here
+	m_gameObjects.EndFrame();
 }
 
 void Game::InitializeGameResources() {
@@ -152,6 +166,9 @@ void Game::Render() {
 			m_gameState == GameState::GameOver))
 		m_tankGame.Render();
 
+	// TODO: this is temporary component rendering phase, split it into render world, transparent and then UI
+	m_gameObjects.Render();
+
 	// ! render 2d
 	m_spriteBatch->Begin();
 
@@ -194,6 +211,9 @@ void Game::ReturnToTitle() {
 
 	m_tankGame.Clear();
 	m_shooterGame.Clear();
+
+	// ? temporarily adding it here
+	m_gameObjects.Clear();
 
 	// reset mouse mode to absolute, so the mouse cursor can be used to click buttons
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);

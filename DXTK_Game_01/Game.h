@@ -12,6 +12,7 @@
 #include <SpriteFont.h>
 
 // game related
+#include <SNX/Core/Object/GameObjectManager.h>
 #include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/TankGame3D.h>
 #include <Games/Shooter2D/ShooterGame2D.h>
@@ -56,6 +57,8 @@ private:
 	std::unique_ptr<DirectX::SpriteFont> m_font;	// ui text renderer
 
 	static constexpr float MouseSensitivity = 0.0035f;
+
+	GameObjectManager m_gameObjects;
 
 	// 3D tank game
 	TankGame3D m_tankGame;

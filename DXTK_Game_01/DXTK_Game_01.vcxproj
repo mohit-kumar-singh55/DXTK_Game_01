@@ -201,6 +201,7 @@
     <ClCompile Include="SNX\Core\ModelObject3D.cpp" />
     <ClCompile Include="SNX\Core\Object\Component.cpp" />
     <ClCompile Include="SNX\Core\Object\GameObject.cpp" />
+    <ClCompile Include="SNX\Core\Object\GameObjectManager.cpp" />
     <ClCompile Include="SNX\Core\TextureFactory.cpp" />
     <ClCompile Include="SNX\Core\Time.cpp" />
     <ClCompile Include="SNX\Graphics\DeviceResources.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="SNX\Core\ModelObject3D.h" />
     <ClInclude Include="SNX\Core\Object\Component.h" />
     <ClInclude Include="SNX\Core\Object\GameObject.h" />
+    <ClInclude Include="SNX\Core\Object\GameObjectManager.h" />
     <ClInclude Include="SNX\Core\Object\Transform.h" />
     <ClInclude Include="SNX\Core\TextureFactory.h" />
     <ClInclude Include="SNX\Core\Time.h" />

@@ -118,6 +118,9 @@
     <ClCompile Include="SNX\Core\Object\GameObject.cpp">
       <Filter>SNX\Core\Object</Filter>
     </ClCompile>
+    <ClCompile Include="SNX\Core\Object\GameObjectManager.cpp">
+      <Filter>SNX\Core\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -200,6 +203,9 @@
       <Filter>SNX\Core\Object</Filter>
     </ClInclude>
     <ClInclude Include="SNX\Core\Object\GameObject.h">
+      <Filter>SNX\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Object\GameObjectManager.h">
       <Filter>SNX\Core\Object</Filter>
     </ClInclude>
   </ItemGroup>

@@ -43,6 +43,10 @@ void GameObject::FixedUpdate() {
 
 		EnsureComponentStarted(*component);
 		component->OnFixedUpdate();
+
+		// ! stop immediately if destruction is requested
+		if (m_destroyRequested)
+			break;
 	}
 }
 
@@ -58,6 +62,10 @@ void GameObject::Update() {
 
 		EnsureComponentStarted(*component);
 		component->OnUpdate();
+
+		// ! stop immediately if destruction is requested
+		if (m_destroyRequested)
+			break;
 	}
 }
 
@@ -70,6 +78,10 @@ void GameObject::LateUpdate() {
 			continue;
 
 		component->OnLateUpdate();
+
+		// ! stop immediately if destruction is requested
+		if (m_destroyRequested)
+			break;
 	}
 }
 

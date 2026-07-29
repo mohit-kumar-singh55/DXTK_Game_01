@@ -24,17 +24,17 @@ public:
 	// Local transform
 	// --------------------------------------------------
 
-	[[discard]]
+	[[nodiscard]]
 	const DirectX::SimpleMath::Vector3& GetLocalPosition() const noexcept {
 		return m_localPosition;
 	}
 
-	[[discard]]
+	[[nodiscard]]
 	const DirectX::SimpleMath::Quaternion& GetLocalRotation() const noexcept {
 		return m_localRotation;
 	}
 
-	[[discard]]
+	[[nodiscard]]
 	const DirectX::SimpleMath::Vector3& GetLocalScale() const noexcept {
 		return m_localScale;
 	}
@@ -45,7 +45,7 @@ public:
 
 	void SetLocalScale(const DirectX::SimpleMath::Vector3& scale)  noexcept;
 
-	void SetLocalEularDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees)  noexcept;
+	void SetLocalEulerDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees)  noexcept;
 
 	[[nodiscard]]
 	DirectX::SimpleMath::Vector3 GetLocalEulerDegrees() const noexcept;
@@ -73,7 +73,7 @@ public:
 
 	bool SetScale(const DirectX::SimpleMath::Vector3& scale)  noexcept;
 
-	bool SetEularDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees)  noexcept;
+	bool SetEulerDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees)  noexcept;
 
 	// --------------------------------------------------
 	// Direction vectors

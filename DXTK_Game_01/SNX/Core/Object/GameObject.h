@@ -43,11 +43,44 @@ public:
 	T* GetComponent() noexcept {
 		static_assert(std::is_base_of_v<Component, T>, "T must inherit from Component");
 
-		for (const auto& component : m_components)
+		for (const auto& component : m_components) {
+			if (!component || component->IsRemoveRequested())
+				continue;
+
 			if (T* result = dynamic_cast<T*>(component.get()))
 				return result;
+		}
 
 		return nullptr;
+	}
+
+	template<typename T>
+	bool RemoveComponen() noexcept {
+		static_assert(std::is_base_of_v<Component, T>, "T must inherit from Component");
+
+		for (const auto& component : m_components) {
+			if (!component || component->IsRemoveRequested())
+				continue;
+
+			if (dynamic_cast<T*>(component.get())) {
+				component->RequestRemove();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool RemoveComponen(Component& target) noexcept {
+		for (const auto& component : m_components) {
+			if (component.get() != &target || component->IsRemoveRequested())
+				continue;
+
+			component->RequestRemove();
+			return true;
+		}
+
+		return false;
 	}
 
 	void Initialize();
@@ -56,6 +89,8 @@ public:
 	void Update();
 	void LateUpdate();
 	void Render();
+
+	void EndFrame();
 
 	void RequestDestroy() noexcept { m_destroyRequested = true; }
 
@@ -76,6 +111,8 @@ public:
 
 private:
 	void EnsureComponentStarted(Component& component);
+
+	void RemoveRequestedComponents() noexcept;
 
 	void DestroyComponents() noexcept;
 

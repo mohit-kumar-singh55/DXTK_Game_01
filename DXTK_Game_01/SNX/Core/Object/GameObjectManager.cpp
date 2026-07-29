@@ -55,6 +55,16 @@ void GameObjectManager::Render() {
 }
 
 void GameObjectManager::EndFrame() {
+	// remove gameobjects' components if requested any
+	for (const auto& gameObject : m_objects)
+		if (gameObject && !gameObject->IsDestroyRequested())
+			gameObject->EndFrame();
+
+	for (const auto& gameObject : m_pendingObjects)
+		if (gameObject && !gameObject->IsDestroyRequested())
+			gameObject->EndFrame();
+
+	// remove gameobjects requested for destroy
 	RemoveDestroyedObjects();
 }
 

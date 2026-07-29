@@ -25,6 +25,11 @@ public:
 
 	void SetEnabled(bool enabled) noexcept { m_enabled = enabled; }
 
+	void RequestRemove() noexcept { m_removeRequested = true; }
+
+	[[nodiscard]]
+	bool IsRemoveRequested() const noexcept { return m_removeRequested; }
+
 protected:
 	// called once after the component is created
 	virtual void OnInitialize() {}
@@ -53,6 +58,9 @@ private:
 	bool m_enabled = true;
 	bool m_initialized = false;
 	bool m_started = false;
+
+	bool m_removeRequested = false;
+	bool m_destroyed = false;
 
 	friend class GameObject;
 };

@@ -48,7 +48,7 @@ void Transform::SetLocalScale(const DirectX::SimpleMath::Vector3& scale) noexcep
 	MarkLocalDirty();
 }
 
-void Transform::SetLocalEularDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees) noexcept {
+void Transform::SetLocalEulerDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees) noexcept {
 	const auto radians = DegreesToRadians(eulerDegrees);
 	SetLocalRotation(DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(radians));
 }
@@ -151,7 +151,7 @@ bool Transform::SetScale(const DirectX::SimpleMath::Vector3& scale) noexcept {
 	return TrySetWorldFromMatrix(desiredWorld);
 }
 
-bool Transform::SetEularDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees) noexcept {
+bool Transform::SetEulerDegrees(const DirectX::SimpleMath::Vector3& eulerDegrees) noexcept {
 	const auto radians = DegreesToRadians(eulerDegrees);
 	return SetRotation(DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(radians));
 }

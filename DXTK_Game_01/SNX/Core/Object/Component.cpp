@@ -2,9 +2,7 @@
 #include <SNX/Core/Object/GameObject.h>
 
 Component::Component(GameObject& gameObject) noexcept :
-	m_gameObject(&gameObject) {
-
-}
+	m_gameObject(&gameObject) {}
 
 GameObject& Component::GetGameObject() const noexcept {
 	return *m_gameObject;

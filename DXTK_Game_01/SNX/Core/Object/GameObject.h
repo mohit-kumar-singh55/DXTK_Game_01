@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SNX/Core/Object/Component.h>
-#include <SNX/Core/Object/Transform.h>
+#include <SNX/Core/Components/Transform.h>
 
 #include <memory>
 #include <string>
@@ -41,7 +41,7 @@ public:
 	template<typename T>
 	[[nodiscard]]
 	T* GetComponent() noexcept {
-		static_assert(std::is_base_of_v<Component, T>, "T mush inherit from Component");
+		static_assert(std::is_base_of_v<Component, T>, "T must inherit from Component");
 
 		for (const auto& component : m_components)
 			if (T* result = dynamic_cast<T*>(component.get()))

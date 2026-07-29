@@ -35,6 +35,9 @@
     <Filter Include="SNX\Core\Object">
       <UniqueIdentifier>{a3977474-ade8-4247-ab57-8b29f1b0af90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SNX\Core\Components">
+      <UniqueIdentifier>{df389567-f979-45e2-9ca0-a846cbbead42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -121,6 +124,9 @@
     <ClCompile Include="SNX\Core\Object\GameObjectManager.cpp">
       <Filter>SNX\Core\Object</Filter>
     </ClCompile>
+    <ClCompile Include="SNX\Core\Components\Transform.cpp">
+      <Filter>SNX\Core\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -196,9 +202,6 @@
     <ClInclude Include="SNX\Core\Time.h">
       <Filter>SNX\Core</Filter>
     </ClInclude>
-    <ClInclude Include="SNX\Core\Object\Transform.h">
-      <Filter>SNX\Core\Object</Filter>
-    </ClInclude>
     <ClInclude Include="SNX\Core\Object\Component.h">
       <Filter>SNX\Core\Object</Filter>
     </ClInclude>
@@ -207,6 +210,9 @@
     </ClInclude>
     <ClInclude Include="SNX\Core\Object\GameObjectManager.h">
       <Filter>SNX\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Components\Transform.h">
+      <Filter>SNX\Core\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -55,7 +55,7 @@ public:
 	}
 
 	template<typename T>
-	bool RemoveComponen() noexcept {
+	bool RemoveComponent() noexcept {
 		static_assert(std::is_base_of_v<Component, T>, "T must inherit from Component");
 
 		for (const auto& component : m_components) {
@@ -71,7 +71,7 @@ public:
 		return false;
 	}
 
-	bool RemoveComponen(Component& target) noexcept {
+	bool RemoveComponent(Component& target) noexcept {
 		for (const auto& component : m_components) {
 			if (component.get() != &target || component->IsRemoveRequested())
 				continue;

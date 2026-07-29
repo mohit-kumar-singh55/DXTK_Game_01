@@ -118,6 +118,10 @@ public:
 
 	bool SetParent(Transform* parent, bool keepWorldTransform = true) noexcept;
 
+	bool DetachFromParent(bool keepWorldTransform = true) noexcept {
+		return SetParent(nullptr, keepWorldTransform);
+	}
+
 	[[nodiscard]]
 	Transform* GetParent() noexcept { return m_parent; }
 

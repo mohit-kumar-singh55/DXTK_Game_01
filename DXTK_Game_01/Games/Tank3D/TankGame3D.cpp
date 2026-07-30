@@ -6,6 +6,9 @@
 #include <algorithm>
 
 #include <SNX/Input/InputManager.h>
+#include <SNX/Core/Object/GameObjectManager.h>
+#include <SNX/Core/Materials/BasicPrimitiveMaterial.h>
+#include <SNX/Core/Components/Renderer/PrimitiveRendererComponent.h>
 
 void TankGame3D::Initialize(
 	ID3D11Device* device,
@@ -19,6 +22,17 @@ void TankGame3D::Initialize(
 	using DirectX::SimpleMath::Vector3;
 
 	m_context = context;
+
+	// create the shared material
+	m_arenaMaterial = std::make_shared<BasicPrimitiveMaterial>();
+	m_arenaMaterial->Initialize(
+		device,
+		context,
+		true,
+		m_fogColor,
+		m_fogStart,
+		m_fogEnd
+	);
 
 	// create a cube
 	m_player.Initialize(m_context.Get());
@@ -36,13 +50,6 @@ void TankGame3D::Initialize(
 		m_context.Get(),
 		1.0f
 	);
-
-	// create ground
-	m_ground.Initialize(m_context.Get());
-
-	// walls
-	for (WallObject& wall : m_walls)
-		wall.Initialize(m_context.Get());
 
 	// shared primitive for health bar
 	m_healthBarPrimitive = DirectX::GeometricPrimitive::CreateCube(
@@ -73,28 +80,6 @@ void TankGame3D::Initialize(
 	// damage flash
 	m_damageFlash.Initialize(m_context.Get());
 
-	// set walls pos
-	// back wall
-	m_walls[0].SetTransform(
-		Vector3(0.0f, 0.0f, -10.0f),
-		Vector3(20.0f, 2.0f, 0.3f)
-	);
-	// front wall
-	m_walls[1].SetTransform(
-		Vector3(0.0f, 0.0f, 10.0f),
-		Vector3(20.0f, 2.0f, 0.3f)
-	);
-	// left wall
-	m_walls[2].SetTransform(
-		Vector3(-10.0f, 0.0f, 0.0f),
-		Vector3(0.3f, 2.0f, 20.0f)
-	);
-	// right wall
-	m_walls[3].SetTransform(
-		Vector3(10.0f, 0.0f, 0.0f),
-		Vector3(0.3f, 2.0f, 20.0f)
-	);
-
 	const float aspectRatio =
 		static_cast<float>(windowWidth) /
 		static_cast<float>(windowHeight);
@@ -112,7 +97,7 @@ void TankGame3D::Initialize(
 	);
 }
 
-void TankGame3D::Start() {
+void TankGame3D::Start(GameObjectManager& gameObjects) {
 	m_playerHp = PlayerMaxHp;
 	m_score = 0;
 
@@ -132,6 +117,8 @@ void TankGame3D::Start() {
 		m_player.GetPosition(),
 		m_player.GetForwardDirection()
 	);
+
+	CreateArenaObjects(gameObjects);
 }
 
 void TankGame3D::Clear() {
@@ -140,7 +127,7 @@ void TankGame3D::Clear() {
 	m_explosions.clear();
 
 	m_enemySpawnTimer = 0.0f;
-	m_enemySpawnTimer = 0.0f;
+	m_tankDeathTimer = 0.0f;
 
 	m_isTankDestroyed = false;
 	m_isGameOver = false;
@@ -364,10 +351,6 @@ void TankGame3D::Render() {
 		m_playerShadow.Draw(effect, inputLayout, m_player.GetPosition(), view, projection);
 	}
 
-	m_ground.Draw(effect, inputLayout, view, projection);
-
-	for (const WallObject& wall : m_walls)
-		wall.Draw(effect, inputLayout, view, projection);
 	for (const Enemy3D& enemy : m_enemies) {
 		// draw enemy
 		enemy.Draw(effect, inputLayout, view, projection);
@@ -406,11 +389,92 @@ void TankGame3D::InitializeBasicEffect(ID3D11Device* device) {
 	m_basicEffect->SetFogEnd(m_fogEnd);
 	m_basicEffect->SetFogColor(m_fogColor);
 
+	if (!m_bulletPrimitive)
+		throw std::runtime_error("Bullet primitive must exist before initializing the BasicEffect input layout.");
+
 	// ! because all GeometricPrimitive shapes use the same built-in "vertex data structure"
 	// ! so one input layout is enough for all of our current primitve objects
-	m_ground.CreateInputLayout(
+	m_bulletPrimitive->CreateInputLayout(
 		m_basicEffect.get(),
 		m_basicEffectInputLayout.GetAddressOf()
+	);
+}
+
+void TankGame3D::CreateArenaObjects(GameObjectManager& gameObjects) {
+	using DirectX::SimpleMath::Vector3;
+
+	const DirectX::XMVECTORF32 groundColor{ 0.25f, 0.45f, 0.25f, 1.0f };
+	const Vector3 groundEmissive{ 0.02f, 0.04f, 0.02f };
+
+	const DirectX::XMVECTORF32 wallColor{ 0.45f, 0.45f, 0.50f, 1.0f };
+	const Vector3 wallEmissive{ 0.02f, 0.02f, 0.025f };
+
+	const auto createArenaCube = [this, &gameObjects](
+		const std::string& name,
+		const Vector3& position,
+		const Vector3& scale,
+		const DirectX::XMVECTORF32& color,
+		const Vector3& emissiveColor
+		) {
+			GameObject& object = gameObjects.CreateGameObject(name);
+			Transform& transform = object.GetTransform();
+
+			transform.SetPosition(position);
+			transform.SetLocalScale(scale);
+
+			auto& renderer = object.AddComponent<PrimitiveRendererComponent>(
+				m_context.Get(),
+				PrimitiveShape::Cube,
+				m_arenaMaterial
+			);
+
+			renderer.SetColor(color);
+			renderer.SetEmissiveColor(emissiveColor);
+		};
+
+	// Ground
+	createArenaCube(
+		"Arena Ground",
+		Vector3(0.0f, -1.05f, 0.0f),
+		Vector3(20.0f, 0.1f, 20.0f),
+		groundColor,
+		groundEmissive
+	);
+
+	// Back wall
+	createArenaCube(
+		"Back Wall",
+		Vector3(0.0f, 0.0f, -10.0f),
+		Vector3(20.0f, 2.0f, 0.3f),
+		wallColor,
+		wallEmissive
+	);
+
+	// Front wall
+	createArenaCube(
+		"Front Wall",
+		Vector3(0.0f, 0.0f, 10.0f),
+		Vector3(20.0f, 2.0f, 0.3f),
+		wallColor,
+		wallEmissive
+	);
+
+	// Left wall
+	createArenaCube(
+		"Left Wall",
+		Vector3(-10.0f, 0.0f, 0.0f),
+		Vector3(0.3f, 2.0f, 20.0f),
+		wallColor,
+		wallEmissive
+	);
+
+	// Right wall
+	createArenaCube(
+		"Right Wall",
+		Vector3(10.0f, 0.0f, 0.0f),
+		Vector3(0.3f, 2.0f, 20.0f),
+		wallColor,
+		wallEmissive
 	);
 }
 

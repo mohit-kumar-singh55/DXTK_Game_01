@@ -2,8 +2,6 @@
 
 #include <SNX/Core/Camera3D.h>
 #include <Games/Tank3D/Player3D.h>
-#include <Games/Tank3D/GroundObject.h>
-#include <Games/Tank3D/WallObject.h>
 #include <Games/Tank3D/Bullet3D.h>
 #include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/Enemy3D.h>
@@ -20,12 +18,14 @@
 
 #include <wrl/client.h>
 
-#include <array>
 #include <memory>
 #include <random>
 #include <vector>
 
 #include <d3d11.h>
+
+class GameObjectManager;
+class BasicPrimitiveMaterial;
 
 class TankGame3D final {
 public:
@@ -36,7 +36,7 @@ public:
 		int windowHeight
 	);
 
-	void Start();
+	void Start(GameObjectManager& gameObjects);
 	void Clear();
 
 	void Update(
@@ -67,6 +67,8 @@ public:
 private:
 	void InitializeBasicEffect(ID3D11Device* device);
 
+	void CreateArenaObjects(GameObjectManager& gameObjects);
+
 	void SpawnEnemy();
 
 	void DestroyTank(
@@ -86,8 +88,7 @@ private:
 	Camera3D m_cam;
 	Player3D m_player;
 
-	GroundObject m_ground;
-	std::array<WallObject, 4> m_walls;
+	std::shared_ptr<BasicPrimitiveMaterial> m_arenaMaterial;
 
 	std::vector<Enemy3D> m_enemies;
 	std::vector<Bullet3D> m_bullets;

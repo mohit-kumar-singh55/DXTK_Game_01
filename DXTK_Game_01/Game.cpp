@@ -8,8 +8,6 @@
 
 #include <string>
 
-#include <SNX/Core/Components/PrimitiveRendererComponent.h>
-
 void Game::Initialize(HWND window, int width, int height) {
 	m_windowWidth = width;
 	m_windowHeight = height;
@@ -166,8 +164,6 @@ void Game::Render() {
 	if (m_gameMode == GameMode::Arena3D &&
 		(m_gameState == GameState::Playing ||
 			m_gameState == GameState::GameOver)) {
-		m_tankGame.Render();
-
 		const Camera3D& camera = m_tankGame.GetCamera();
 
 		RenderContext renderContext;
@@ -181,7 +177,11 @@ void Game::Render() {
 		renderContext.fixedInterpolationAlpha = Time::FixedInterpolationAlpha();
 
 		// TODO: temporary component rendering phase, split it into render world, transparent and then UI
+		// draw the arena first
 		m_gameObjects.Render(renderContext);
+
+		// draw the tank, enemies, bullets and effects
+		m_tankGame.Render();
 	}
 
 	// ! render 2d
@@ -213,18 +213,13 @@ void Game::Start2DGame() {
 }
 
 void Game::Start3DGame() {
+	// remove objects from the previous game session
+	m_gameObjects.Clear();
+
 	m_gameMode = GameMode::Arena3D;
 	m_gameState = GameState::Playing;
 
-	m_tankGame.Start();
-
-	// ? TESTING PURPOSE
-	GameObject& cube = m_gameObjects.CreateGameObject("Component Cube");
-	cube.GetTransform().SetPosition(DirectX::SimpleMath::Vector3(3.0f, 0.5f, 3.0f));
-	cube.GetTransform().SetLocalScale(DirectX::SimpleMath::Vector3::One);
-	auto& renderer = cube.AddComponent<PrimitiveRendererComponent>(m_deviceResources.GetContext(), PrimitiveShape::Cube);
-	renderer.SetColor(DirectX::Colors::Orange);
-	// ? ***************
+	m_tankGame.Start(m_gameObjects);
 
 	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);

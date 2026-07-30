@@ -38,6 +38,15 @@
     <Filter Include="SNX\Core\Components">
       <UniqueIdentifier>{df389567-f979-45e2-9ca0-a846cbbead42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SNX\Core\Components\Renderer">
+      <UniqueIdentifier>{1b432c7a-7734-4f84-a256-af697a069854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Core\Components\Collider">
+      <UniqueIdentifier>{e508a819-700d-4e09-b49d-682d684dfc83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SNX\Core\Materials">
+      <UniqueIdentifier>{98a8d451-9100-4bb1-8067-f9834e229d45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -63,9 +72,6 @@
     <ClCompile Include="Games\Tank3D\Explosion3D.cpp">
       <Filter>Games\Tank3D</Filter>
     </ClCompile>
-    <ClCompile Include="Games\Tank3D\GroundObject.cpp">
-      <Filter>Games\Tank3D</Filter>
-    </ClCompile>
     <ClCompile Include="Games\Tank3D\MuzzleFlash3D.cpp">
       <Filter>Games\Tank3D</Filter>
     </ClCompile>
@@ -76,9 +82,6 @@
       <Filter>Games\Tank3D</Filter>
     </ClCompile>
     <ClCompile Include="Games\Tank3D\TankVisual.cpp">
-      <Filter>Games\Tank3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Games\Tank3D\WallObject.cpp">
       <Filter>Games\Tank3D</Filter>
     </ClCompile>
     <ClCompile Include="Games\Shooter2D\Bullet.cpp">
@@ -127,8 +130,11 @@
     <ClCompile Include="SNX\Core\Components\Transform.cpp">
       <Filter>SNX\Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="SNX\Core\Components\PrimitiveRendererComponent.cpp">
-      <Filter>SNX\Core\Components</Filter>
+    <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.cpp">
+      <Filter>SNX\Core\Components\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Materials\BasicPrimitiveMaterial.cpp">
+      <Filter>SNX\Core\Materials</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +156,6 @@
     <ClInclude Include="Games\Tank3D\Explosion3D.h">
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
-    <ClInclude Include="Games\Tank3D\GroundObject.h">
-      <Filter>Games\Tank3D</Filter>
-    </ClInclude>
     <ClInclude Include="Games\Tank3D\MuzzleFlash3D.h">
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
@@ -163,9 +166,6 @@
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
     <ClInclude Include="Games\Tank3D\TankVisual.h">
-      <Filter>Games\Tank3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Games\Tank3D\WallObject.h">
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
     <ClInclude Include="Games\Shooter2D\Bullet.h">
@@ -220,11 +220,14 @@
     <ClInclude Include="SNX\Graphics\RenderContext.h">
       <Filter>SNX\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="SNX\Core\Components\RendererComponent.h">
-      <Filter>SNX\Core\Components</Filter>
+    <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.h">
+      <Filter>SNX\Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="SNX\Core\Components\PrimitiveRendererComponent.h">
-      <Filter>SNX\Core\Components</Filter>
+    <ClInclude Include="SNX\Core\Components\Renderer\RendererComponent.h">
+      <Filter>SNX\Core\Components\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Materials\BasicPrimitiveMaterial.h">
+      <Filter>SNX\Core\Materials</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

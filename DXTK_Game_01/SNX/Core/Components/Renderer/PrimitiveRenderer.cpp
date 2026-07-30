@@ -1,4 +1,4 @@
-#include "PrimitiveRendererComponent.h"
+#include "PrimitiveRenderer.h"
 
 #include <SNX/Core/Components/Transform.h>
 #include <SNX/Graphics/RenderContext.h>
@@ -6,20 +6,20 @@
 #include <utility>
 #include <stdexcept>
 
-PrimitiveRendererComponent::PrimitiveRendererComponent(
+PrimitiveRenderer::PrimitiveRenderer(
 	GameObject& gameObject,
 	ID3D11DeviceContext* deviceContext,
 	PrimitiveShape shape,
 	std::shared_ptr<BasicPrimitiveMaterial> material
 ) noexcept :
-	RendererComponent(gameObject),
+	Renderer(gameObject),
 	m_creationContext(deviceContext),
 	m_shape(shape),
 	m_material(std::move(material)) {}
 
-void PrimitiveRendererComponent::OnInitialize() {
+void PrimitiveRenderer::OnInitialize() {
 	if (!m_creationContext)
-		throw std::runtime_error("PrimitiveRendererComponent requires a valid device context");
+		throw std::runtime_error("PrimitiveRenderer requires a valid device context");
 
 	switch (m_shape) {
 	case PrimitiveShape::Sphere:
@@ -35,7 +35,7 @@ void PrimitiveRendererComponent::OnInitialize() {
 		throw std::runtime_error("Failed to create geometric primitive");
 }
 
-void PrimitiveRendererComponent::Draw(const RenderContext& context) {
+void PrimitiveRenderer::Draw(const RenderContext& context) {
 	if (!m_primitive || !context.IsValid())
 		return;
 
@@ -65,7 +65,7 @@ void PrimitiveRendererComponent::Draw(const RenderContext& context) {
 	);
 }
 
-void PrimitiveRendererComponent::OnDestroy() {
+void PrimitiveRenderer::OnDestroy() {
 	m_primitive.reset();
 	m_material.reset();
 

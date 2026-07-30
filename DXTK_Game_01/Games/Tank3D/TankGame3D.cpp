@@ -8,7 +8,7 @@
 #include <SNX/Input/InputManager.h>
 #include <SNX/Core/Object/GameObjectManager.h>
 #include <SNX/Core/Materials/BasicPrimitiveMaterial.h>
-#include <SNX/Core/Components/Renderer/PrimitiveRendererComponent.h>
+#include <SNX/Core/Components/Renderer/PrimitiveRenderer.h>
 
 void TankGame3D::Initialize(
 	ID3D11Device* device,
@@ -422,7 +422,7 @@ void TankGame3D::CreateArenaObjects(GameObjectManager& gameObjects) {
 			transform.SetPosition(position);
 			transform.SetLocalScale(scale);
 
-			auto& renderer = object.AddComponent<PrimitiveRendererComponent>(
+			auto& renderer = object.AddComponent<PrimitiveRenderer>(
 				m_context.Get(),
 				PrimitiveShape::Cube,
 				m_arenaMaterial

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RendererComponent.h"
+#include "Renderer.h"
 #include <SNX/Core/Materials/BasicPrimitiveMaterial.h>
 
 #include <DirectXMath.h>
@@ -12,9 +12,9 @@
 
 enum class PrimitiveShape { Cube, Sphere };
 
-class PrimitiveRendererComponent final : public RendererComponent {
+class PrimitiveRenderer final : public Renderer {
 public:
-	PrimitiveRendererComponent(
+	PrimitiveRenderer(
 		GameObject& gameObject,
 		ID3D11DeviceContext* deviceContext,
 		PrimitiveShape shape = PrimitiveShape::Cube,

@@ -130,7 +130,7 @@
     <ClCompile Include="SNX\Core\Components\Transform.cpp">
       <Filter>SNX\Core\Components</Filter>
     </ClCompile>
-    <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.cpp">
+    <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRenderer.cpp">
       <Filter>SNX\Core\Components\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="SNX\Core\Materials\BasicPrimitiveMaterial.cpp">
@@ -220,10 +220,10 @@
     <ClInclude Include="SNX\Graphics\RenderContext.h">
       <Filter>SNX\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.h">
+    <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRenderer.h">
       <Filter>SNX\Core\Components\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="SNX\Core\Components\Renderer\RendererComponent.h">
+    <ClInclude Include="SNX\Core\Components\Renderer\Renderer.h">
       <Filter>SNX\Core\Components\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="SNX\Core\Materials\BasicPrimitiveMaterial.h">

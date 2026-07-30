@@ -196,7 +196,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SNX\Audio\AudioManager.cpp" />
     <ClCompile Include="SNX\Core\Camera3D.cpp" />
-    <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.cpp" />
+    <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRenderer.cpp" />
     <ClCompile Include="SNX\Core\Components\Transform.cpp" />
     <ClCompile Include="SNX\Core\Materials\BasicPrimitiveMaterial.cpp" />
     <ClCompile Include="SNX\Core\ModelObject3D.cpp" />
@@ -227,8 +227,8 @@
     <ClInclude Include="SNX\Audio\AudioManager.h" />
     <ClInclude Include="SNX\Core\Camera3D.h" />
     <ClInclude Include="SNX\Core\Collision.h" />
-    <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRendererComponent.h" />
-    <ClInclude Include="SNX\Core\Components\Renderer\RendererComponent.h" />
+    <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRenderer.h" />
+    <ClInclude Include="SNX\Core\Components\Renderer\Renderer.h" />
     <ClInclude Include="SNX\Core\Components\Transform.h" />
     <ClInclude Include="SNX\Core\Materials\BasicPrimitiveMaterial.h" />
     <ClInclude Include="SNX\Core\ModelObject3D.h" />

@@ -4,7 +4,7 @@
 
 struct RenderContext;
 
-class RendererComponent :public Component {
+class Renderer : public Component {
 public:
 	// inheriting/forwarding constructor
 	using Component::Component;

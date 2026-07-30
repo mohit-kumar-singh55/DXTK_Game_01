@@ -218,11 +218,13 @@ void Game::Start3DGame() {
 
 	m_tankGame.Start();
 
+	// ? TESTING PURPOSE
 	GameObject& cube = m_gameObjects.CreateGameObject("Component Cube");
 	cube.GetTransform().SetPosition(DirectX::SimpleMath::Vector3(3.0f, 0.5f, 3.0f));
 	cube.GetTransform().SetLocalScale(DirectX::SimpleMath::Vector3::One);
 	auto& renderer = cube.AddComponent<PrimitiveRendererComponent>(m_deviceResources.GetContext(), PrimitiveShape::Cube);
 	renderer.SetColor(DirectX::Colors::Orange);
+	// ? ***************
 
 	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);

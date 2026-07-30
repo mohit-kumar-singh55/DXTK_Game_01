@@ -5,7 +5,6 @@
 #include <Games/Tank3D/Bullet3D.h>
 #include <SNX/Audio/AudioManager.h>
 #include <Games/Tank3D/Enemy3D.h>
-#include <Games/Tank3D/TankVisual.h>
 #include <Games/Tank3D/BlobShadow.h>
 #include <Games/Tank3D/Explosion3D.h>
 #include <Games/Tank3D/MuzzleFlash3D.h>
@@ -24,8 +23,10 @@
 
 #include <d3d11.h>
 
+class GameObject;
 class GameObjectManager;
 class BasicPrimitiveMaterial;
+class MeshRenderer;
 
 class TankGame3D final {
 public:
@@ -69,11 +70,18 @@ private:
 
 	void CreateArenaObjects(GameObjectManager& gameObjects);
 
+	void CreateTankObjects(GameObjectManager& gameObjects);
+
+	void SyncTankVisualObjects() noexcept;
+
+	void ResetTankObjectReferences() noexcept;
+
+	[[nodiscard]]
+	bool IsTankModelLoaded() const noexcept;
+
 	void SpawnEnemy();
 
-	void DestroyTank(
-		AudioManager& audioManager
-	);
+	void DestroyTank(AudioManager& audioManager);
 
 	void DrawEnemyHealthBar(
 		const Enemy3D& enemy,
@@ -83,6 +91,7 @@ private:
 	) const;
 
 private:
+	ID3D11Device* m_device = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context;
 
 	Camera3D m_cam;
@@ -108,13 +117,21 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>
 		m_basicEffectInputLayout;
 
-	std::unique_ptr<DirectX::CommonStates>
+	std::shared_ptr<DirectX::CommonStates>
 		m_commonStates;
 
-	std::unique_ptr<DirectX::EffectFactory>
+	std::shared_ptr<DirectX::EffectFactory>
 		m_modelEffectFactory;
 
-	TankVisual m_tankVisual;
+	// owned by GameObjectManager
+	GameObject* m_tankRootObject = nullptr;
+	GameObject* m_tankBodyObject = nullptr;
+	GameObject* m_tankTurretObject = nullptr;
+
+	// owned by their Gameobjects
+	MeshRenderer* m_tankBodyRenderer = nullptr;
+	MeshRenderer* m_tankTurretRenderer = nullptr;
+
 	BlobShadow m_playerShadow;
 	MuzzleFlash3D m_muzzleFlash;
 	DamageFlash3D m_damageFlash;
@@ -145,6 +162,8 @@ private:
 	};
 
 	static constexpr float MouseSensitivity = 0.0035f;
+
+	static constexpr float TankModelScale = 0.4f;
 
 	static constexpr float EnemySpawnInterval = 2.0f;
 	static constexpr float EnemySpawnMinDistanceFromPlayer = 6.0f;

@@ -81,9 +81,6 @@
     <ClCompile Include="Games\Tank3D\TankGame3D.cpp">
       <Filter>Games\Tank3D</Filter>
     </ClCompile>
-    <ClCompile Include="Games\Tank3D\TankVisual.cpp">
-      <Filter>Games\Tank3D</Filter>
-    </ClCompile>
     <ClCompile Include="Games\Shooter2D\Bullet.cpp">
       <Filter>Games\Shooter2D</Filter>
     </ClCompile>
@@ -136,6 +133,9 @@
     <ClCompile Include="SNX\Core\Materials\BasicPrimitiveMaterial.cpp">
       <Filter>SNX\Core\Materials</Filter>
     </ClCompile>
+    <ClCompile Include="SNX\Core\Components\Renderer\MeshRenderer.cpp">
+      <Filter>SNX\Core\Components\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -163,9 +163,6 @@
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
     <ClInclude Include="Games\Tank3D\TankGame3D.h">
-      <Filter>Games\Tank3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Games\Tank3D\TankVisual.h">
       <Filter>Games\Tank3D</Filter>
     </ClInclude>
     <ClInclude Include="Games\Shooter2D\Bullet.h">
@@ -228,6 +225,9 @@
     </ClInclude>
     <ClInclude Include="SNX\Core\Materials\BasicPrimitiveMaterial.h">
       <Filter>SNX\Core\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Components\Renderer\MeshRenderer.h">
+      <Filter>SNX\Core\Components\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

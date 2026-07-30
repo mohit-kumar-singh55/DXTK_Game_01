@@ -6,8 +6,10 @@
 #include <algorithm>
 
 #include <SNX/Input/InputManager.h>
+#include <SNX/Core/Object/GameObject.h>
 #include <SNX/Core/Object/GameObjectManager.h>
 #include <SNX/Core/Materials/BasicPrimitiveMaterial.h>
+#include <SNX/Core/Components/Renderer/MeshRenderer.h>
 #include <SNX/Core/Components/Renderer/PrimitiveRenderer.h>
 
 void TankGame3D::Initialize(
@@ -21,6 +23,7 @@ void TankGame3D::Initialize(
 
 	using DirectX::SimpleMath::Vector3;
 
+	m_device = device;
 	m_context = context;
 
 	// create the shared material
@@ -61,15 +64,11 @@ void TankGame3D::Initialize(
 	InitializeBasicEffect(device);
 
 	// initialize common states & effect factory
-	m_commonStates = std::make_unique<DirectX::CommonStates>(device);
-	m_modelEffectFactory = std::make_unique<DirectX::EffectFactory>(device);
+	m_commonStates = std::make_shared<DirectX::CommonStates>(device);
+	m_modelEffectFactory = std::make_shared<DirectX::EffectFactory>(device);
 
 	// setting 3d model texture directory
 	m_modelEffectFactory->SetDirectory(L"Assets\\Models\\Runtime\\Tank\\textures");
-
-	// ! creating tank model
-	if (m_tankVisual.Load(device, *m_modelEffectFactory))
-		m_tankVisual.UpdateEffects(m_fogColor, m_fogStart, m_fogEnd);
 
 	// fake tank shadow
 	m_playerShadow.Initialize(m_context.Get());
@@ -119,6 +118,8 @@ void TankGame3D::Start(GameObjectManager& gameObjects) {
 	);
 
 	CreateArenaObjects(gameObjects);
+	CreateTankObjects(gameObjects);
+	SyncTankVisualObjects();
 }
 
 void TankGame3D::Clear() {
@@ -131,6 +132,8 @@ void TankGame3D::Clear() {
 
 	m_isTankDestroyed = false;
 	m_isGameOver = false;
+
+	ResetTankObjectReferences();
 }
 
 void TankGame3D::Update(
@@ -148,6 +151,8 @@ void TankGame3D::Update(
 
 	// ! if tank is destroyed, update necessary things only
 	if (m_isTankDestroyed) {
+		SyncTankVisualObjects();
+
 		m_tankDeathTimer -= deltaTime;
 
 		m_muzzleFlash.Update(deltaTime);
@@ -318,6 +323,8 @@ void TankGame3D::Update(
 		m_explosions.end()
 	);
 
+	SyncTankVisualObjects();
+
 	// update camera to follow player
 	m_cam.FollowBehind(
 		m_player.GetPosition(),
@@ -333,18 +340,8 @@ void TankGame3D::Render() {
 	ID3D11InputLayout* inputLayout = m_basicEffectInputLayout.Get();
 
 	if (!m_isTankDestroyed) {
-		// render player model if available
-		if (m_tankVisual.IsLoaded() && m_commonStates) {
-			m_tankVisual.SetWorldTransform(
-				m_player.GetPosition() + DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f),
-				m_player.GetBodyYaw(),
-				m_player.GetTurretYaw()
-			);
-
-			m_tankVisual.Draw(m_context.Get(), *m_commonStates, view, projection);
-		}
-		// render default cube
-		else
+		// render fallback cube if tank model does not load
+		if (!IsTankModelLoaded())
 			m_player.Draw(effect, inputLayout, view, projection);
 
 		// draw tank's fake shadow
@@ -478,6 +475,112 @@ void TankGame3D::CreateArenaObjects(GameObjectManager& gameObjects) {
 	);
 }
 
+void TankGame3D::CreateTankObjects(GameObjectManager& gameObjects) {
+	ResetTankObjectReferences();
+
+	// ** Tank Root **
+	GameObject& tankRoot = gameObjects.CreateGameObject("Player Tank");
+	m_tankRootObject = &tankRoot;
+
+	Transform& rootTransform = tankRoot.GetTransform();
+	rootTransform.SetPosition(
+		m_player.GetPosition() +
+		DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f)
+	);
+	rootTransform.SetLocalScale(DirectX::SimpleMath::Vector3::One * TankModelScale);
+	// **************
+
+	// ** Tank Body **
+	GameObject& body = gameObjects.CreateGameObject("Tank Body");
+	m_tankBodyObject = &body;
+
+	Transform& bodyTransform = body.GetTransform();
+	bodyTransform.SetParent(&rootTransform, false);
+	bodyTransform.SetLocalPosition(DirectX::SimpleMath::Vector3::Zero);
+	bodyTransform.SetLocalScale(DirectX::SimpleMath::Vector3::One);
+
+	auto& bodyRenderer = body.AddComponent<MeshRenderer>(
+		m_device,
+		m_commonStates,
+		m_modelEffectFactory,
+		L"Assets\\Models\\Runtime\\Tank\\tank_body.sdkmesh",
+		MeshFileFormat::SDKMesh
+	);
+	m_tankBodyRenderer = &bodyRenderer;
+	bodyRenderer.ConfigureEffects(m_fogColor, m_fogStart, m_fogEnd);
+	// **************
+
+	// ** Tank Turret **
+	GameObject& turret = gameObjects.CreateGameObject("Tank Turret");
+	m_tankTurretObject = &turret;
+
+	Transform& turretTransform = turret.GetTransform();
+	turretTransform.SetParent(&rootTransform, false);
+	turretTransform.SetLocalPosition(DirectX::SimpleMath::Vector3::Zero);
+	turretTransform.SetLocalScale(DirectX::SimpleMath::Vector3::One);
+
+	auto& turretRenderer = turret.AddComponent<MeshRenderer>(
+		m_device,
+		m_commonStates,
+		m_modelEffectFactory,
+		L"Assets\\Models\\Runtime\\Tank\\tank_turret.sdkmesh",
+		MeshFileFormat::SDKMesh
+	);
+	m_tankTurretRenderer = &turretRenderer;
+	turretRenderer.ConfigureEffects(m_fogColor, m_fogStart, m_fogEnd);
+	// **************
+}
+
+void TankGame3D::SyncTankVisualObjects() noexcept {
+	if (!m_tankRootObject || !m_tankBodyObject || !m_tankTurretObject)
+		return;
+
+	const bool modelLoaded = IsTankModelLoaded();
+
+	// show component models only when both parts loaded
+	if (m_tankBodyRenderer)
+		m_tankBodyRenderer->SetVisible(modelLoaded && !m_isTankDestroyed);
+
+	if (m_tankTurretRenderer)
+		m_tankTurretRenderer->SetVisible(modelLoaded && !m_isTankDestroyed);
+
+	m_tankRootObject->SetActive(!m_isTankDestroyed);
+
+	if (m_isTankDestroyed) return;
+
+	Transform& rootTransform = m_tankRootObject->GetTransform();
+	rootTransform.SetPosition(m_player.GetPosition() + DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f));
+
+	const auto bodyRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::Up,
+		m_player.GetBodyYaw()
+	);
+	m_tankBodyObject->GetTransform().SetLocalRotation(bodyRotation);
+
+	const auto turretRotation = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::Up,
+		m_player.GetTurretYaw()
+	);
+	m_tankTurretObject->GetTransform().SetLocalRotation(turretRotation);
+}
+
+void TankGame3D::ResetTankObjectReferences() noexcept {
+	m_tankRootObject = nullptr;
+	m_tankBodyObject = nullptr;
+	m_tankTurretObject = nullptr;
+
+	m_tankBodyRenderer = nullptr;
+	m_tankTurretRenderer = nullptr;
+}
+
+bool TankGame3D::IsTankModelLoaded() const noexcept {
+	return
+		m_tankBodyRenderer &&
+		m_tankTurretRenderer &&
+		m_tankBodyRenderer->IsLoaded() &&
+		m_tankTurretRenderer->IsLoaded();
+}
+
 void TankGame3D::SpawnEnemy() {
 	using DirectX::SimpleMath::Vector3;
 
@@ -552,6 +655,9 @@ void TankGame3D::DestroyTank(AudioManager& audioManager) {
 
 	m_isTankDestroyed = true;
 	m_tankDeathTimer = TankDeathGameOverDelay;
+
+	if (m_tankRootObject)
+		m_tankRootObject->SetActive(false);
 
 	const Vector3 tankPos = m_player.GetPosition();
 

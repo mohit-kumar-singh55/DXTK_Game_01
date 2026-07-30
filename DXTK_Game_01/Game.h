@@ -58,12 +58,12 @@ private:
 
 	static constexpr float MouseSensitivity = 0.0035f;
 
-	GameObjectManager m_gameObjects;
-
 	// 3D tank game
 	TankGame3D m_tankGame;
 	// 2d shooter game
 	ShooterGame2D m_shooterGame;
+
+	GameObjectManager m_gameObjects;
 
 	enum class GameState {
 		Title,

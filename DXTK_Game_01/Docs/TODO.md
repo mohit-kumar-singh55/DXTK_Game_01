@@ -36,7 +36,7 @@
 
 * Scene and game-state management
 * Resource/asset manager
-* Input abstraction
+* ~~Input abstraction~~
 * Audio manager
 * Configuration files
 * Saving/loading

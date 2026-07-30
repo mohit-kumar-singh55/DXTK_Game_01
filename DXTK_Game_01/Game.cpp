@@ -47,9 +47,11 @@ void Game::Tick() {
 	}
 
 	Update();
-	m_gameObjects.Update();
 
-	m_gameObjects.LateUpdate();
+	if (m_gameState == GameState::Playing) {
+		m_gameObjects.Update();
+		m_gameObjects.LateUpdate();
+	}
 
 	m_audioManager.Update();
 
@@ -83,7 +85,6 @@ void Game::InitializeGameResources() {
 void Game::Update() {
 	auto& input = InputManager::Get();
 
-	// for 2D gae
 	switch (m_gameState) {
 	case GameState::Title: {
 		// close window
@@ -100,6 +101,11 @@ void Game::Update() {
 	}
 
 	case GameState::Playing: {
+		if (input.IsKeyPressed(DirectX::Keyboard::Escape)) {
+			PauseGame();
+			return;
+		}
+
 		if (m_gameMode == GameMode::Shooter2D) {
 			m_shooterGame.Update(
 				Time::DeltaTime(),
@@ -119,6 +125,20 @@ void Game::Update() {
 			if (m_tankGame.IsGameOver())
 				m_gameState = GameState::GameOver;
 		}
+		break;
+	}
+
+	case GameState::Paused: {
+		if (input.IsKeyPressed(DirectX::Keyboard::Tab)) {
+			ResumeGame();
+			return;
+		}
+
+		if (input.IsKeyPressed(DirectX::Keyboard::Back)) {
+			ReturnToTitle();
+			return;
+		}
+
 		break;
 	}
 
@@ -163,6 +183,7 @@ void Game::Render() {
 	// ! render 3d
 	if (m_gameMode == GameMode::Arena3D &&
 		(m_gameState == GameState::Playing ||
+			m_gameState == GameState::Paused ||
 			m_gameState == GameState::GameOver)) {
 		const Camera3D& camera = m_tankGame.GetCamera();
 
@@ -189,6 +210,7 @@ void Game::Render() {
 
 	if (m_gameMode == GameMode::Shooter2D &&
 		(m_gameState == GameState::Playing ||
+			m_gameState == GameState::Paused ||
 			m_gameState == GameState::GameOver))
 		m_shooterGame.Render(m_spriteBatch.get());
 
@@ -210,6 +232,7 @@ void Game::Start2DGame() {
 	m_shooterGame.Start();
 
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
+	InputManager::Get().Reset();
 }
 
 void Game::Start3DGame() {
@@ -223,6 +246,33 @@ void Game::Start3DGame() {
 
 	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);
+	InputManager::Get().Reset();
+}
+
+void Game::PauseGame() {
+	if (m_gameState != GameState::Playing)
+		return;
+
+	m_gameState = GameState::Paused;
+
+	// release the mouse so it is no longer captured by the 3d game
+	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
+}
+
+void Game::ResumeGame() {
+	if (m_gameState != GameState::Paused)
+		return;
+
+	m_gameState = GameState::Playing;
+
+	if (m_gameMode == GameMode::Arena3D)
+		InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);
+	else
+		InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
+
+	// prevent mouse movement made while paused from 
+	// immediately rotating the turret after resuming
+	InputManager::Get().Reset();
 }
 
 void Game::ReturnToTitle() {
@@ -310,7 +360,9 @@ void Game::DrawUI() {
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
-				L"WASD/Arrows : Move\nSPACE       : Shoot",
+				L"WASD/Arrows : Move\n"
+				L"SPACE       : Shoot\n"
+				L"ESC         : Pause",
 				Vector2(20.0f, 100.0f),
 				DirectX::Colors::DarkMagenta
 			);
@@ -336,7 +388,10 @@ void Game::DrawUI() {
 
 			m_font->DrawString(
 				m_spriteBatch.get(),
-				L"WASD/Arrows : Move\nMOUSE       : Look\nLEFT CLICK  : Shoot",
+				L"WASD  : Move\n"
+				L"MOUSE : Aim\n"
+				L"LMB   : Shoot\n"
+				L"ESC   : Pause",
 				Vector2(20.0f, 100.0f),
 				DirectX::Colors::DarkMagenta
 			);
@@ -350,6 +405,43 @@ void Game::DrawUI() {
 				);
 			}
 		}
+		break;
+	}
+
+	case GameState::Paused: {
+		const wchar_t* pauseText = L"PAUSED";
+
+		const wchar_t* controlsText =
+			L"ESC       : Resume\n"
+			L"BACKSPACE : Return to Title";
+
+		const Vector2 pauseSize = m_font->MeasureString(pauseText);
+
+		const Vector2 controlsSize = m_font->MeasureString(controlsText);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			pauseText,
+			Vector2(
+				m_windowWidth * 0.5f -
+				pauseSize.x * 0.5f,
+				m_windowHeight * 0.5f -
+				70.0f
+			),
+			DirectX::Colors::DarkRed
+		);
+
+		m_font->DrawString(
+			m_spriteBatch.get(),
+			controlsText,
+			Vector2(
+				m_windowWidth * 0.5f -
+				controlsSize.x * 0.5f,
+				m_windowHeight * 0.5f
+			),
+			DirectX::Colors::DarkBlue
+		);
+
 		break;
 	}
 

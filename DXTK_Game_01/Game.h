@@ -41,6 +41,10 @@ private:
 
 	void Start2DGame();
 	void Start3DGame();
+
+	void PauseGame();
+	void ResumeGame();
+
 	void ReturnToTitle();
 
 	void DrawUI();
@@ -68,6 +72,7 @@ private:
 	enum class GameState {
 		Title,
 		Playing,
+		Paused,
 		GameOver
 	};
 

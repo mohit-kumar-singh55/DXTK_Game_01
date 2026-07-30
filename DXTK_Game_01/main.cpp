@@ -145,6 +145,9 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCommand) {
 		return static_cast<int>(msg.wParam);
 	}
 	catch (const std::exception& e) {
+		g_game.reset();
+		InputManager::Get().Shutdown();
+
 		MessageBoxA(nullptr, e.what(), "Error", MB_OK | MB_ICONERROR);
 
 		return -1;

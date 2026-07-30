@@ -33,8 +33,17 @@ public:
 		m_components.push_back(std::move(component));
 
 		if (m_initialized) {
-			componentReference.OnInitialize();
-			componentReference.m_initialized = true;
+			/*
+			* access through Component instead of the derived type
+			* (as GameObject class is the friend of Component Class only, not its derived classes
+			* so, GameObject cannot directly access private and protected members of child classes of Component class)
+			* OnInitialize is virtual, so the derived implementation
+			* will still be called
+			*/
+			Component& baseComponent = *m_components.back();
+
+			baseComponent.OnInitialize();
+			baseComponent.m_initialized = true;
 		}
 
 		return componentReference;

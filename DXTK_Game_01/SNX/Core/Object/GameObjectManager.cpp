@@ -45,12 +45,12 @@ void GameObjectManager::LateUpdate() {
 	}
 }
 
-void GameObjectManager::Render() {
+void GameObjectManager::Render(const RenderContext& context) {
 	for (const auto& gameObject : m_objects) {
 		if (!gameObject || gameObject->IsDestroyRequested())
 			continue;
 
-		gameObject->Render();
+		gameObject->Render(context);
 	}
 }
 

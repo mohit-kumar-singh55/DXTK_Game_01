@@ -9,6 +9,8 @@
 #include <utility>
 #include <vector>
 
+struct RenderContext;
+
 class GameObject final {
 public:
 	explicit GameObject(std::string name = "GameObject");
@@ -88,7 +90,7 @@ public:
 	void FixedUpdate();
 	void Update();
 	void LateUpdate();
-	void Render();
+	void Render(const RenderContext& context);
 
 	void EndFrame();
 

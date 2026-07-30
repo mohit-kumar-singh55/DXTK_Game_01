@@ -115,7 +115,7 @@ void GameObject::LateUpdate() {
 	}
 }
 
-void GameObject::Render() {
+void GameObject::Render(const RenderContext& context) {
 	if (!m_active || m_destroyRequested)
 		return;
 
@@ -123,7 +123,11 @@ void GameObject::Render() {
 		if (!component || !component->m_enabled || component->m_removeRequested)
 			continue;
 
-		component->OnRender();
+		component->OnRender(context);
+
+		// ! stop immediately if destruction is requested
+		if (m_destroyRequested)
+			break;
 	}
 }
 

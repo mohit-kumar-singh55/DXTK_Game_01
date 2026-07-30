@@ -198,6 +198,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SNX\Audio\AudioManager.cpp" />
     <ClCompile Include="SNX\Core\Camera3D.cpp" />
+    <ClCompile Include="SNX\Core\Components\PrimitiveRendererComponent.cpp" />
     <ClCompile Include="SNX\Core\Components\Transform.cpp" />
     <ClCompile Include="SNX\Core\ModelObject3D.cpp" />
     <ClCompile Include="SNX\Core\Object\Component.cpp" />
@@ -229,6 +230,8 @@
     <ClInclude Include="SNX\Audio\AudioManager.h" />
     <ClInclude Include="SNX\Core\Camera3D.h" />
     <ClInclude Include="SNX\Core\Collision.h" />
+    <ClInclude Include="SNX\Core\Components\PrimitiveRendererComponent.h" />
+    <ClInclude Include="SNX\Core\Components\RendererComponent.h" />
     <ClInclude Include="SNX\Core\Components\Transform.h" />
     <ClInclude Include="SNX\Core\ModelObject3D.h" />
     <ClInclude Include="SNX\Core\Object\Component.h" />
@@ -237,6 +240,7 @@
     <ClInclude Include="SNX\Core\TextureFactory.h" />
     <ClInclude Include="SNX\Core\Time.h" />
     <ClInclude Include="SNX\Graphics\DeviceResources.h" />
+    <ClInclude Include="SNX\Graphics\RenderContext.h" />
     <ClInclude Include="SNX\Input\InputManager.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,8 @@
 #include <string_view>
 #include <vector>
 
+struct RenderContext;
+
 class GameObjectManager final {
 public:
 	GameObjectManager() = default;
@@ -26,7 +28,7 @@ public:
 	void FixedUpdate();
 	void Update();
 	void LateUpdate();
-	void Render();
+	void Render(const RenderContext& context);
 
 	// called after rendering
 	void EndFrame();

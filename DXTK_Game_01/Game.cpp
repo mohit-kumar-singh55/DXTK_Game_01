@@ -2,11 +2,13 @@
 
 #include <DirectXColors.h>
 
+#include <SNX/Graphics/RenderContext.h>
 #include <SNX/Input/InputManager.h>
-
 #include <SNX/Core/Time.h>
 
 #include <string>
+
+#include <SNX/Core/Components/PrimitiveRendererComponent.h>
 
 void Game::Initialize(HWND window, int width, int height) {
 	m_windowWidth = width;
@@ -163,11 +165,24 @@ void Game::Render() {
 	// ! render 3d
 	if (m_gameMode == GameMode::Arena3D &&
 		(m_gameState == GameState::Playing ||
-			m_gameState == GameState::GameOver))
+			m_gameState == GameState::GameOver)) {
 		m_tankGame.Render();
 
-	// TODO: this is temporary component rendering phase, split it into render world, transparent and then UI
-	m_gameObjects.Render();
+		const Camera3D& camera = m_tankGame.GetCamera();
+
+		RenderContext renderContext;
+		renderContext.device = m_deviceResources.GetDevice();
+		renderContext.deviceContext = m_deviceResources.GetContext();
+		renderContext.view = camera.GetView();
+		renderContext.projection = camera.GetProjection();
+		renderContext.cameraPosition = camera.GetPosition();
+		renderContext.viewportWidth = m_deviceResources.GetWidth();
+		renderContext.viewportHeight = m_deviceResources.GetHeight();
+		renderContext.fixedInterpolationAlpha = Time::FixedInterpolationAlpha();
+
+		// TODO: temporary component rendering phase, split it into render world, transparent and then UI
+		m_gameObjects.Render(renderContext);
+	}
 
 	// ! render 2d
 	m_spriteBatch->Begin();
@@ -182,11 +197,13 @@ void Game::Render() {
 
 	m_spriteBatch->End();
 
-	// swape chain present
-	m_deviceResources.Present();	// TODO: added a variable in config file, whether to use vsync or not
+	// swap chain present
+	m_deviceResources.Present();	// TODO: add a variable in config file, whether to use vsync or not
 }
 
 void Game::Start2DGame() {
+	m_gameObjects.Clear();
+
 	m_gameMode = GameMode::Shooter2D;
 	m_gameState = GameState::Playing;
 
@@ -200,6 +217,12 @@ void Game::Start3DGame() {
 	m_gameState = GameState::Playing;
 
 	m_tankGame.Start();
+
+	GameObject& cube = m_gameObjects.CreateGameObject("Component Cube");
+	cube.GetTransform().SetPosition(DirectX::SimpleMath::Vector3(3.0f, 0.5f, 3.0f));
+	cube.GetTransform().SetLocalScale(DirectX::SimpleMath::Vector3::One);
+	auto& renderer = cube.AddComponent<PrimitiveRendererComponent>(m_deviceResources.GetContext(), PrimitiveShape::Cube);
+	renderer.SetColor(DirectX::Colors::Orange);
 
 	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
 	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);

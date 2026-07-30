@@ -3,6 +3,8 @@
 class GameObject;
 class Transform;
 
+struct RenderContext;
+
 class Component {
 public:
 	explicit Component(GameObject& gameObject) noexcept;
@@ -47,7 +49,7 @@ protected:
 	virtual void OnLateUpdate() {}
 
 	// temporary rendering callback
-	virtual void OnRender() {}
+	virtual void OnRender(const RenderContext& context) {}
 
 	// called before the component is removed
 	virtual void OnDestroy() {}

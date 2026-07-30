@@ -61,6 +61,9 @@ public:
 	[[nodiscard]]
 	const DirectX::SimpleMath::Vector3& GetClearColor() const noexcept { return m_fogColor; }
 
+	[[nodiscard]]
+	const Camera3D& GetCamera() const noexcept { return m_cam; }
+
 private:
 	void InitializeBasicEffect(ID3D11Device* device);
 

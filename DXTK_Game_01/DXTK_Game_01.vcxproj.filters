@@ -127,6 +127,9 @@
     <ClCompile Include="SNX\Core\Components\Transform.cpp">
       <Filter>SNX\Core\Components</Filter>
     </ClCompile>
+    <ClCompile Include="SNX\Core\Components\PrimitiveRendererComponent.cpp">
+      <Filter>SNX\Core\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -212,6 +215,15 @@
       <Filter>SNX\Core\Object</Filter>
     </ClInclude>
     <ClInclude Include="SNX\Core\Components\Transform.h">
+      <Filter>SNX\Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Graphics\RenderContext.h">
+      <Filter>SNX\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Components\RendererComponent.h">
+      <Filter>SNX\Core\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Components\PrimitiveRendererComponent.h">
       <Filter>SNX\Core\Components</Filter>
     </ClInclude>
   </ItemGroup>

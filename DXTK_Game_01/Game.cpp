@@ -412,7 +412,7 @@ void Game::DrawUI() {
 		const wchar_t* pauseText = L"PAUSED";
 
 		const wchar_t* controlsText =
-			L"ESC       : Resume\n"
+			L"TAB       : Resume\n"
 			L"BACKSPACE : Return to Title";
 
 		const Vector2 pauseSize = m_font->MeasureString(pauseText);

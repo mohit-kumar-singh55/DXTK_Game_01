@@ -28,13 +28,13 @@ public:
 	template<typename T>
 	void RegisterScene(SceneId sceneId, std::string sceneName) {
 		static_assert(std::is_base_of_v<Scene, T>, "T must inherit from Scene");
-		static_assert(std::is_constructible_v<T, SceneManager&, SceneContext&>, "Scene must be constructible with SceneManage& and SceneContext&");
+		static_assert(std::is_constructible_v<T, SceneManager&, SceneContext&>, "Scene must be constructible with SceneManager& and SceneContext&");
 
 		if (sceneId == InvalidSceneId)
 			throw std::invalid_argument("InvalidSceneId cannot be registered");
 
 		if (sceneName.empty())
-			throw std::invalid_argument("Scane name cannot be empty");
+			throw std::invalid_argument("Scene name cannot be empty");
 
 		if (m_registrations.contains(sceneId))
 			throw std::logic_error("A scene with this ID is already registered");

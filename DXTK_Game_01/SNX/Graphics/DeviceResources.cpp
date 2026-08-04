@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iterator>
 
-// ! safe shutdown
+// ! safe shutdown (Direct3D 11 cleanup pattern)
 DeviceResources::~DeviceResources() {
 	if (!m_context) return;
 

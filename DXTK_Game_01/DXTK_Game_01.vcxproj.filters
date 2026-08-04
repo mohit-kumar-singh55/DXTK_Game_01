@@ -47,6 +47,12 @@
     <Filter Include="SNX\Core\Materials">
       <UniqueIdentifier>{98a8d451-9100-4bb1-8067-f9834e229d45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SNX\Core\Scene">
+      <UniqueIdentifier>{3cff6259-5fa4-4190-a4ed-d6ca45ebc65b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\Scenes">
+      <UniqueIdentifier>{180fe3d8-b9a6-4f30-a240-10ff5ad6544d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -135,6 +141,12 @@
     </ClCompile>
     <ClCompile Include="SNX\Core\Components\Renderer\MeshRenderer.cpp">
       <Filter>SNX\Core\Components\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Scene\Scene.cpp">
+      <Filter>SNX\Core\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Scene\SceneManager.cpp">
+      <Filter>SNX\Core\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +240,21 @@
     </ClInclude>
     <ClInclude Include="SNX\Core\Components\Renderer\MeshRenderer.h">
       <Filter>SNX\Core\Components\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Scene\SceneTypes.h">
+      <Filter>SNX\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Scenes\SceneIds.h">
+      <Filter>Games\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Scene\SceneContext.h">
+      <Filter>SNX\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Scene\Scene.h">
+      <Filter>SNX\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Scene\SceneManager.h">
+      <Filter>SNX\Core\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

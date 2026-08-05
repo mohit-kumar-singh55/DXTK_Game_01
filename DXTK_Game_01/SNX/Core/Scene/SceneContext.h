@@ -3,13 +3,16 @@
 #include <functional>
 #include <utility>
 
+#include <SpriteBatch.h>
+#include <SpriteFont.h>
+
 class DeviceResources;
 class AudioManager;
 
-namespace DirectX {
-	class SpriteBatch;
-	class SpriteFont;
-}
+//namespace DirectX {
+//	class SpriteBatch;
+//	class SpriteFont;
+//}
 
 struct SceneContext final {
 	SceneContext(

@@ -151,6 +151,9 @@
     <ClCompile Include="Games\Scenes\TitleScene.cpp">
       <Filter>Games\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Games\Scenes\ShooterScene.cpp">
+      <Filter>Games\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -260,6 +263,9 @@
       <Filter>SNX\Core\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Games\Scenes\TitleScene.h">
+      <Filter>Games\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Scenes\ShooterScene.h">
       <Filter>Games\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

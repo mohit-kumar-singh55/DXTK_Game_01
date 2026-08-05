@@ -154,6 +154,9 @@
     <ClCompile Include="Games\Scenes\ShooterScene.cpp">
       <Filter>Games\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Games\Scenes\TankScene.cpp">
+      <Filter>Games\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gameplay\Health.h">
@@ -266,6 +269,9 @@
       <Filter>Games\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Games\Scenes\ShooterScene.h">
+      <Filter>Games\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Games\Scenes\TankScene.h">
       <Filter>Games\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

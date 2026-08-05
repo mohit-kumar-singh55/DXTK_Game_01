@@ -4,6 +4,8 @@
 
 #include <vector>
 
+class GameObject;
+
 enum class TransformSpace {
 	Local,
 	World
@@ -140,6 +142,12 @@ public:
 	[[nodiscard]]
 	bool IsChildOf(const Transform* possibleParent) const noexcept;
 
+	[[nodiscard]]
+	GameObject* GetGameObject() noexcept { return m_gameObject; }
+
+	[[nodiscard]]
+	const GameObject* GetGameObject() const noexcept { return m_gameObject; }
+
 private:
 	bool TrySetLocalFromMatrix(const DirectX::SimpleMath::Matrix& matrix) noexcept;
 
@@ -150,11 +158,15 @@ private:
 	void MarkLocalDirty() noexcept;
 	void MarkWorldDirty() noexcept;
 
+	void SetGameObject(GameObject* gameObject) noexcept { m_gameObject = gameObject; }
+
 	static DirectX::SimpleMath::Vector3 DegreesToRadians(const DirectX::SimpleMath::Vector3& degrees) noexcept;
 	static DirectX::SimpleMath::Vector3 RadiansToDegrees(const DirectX::SimpleMath::Vector3& radians) noexcept;
 	static DirectX::SimpleMath::Quaternion NormalizeRotation(DirectX::SimpleMath::Quaternion rotation) noexcept;
 
 private:
+	GameObject* m_gameObject = nullptr;
+
 	DirectX::SimpleMath::Vector3 m_localPosition = DirectX::SimpleMath::Vector3::Zero;
 	DirectX::SimpleMath::Quaternion m_localRotation = DirectX::SimpleMath::Quaternion::Identity;
 	DirectX::SimpleMath::Vector3 m_localScale = DirectX::SimpleMath::Vector3::One;
@@ -174,4 +186,6 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 Forward{ 0.0f,0.0f,1.0f };
 	static constexpr DirectX::SimpleMath::Vector3 Right{ 1.0f,0.0f,0.0f };
 	static constexpr DirectX::SimpleMath::Vector3 Up{ 0.0f,1.0f,0.0f };
+
+	friend class GameObject;
 };

@@ -181,6 +181,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay\Health.cpp" />
     <ClCompile Include="Games\Scenes\ShooterScene.cpp" />
+    <ClCompile Include="Games\Scenes\TankScene.cpp" />
     <ClCompile Include="Games\Scenes\TitleScene.cpp" />
     <ClCompile Include="Games\Shooter2D\Bullet.cpp" />
     <ClCompile Include="Games\Shooter2D\Enemy.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="Gameplay\Health.h" />
     <ClInclude Include="Games\Scenes\SceneIds.h" />
     <ClInclude Include="Games\Scenes\ShooterScene.h" />
+    <ClInclude Include="Games\Scenes\TankScene.h" />
     <ClInclude Include="Games\Scenes\TitleScene.h" />
     <ClInclude Include="Games\Shooter2D\Bullet.h" />
     <ClInclude Include="Games\Shooter2D\Enemy.h" />

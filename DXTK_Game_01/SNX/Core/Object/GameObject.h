@@ -108,8 +108,16 @@ public:
 	[[nodiscard]]
 	bool IsDestroyRequested() const noexcept { return m_destroyRequested; }
 
+	// ? just for compatibility with the old code
+	// ? remove it in the next game
 	[[nodiscard]]
-	bool IsActive() const noexcept { return m_active; }
+	bool IsActive() const noexcept { return IsActiveSelf(); }
+
+	[[nodiscard]]
+	bool IsActiveSelf() const noexcept { return m_active; }
+
+	[[nodiscard]]
+	bool IsActiveInHierarchy() const noexcept;
 
 	void SetActive(bool active) noexcept { m_active = active; }
 

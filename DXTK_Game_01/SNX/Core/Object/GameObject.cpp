@@ -1,10 +1,8 @@
 #include "GameObject.h"
 
-#include <algorithm>
-
 GameObject::GameObject(std::string name) :
 	m_name(name) {
-
+	m_transform.SetGameObject(this);
 }
 
 GameObject::~GameObject() {
@@ -23,6 +21,29 @@ void GameObject::Initialize() {
 	}
 
 	m_initialized = true;
+}
+
+bool GameObject::IsActiveInHierarchy() const noexcept {
+	if (!m_active || m_destroyRequested)
+		return false;
+
+	const Transform* parentTransform = m_transform.GetParent();
+
+	while (parentTransform) {
+		const GameObject* parentObject = parentTransform->GetGameObject();
+
+		/*
+		* every gameobject transform should have an owner
+		* failing safely here prevents an invalid hierarchy
+		* from continuing to update
+		*/
+		if (!parentObject || !parentObject->m_active || parentObject->m_destroyRequested)
+			return false;
+
+		parentTransform = parentTransform->GetParent();
+	}
+
+	return true;
 }
 
 void GameObject::EnsureComponentStarted(Component& component) {
@@ -54,8 +75,7 @@ void GameObject::RemoveRequestedComponents() noexcept {
 }
 
 void GameObject::FixedUpdate() {
-	if (!m_active || m_destroyRequested)
-		return;
+	if (!IsActiveInHierarchy()) return;
 
 	Initialize();
 
@@ -77,8 +97,7 @@ void GameObject::FixedUpdate() {
 }
 
 void GameObject::Update() {
-	if (!m_active || m_destroyRequested)
-		return;
+	if (!IsActiveInHierarchy()) return;
 
 	Initialize();
 
@@ -100,8 +119,7 @@ void GameObject::Update() {
 }
 
 void GameObject::LateUpdate() {
-	if (!m_active || m_destroyRequested)
-		return;
+	if (!IsActiveInHierarchy()) return;
 
 	for (const auto& component : m_components) {
 		if (!component || !component->m_enabled || component->m_removeRequested)
@@ -116,8 +134,7 @@ void GameObject::LateUpdate() {
 }
 
 void GameObject::Render(const RenderContext& context) {
-	if (!m_active || m_destroyRequested)
-		return;
+	if (!IsActiveInHierarchy()) return;
 
 	for (const auto& component : m_components) {
 		if (!component || !component->m_enabled || component->m_removeRequested)

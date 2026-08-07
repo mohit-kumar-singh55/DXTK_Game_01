@@ -1,17 +1,16 @@
 #include "Game.h"
 
-#include <DirectXColors.h>
+#include <Games/Scenes/SceneIds.h>
+#include <Games/Scenes/TitleScene.h>
+#include <Games/Scenes/ShooterScene.h>
+#include <Games/Scenes/TankScene.h>
 
-#include <SNX/Graphics/RenderContext.h>
-#include <SNX/Input/InputManager.h>
 #include <SNX/Core/Time.h>
+#include <SNX/Input/InputManager.h>
 
-#include <string>
+#include <stdexcept>
 
 void Game::Initialize(HWND window, int width, int height) {
-	m_windowWidth = width;
-	m_windowHeight = height;
-
 	m_deviceResources.Initialize(window, width, height);
 
 	// init singleton input manager
@@ -22,6 +21,9 @@ void Game::Initialize(HWND window, int width, int height) {
 	m_audioManager.Initialize();
 
 	Time::Initialize();
+
+	// initialize manager and register scenes
+	InitializeScenes();
 }
 
 void Game::Tick() {
@@ -30,8 +32,10 @@ void Game::Tick() {
 	// read hardware input exactly once per rendered frame
 	InputManager::Get().Update();
 
+	if (!m_sceneManager) return;
+
 	// register objects created before this frame
-	m_gameObjects.BeginFrame();
+	m_sceneManager->BeginFrame();
 
 	/*
 	* a slow rendered frame may required multiple fixed updates
@@ -40,26 +44,24 @@ void Game::Tick() {
 	* but each frame's deltaTime is different
 	*/
 	while (Time::HasFixedStep()) {
-		FixedUpdate();
-		m_gameObjects.FixedUpdate();
+		m_sceneManager->FixedUpdate();
 
 		Time::ConsumeFixedStep();
 	}
 
-	Update();
+	m_sceneManager->Update();
 
-	if (m_gameState == GameState::Playing) {
-		m_gameObjects.Update();
-		m_gameObjects.LateUpdate();
-	}
+	m_sceneManager->LateUpdate();
 
 	m_audioManager.Update();
 
 	Render();
 
-	// objects requested for destruction during this 
-	// frame are actually removed here
-	m_gameObjects.EndFrame();
+	/*
+	* gameobject, component destruction and scene transition
+	* are safely finalized here
+	*/
+	m_sceneManager->EndFrame();
 }
 
 void Game::InitializeGameResources() {
@@ -69,430 +71,53 @@ void Game::InitializeGameResources() {
 	// create DirectXTK objects
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	m_font = std::make_unique<DirectX::SpriteFont>(device, L"Assets/gamefont.spritefont");
+}
 
-	// ! 2d shooter game
-	m_shooterGame.Initialize(device, m_windowWidth, m_windowHeight);
+void Game::InitializeScenes() {
+	if (!m_spriteBatch || !m_font)
+		throw std::runtime_error("Scene system requires SpriteBatch and SpriteFont to be initialized.");
 
-	// ! 3d tank game
-	m_tankGame.Initialize(
-		device,
-		context,
-		m_windowWidth,
-		m_windowHeight
+	m_sceneContext = std::make_unique<SceneContext>(
+		m_deviceResources,
+		*m_spriteBatch,
+		*m_font,
+		m_audioManager,
+		[]() { PostQuitMessage(0); }	// quit callback
 	);
-}
 
-void Game::Update() {
-	auto& input = InputManager::Get();
+	m_sceneManager = std::make_unique<SceneManager>(*m_sceneContext);
 
-	switch (m_gameState) {
-	case GameState::Title: {
-		// close window
-		if (input.IsKeyPressed(DirectX::Keyboard::Escape)) {
-			PostQuitMessage(0);
-			return;
-		}
+	// ! register scenes
+	m_sceneManager->RegisterScene<TitleScene>(SceneIds::Title, "Title");
+	m_sceneManager->RegisterScene<ShooterScene>(SceneIds::Shooter, "Shooter");
+	m_sceneManager->RegisterScene<TankScene>(SceneIds::Tank, "Tank");
 
-		if (input.IsKeyPressed(DirectX::Keyboard::D1))
-			Start2DGame();
-		if (input.IsKeyPressed(DirectX::Keyboard::D2))
-			Start3DGame();
-		break;
-	}
-
-	case GameState::Playing: {
-		if (input.IsKeyPressed(DirectX::Keyboard::Escape)) {
-			PauseGame();
-			return;
-		}
-
-		if (m_gameMode == GameMode::Shooter2D) {
-			m_shooterGame.Update(
-				Time::DeltaTime(),
-				m_audioManager
-			);
-
-			if (m_shooterGame.IsGameOver())
-				m_gameState = GameState::GameOver;
-		}
-
-		if (m_gameMode == GameMode::Arena3D) {
-			m_tankGame.Update(
-				Time::DeltaTime(),
-				m_audioManager
-			);
-
-			if (m_tankGame.IsGameOver())
-				m_gameState = GameState::GameOver;
-		}
-		break;
-	}
-
-	case GameState::Paused: {
-		if (input.IsKeyPressed(DirectX::Keyboard::Tab)) {
-			ResumeGame();
-			return;
-		}
-
-		if (input.IsKeyPressed(DirectX::Keyboard::Back)) {
-			ReturnToTitle();
-			return;
-		}
-
-		break;
-	}
-
-	case GameState::GameOver: {
-		if (input.IsKeyPressed(DirectX::Keyboard::R)) {
-			if (m_gameMode == GameMode::Shooter2D)
-				Start2DGame();
-			if (m_gameMode == GameMode::Arena3D)
-				Start3DGame();
-		}
-		if (input.IsKeyPressed(DirectX::Keyboard::Back))
-			ReturnToTitle();
-		break;
-	}
-
-	default:
-		break;
-	}
-}
-
-void Game::FixedUpdate() {
-	if (m_gameState != GameState::Playing)
-		return;
-
-	// TODO: Physics simulation will be called here later
+	// ! load the first scene
+	if (!m_sceneManager->Start(SceneIds::Title))
+		throw std::runtime_error("Failed to start the initial scene");
 }
 
 void Game::Render() {
-	// bg color (just matching with the fog color, so fog could blend in
-	const auto& clearColor3D = m_tankGame.GetClearColor();
+	if (!m_sceneManager || !m_spriteBatch || !m_font)
+		return;
 
-	const float clearColor[4] = {
-		clearColor3D.x,
-		clearColor3D.y,
-		clearColor3D.z,
-		1.0f
-	};
+	// bg color
+	const auto clearColor = m_sceneManager->GetClearColor();
 
 	// bind render targets, sets viewport and clears both buffers
-	m_deviceResources.BeginFrame(clearColor);
+	m_deviceResources.BeginFrame(clearColor.data());
 
-	// ! render 3d
-	if (m_gameMode == GameMode::Arena3D &&
-		(m_gameState == GameState::Playing ||
-			m_gameState == GameState::Paused ||
-			m_gameState == GameState::GameOver)) {
-		const Camera3D& camera = m_tankGame.GetCamera();
+	// 3D/world phase
+	m_sceneManager->RenderWorld();
 
-		RenderContext renderContext;
-		renderContext.device = m_deviceResources.GetDevice();
-		renderContext.deviceContext = m_deviceResources.GetContext();
-		renderContext.view = camera.GetView();
-		renderContext.projection = camera.GetProjection();
-		renderContext.cameraPosition = camera.GetPosition();
-		renderContext.viewportWidth = m_deviceResources.GetWidth();
-		renderContext.viewportHeight = m_deviceResources.GetHeight();
-		renderContext.fixedInterpolationAlpha = Time::FixedInterpolationAlpha();
-
-		// TODO: temporary component rendering phase, split it into render world, transparent and then UI
-		// draw the arena first
-		m_gameObjects.Render(renderContext);
-
-		// draw the tank, enemies, bullets and effects
-		m_tankGame.Render();
-	}
-
-	// ! render 2d
+	// 2D/UI phase
 	m_spriteBatch->Begin();
 
-	if (m_gameMode == GameMode::Shooter2D &&
-		(m_gameState == GameState::Playing ||
-			m_gameState == GameState::Paused ||
-			m_gameState == GameState::GameOver))
-		m_shooterGame.Render(m_spriteBatch.get());
-
-	// draw ui
-	DrawUI();
+	m_sceneManager->RenderUI();
 
 	m_spriteBatch->End();
+	// ***********
 
 	// swap chain present
 	m_deviceResources.Present();	// TODO: add a variable in config file, whether to use vsync or not
-}
-
-void Game::Start2DGame() {
-	m_gameObjects.Clear();
-
-	m_gameMode = GameMode::Shooter2D;
-	m_gameState = GameState::Playing;
-
-	m_shooterGame.Start();
-
-	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
-	InputManager::Get().Reset();
-}
-
-void Game::Start3DGame() {
-	// remove objects from the previous game session
-	m_gameObjects.Clear();
-
-	m_gameMode = GameMode::Arena3D;
-	m_gameState = GameState::Playing;
-
-	m_tankGame.Start(m_gameObjects);
-
-	// in relative mode, mouse only reports how much it moved this frame, not the actual screen position
-	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);
-	InputManager::Get().Reset();
-}
-
-void Game::PauseGame() {
-	if (m_gameState != GameState::Playing)
-		return;
-
-	m_gameState = GameState::Paused;
-
-	// release the mouse so it is no longer captured by the 3d game
-	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
-}
-
-void Game::ResumeGame() {
-	if (m_gameState != GameState::Paused)
-		return;
-
-	m_gameState = GameState::Playing;
-
-	if (m_gameMode == GameMode::Arena3D)
-		InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_RELATIVE);
-	else
-		InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
-
-	// prevent mouse movement made while paused from 
-	// immediately rotating the turret after resuming
-	InputManager::Get().Reset();
-}
-
-void Game::ReturnToTitle() {
-	m_gameMode = GameMode::None;
-	m_gameState = GameState::Title;
-
-	m_tankGame.Clear();
-	m_shooterGame.Clear();
-
-	// ? temporarily adding it here
-	m_gameObjects.Clear();
-
-	// reset mouse mode to absolute, so the mouse cursor can be used to click buttons
-	InputManager::Get().SetMouseMode(DirectX::Mouse::MODE_ABSOLUTE);
-}
-
-void Game::DrawUI() {
-	if (!m_font) return;
-
-	using DirectX::SimpleMath::Vector2;
-
-	switch (m_gameState) {
-	case GameState::Title: {
-		// title
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"PROTOTYPE ALPHA",
-			Vector2(
-				m_windowWidth * 0.5f - 130.0f,
-				m_windowHeight * 0.5f - 120.0f
-			),
-			DirectX::Colors::DarkBlue
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"Press 1: 2D Shooter",
-			Vector2(
-				m_windowWidth * 0.5f - 170.0f,
-				m_windowHeight * 0.5f - 40.0f
-			),
-			DirectX::Colors::DarkMagenta
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"Press 2: 3D Arena",
-			Vector2(
-				m_windowWidth * 0.5f - 170.0f,
-				m_windowHeight * 0.5f + 10.0f
-			),
-			DirectX::Colors::DarkMagenta
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"Esc : Quit",
-			Vector2(
-				m_windowWidth * 0.5f - 80.0f,
-				m_windowHeight * 0.5f + 80.0f
-			),
-			DirectX::Colors::DarkRed
-		);
-		break;
-	}
-
-	case GameState::Playing: {
-		if (m_gameMode == GameMode::Shooter2D) {
-			const std::wstring scoreText = L"Score : " + std::to_wstring(m_shooterGame.GetScore());
-			const std::wstring hpText = L"HP    : " + std::to_wstring(m_shooterGame.GetPlayerHP());
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				scoreText.c_str(),
-				Vector2(20.0f, 20.0f),
-				DirectX::Colors::DarkGreen
-			);
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				hpText.c_str(),
-				Vector2(20.0f, 60.0f),
-				DirectX::Colors::DarkGreen
-			);
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				L"WASD/Arrows : Move\n"
-				L"SPACE       : Shoot\n"
-				L"ESC         : Pause",
-				Vector2(20.0f, 100.0f),
-				DirectX::Colors::DarkMagenta
-			);
-		}
-
-		if (m_gameMode == GameMode::Arena3D) {
-			const std::wstring score3DText = L"3D Score : " + std::to_wstring(m_tankGame.GetScore());
-			const std::wstring hp3DText = L"HP       : " + std::to_wstring(m_tankGame.GetPlayerHP());
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				score3DText.c_str(),
-				Vector2(20.0f, 20.0f),
-				DirectX::Colors::DarkGreen
-			);
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				hp3DText.c_str(),
-				Vector2(20.0f, 60.0f),
-				DirectX::Colors::DarkGreen
-			);
-
-			m_font->DrawString(
-				m_spriteBatch.get(),
-				L"WASD  : Move\n"
-				L"MOUSE : Aim\n"
-				L"LMB   : Shoot\n"
-				L"ESC   : Pause",
-				Vector2(20.0f, 100.0f),
-				DirectX::Colors::DarkMagenta
-			);
-
-			if (m_tankGame.IsTankDestroyed()) {
-				m_font->DrawString(
-					m_spriteBatch.get(),
-					L"TANK DESTROYED...",
-					Vector2(300.0f, 250.0f),
-					DirectX::Colors::Yellow
-				);
-			}
-		}
-		break;
-	}
-
-	case GameState::Paused: {
-		const wchar_t* pauseText = L"PAUSED";
-
-		const wchar_t* controlsText =
-			L"TAB       : Resume\n"
-			L"BACKSPACE : Return to Title";
-
-		const Vector2 pauseSize = m_font->MeasureString(pauseText);
-
-		const Vector2 controlsSize = m_font->MeasureString(controlsText);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			pauseText,
-			Vector2(
-				m_windowWidth * 0.5f -
-				pauseSize.x * 0.5f,
-				m_windowHeight * 0.5f -
-				70.0f
-			),
-			DirectX::Colors::DarkRed
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			controlsText,
-			Vector2(
-				m_windowWidth * 0.5f -
-				controlsSize.x * 0.5f,
-				m_windowHeight * 0.5f
-			),
-			DirectX::Colors::DarkBlue
-		);
-
-		break;
-	}
-
-	case GameState::GameOver: {
-		std::wstring finalScoreText;
-
-		if (m_gameMode == GameMode::Shooter2D)
-			finalScoreText = L"Final Score:" + std::to_wstring(m_shooterGame.GetScore());
-		else if (m_gameMode == GameMode::Arena3D)
-			finalScoreText = L"Final Score:" + std::to_wstring(m_tankGame.GetScore());
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"GAME OVER",
-			Vector2(
-				m_windowWidth * 0.5f - 80.0f,
-				m_windowHeight * 0.5f - 100.0f
-			),
-			DirectX::Colors::DarkOrange
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			finalScoreText.c_str(),
-			Vector2(
-				m_windowWidth * 0.5f - 130.0f,
-				m_windowHeight * 0.5f - 40.0f
-			),
-			DirectX::Colors::DarkGreen
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"R         : Restart",
-			Vector2(
-				m_windowWidth * 0.5f - 150.0f,
-				m_windowHeight * 0.5f + 20.0f
-			),
-			DirectX::Colors::DarkMagenta
-		);
-
-		m_font->DrawString(
-			m_spriteBatch.get(),
-			L"Backspace : Title",
-			Vector2(
-				m_windowWidth * 0.5f - 150.0f,
-				m_windowHeight * 0.5f + 50.0f
-			),
-			DirectX::Colors::DarkMagenta
-		);
-		break;
-	}
-	}
 }

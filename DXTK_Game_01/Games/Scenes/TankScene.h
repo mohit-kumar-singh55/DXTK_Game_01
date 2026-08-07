@@ -14,6 +14,9 @@ protected:
 
 	void OnUpdate() override;
 
+	[[nodiscard]]
+	bool BuildRenderContext(RenderContext& context) const noexcept override;
+
 	void OnRenderWorld() override;
 	void OnRenderUI() override;
 

@@ -1,9 +1,19 @@
 #include "Scene.h"
 #include "SceneManager.h"
 
+#include <SNX/Core/Time.h>
+#include <SNX/Graphics/DeviceResources.h>
+
 Scene::Scene(SceneManager& sceneManager, SceneContext& context) noexcept :
 	m_sceneManager(sceneManager),
-	m_context(context) {}
+	m_context(context) {
+	// initial render context setup
+	auto& deviceResources = GetContext().deviceResources;
+	m_renderContext.device = deviceResources.GetDevice();
+	m_renderContext.deviceContext = deviceResources.GetContext();
+	m_renderContext.viewportWidth = deviceResources.GetWidth();
+	m_renderContext.viewportHeight = deviceResources.GetHeight();
+}
 
 void Scene::Load() {
 	if (m_loaded) return;
@@ -61,6 +71,12 @@ void Scene::LateUpdate() {
 
 void Scene::RenderWorld() {
 	if (!m_loaded) return;
+
+	// filling the remaining fields of render context that might change in every life cycle
+	m_renderContext.fixedInterpolationAlpha = Time::FixedInterpolationAlpha();
+	if (BuildRenderContext(m_renderContext))
+		// render all the gameobjects of the current scene
+		m_gameObjects.Render(m_renderContext);
 
 	OnRenderWorld();
 }

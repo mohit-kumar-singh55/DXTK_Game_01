@@ -156,26 +156,19 @@ void TankScene::RestartGame() {
 	input.Reset();
 }
 
-void TankScene::OnRenderWorld() {
-	auto& deviceResources = GetContext().deviceResources;
-
+bool TankScene::BuildRenderContext(RenderContext& context) const noexcept {
 	const Camera3D& camera = m_tankGame.GetCamera();
 
-	RenderContext renderContext;
+	// fill camera based fields only as others are filled by Scene itself
+	context.view = camera.GetView();
+	context.projection = camera.GetProjection();
+	context.cameraPosition = camera.GetPosition();
 
-	renderContext.device = deviceResources.GetDevice();
-	renderContext.deviceContext = deviceResources.GetContext();
-	renderContext.view = camera.GetView();
-	renderContext.projection = camera.GetProjection();
-	renderContext.cameraPosition = camera.GetPosition();
-	renderContext.viewportWidth = deviceResources.GetWidth();
-	renderContext.viewportHeight = deviceResources.GetHeight();
+	return context.IsValid();
+}
 
-	renderContext.fixedInterpolationAlpha = Time::FixedInterpolationAlpha();
-
-	// component-managed arena and tank meshes
-	GetGameObjects().Render(renderContext);
-
+void TankScene::OnRenderWorld() {
+	// Legacy tank rendering
 	// existing enemies, bullets, effects and fake shadow
 	m_tankGame.Render();
 }

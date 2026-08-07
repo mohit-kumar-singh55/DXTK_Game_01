@@ -5,17 +5,14 @@
 // window related
 #include <windows.h>
 
-#include <SNX/Graphics/DeviceResources.h>
-
 // DirectXTK
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 
 // game related
-#include <SNX/Core/Object/GameObjectManager.h>
 #include <SNX/Audio/AudioManager.h>
-#include <Games/Tank3D/TankGame3D.h>
-#include <Games/Shooter2D/ShooterGame2D.h>
+#include <SNX/Core/Scene/SceneManager.h>
+#include <SNX/Graphics/DeviceResources.h>
 
 class Game final {
 public:
@@ -34,56 +31,23 @@ public:
 
 private:
 	void InitializeGameResources();
+	void InitializeScenes();
 
-	void Update();
-	void FixedUpdate();
 	void Render();
 
-	void Start2DGame();
-	void Start3DGame();
-
-	void PauseGame();
-	void ResumeGame();
-
-	void ReturnToTitle();
-
-	void DrawUI();
-
 private:
-	int m_windowWidth = 1280;
-	int m_windowHeight = 720;
-
 	// device related
 	DeviceResources m_deviceResources;
 
-	// DirectXTK objects
+	// UI objects renderer
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 	std::unique_ptr<DirectX::SpriteFont> m_font;	// ui text renderer
 
-	static constexpr float MouseSensitivity = 0.0035f;
-
-	// 3D tank game
-	TankGame3D m_tankGame;
-	// 2d shooter game
-	ShooterGame2D m_shooterGame;
-
-	GameObjectManager m_gameObjects;
-
-	enum class GameState {
-		Title,
-		Playing,
-		Paused,
-		GameOver
-	};
-
-	enum class GameMode {
-		None,
-		Shooter2D,
-		Arena3D
-	};
-
-	GameState m_gameState = GameState::Title;
-	GameMode m_gameMode = GameMode::None;
-
 	AudioManager m_audioManager;
+
+	// must remain alive while SceneManager exists
+	std::unique_ptr<SceneContext> m_sceneContext;
+
+	// declared last so it is destroyed first
+	std::unique_ptr<SceneManager> m_sceneManager;
 };

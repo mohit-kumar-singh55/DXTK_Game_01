@@ -2,6 +2,8 @@
 
 #include "SceneTypes.h"
 #include "SceneContext.h"
+
+#include <SNX/Graphics/RenderContext.h>
 #include <SNX/Core/Object/GameObjectManager.h>
 
 #include <array>
@@ -72,6 +74,16 @@ protected:
 
 	virtual void OnLateUpdate() {}
 
+	/*
+	* Some camera related fields will be filled in the render context in every 3D
+	*
+	* By default returns false
+	* because scenes with no 3D object, doesn't require a 3D camera as well
+	* so those (2D) scenes will not need to implement this method
+	*/
+	[[nodiscard]]
+	virtual bool BuildRenderContext(RenderContext& context) const noexcept { return false; }
+
 	virtual void OnRenderWorld() {}
 
 	virtual void OnRenderUI() {}
@@ -87,6 +99,8 @@ protected:
 private:
 	SceneManager& m_sceneManager;
 	SceneContext& m_context;
+
+	RenderContext m_renderContext;
 
 	GameObjectManager m_gameObjects;
 

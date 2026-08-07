@@ -184,8 +184,7 @@ bool TankScene::ShouldUpdateGameObjects() const noexcept {
 	return m_state == State::Playing;
 }
 
-std::array<float, 4>
-TankScene::OnGetClearColor()const noexcept {
+std::array<float, 4> TankScene::OnGetClearColor() const noexcept {
 	const auto& color = m_tankGame.GetClearColor();
 	return { color.x, color.y, color.z,	1.0f };
 }

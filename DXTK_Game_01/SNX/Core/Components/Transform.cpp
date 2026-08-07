@@ -3,17 +3,24 @@
 #include <cmath>
 
 Transform::~Transform() {
-	// detach from out parent
+	// detach from our parent
 	if (m_parent) {
 		m_parent->RemoveChild(this);
 		m_parent = nullptr;
 	}
 
 	/*
-	* prevent children from retaining a dangling pointer
+	* Prevent children from retaining a dangling pointer.
 	*
-	* their local transform is preserved. because the parent
-	* is disappearing, their world transform may change
+	* Their local transform is preserved. because the parent
+	* is disappearing, their world transform may change.
+	*/
+	/*
+	* Normal GameObject.RequestDestroy() recursively destroys children
+	*
+	* This is still required as defensive cleanup because
+	* immediate manager clearing may destroy objects in any
+	* storage order.
 	*/
 	for (Transform* child : m_children) {
 		if (!child) continue;

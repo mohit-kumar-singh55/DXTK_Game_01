@@ -103,7 +103,10 @@ public:
 
 	void EndFrame();
 
-	void RequestDestroy() noexcept { m_destroyRequested = true; }
+	/// <summary>
+	/// Delete this gameobject and the whole hierarchy below it
+	/// </summary>
+	void RequestDestroy() noexcept;
 
 	[[nodiscard]]
 	bool IsDestroyRequested() const noexcept { return m_destroyRequested; }

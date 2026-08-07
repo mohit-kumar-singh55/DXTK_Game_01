@@ -152,6 +152,39 @@ void GameObject::EndFrame() {
 	RemoveRequestedComponents();
 }
 
+void GameObject::RequestDestroy() noexcept {
+	if (m_destroyRequested) return;
+
+	/*
+	* mark this object first
+	*
+	* doing this before recursively visiting children
+	* also prevents accidental recursion from returning
+	* to this object in a corrupted hierarchy
+	*/
+	m_destroyRequested = true;
+
+	Transform& transform = GetTransform();
+
+	const std::size_t childCount = transform.GetChildCount();
+
+	for (std::size_t index = 0;index < childCount;index++) {
+		Transform* childTransform = transform.GetChild(index);
+
+		if (!childTransform) continue;
+
+		GameObject* childObject = childTransform->GetGameObject();
+
+		if (!childCount) continue;
+
+		/*
+		* child objects will repeat this process
+		* for their childs, till the very last object in hierarchy is marked for destruction
+		*/
+		childObject->RequestDestroy();
+	}
+}
+
 void GameObject::DestroyComponents() noexcept {
 	if (m_componentsDestroyed) return;
 

@@ -175,7 +175,7 @@ void GameObject::RequestDestroy() noexcept {
 
 		GameObject* childObject = childTransform->GetGameObject();
 
-		if (!childCount) continue;
+		if (!childObject) continue;
 
 		/*
 		* child objects will repeat this process

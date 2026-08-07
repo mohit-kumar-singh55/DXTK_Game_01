@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SNX/Core/Camera3D.h>
+#include <SNX/Core/Camera/ThirdPersonCamera.h>
 #include <Games/Tank3D/Player3D.h>
 #include <Games/Tank3D/Bullet3D.h>
 #include <SNX/Audio/AudioManager.h>
@@ -63,7 +63,7 @@ public:
 	const DirectX::SimpleMath::Vector3& GetClearColor() const noexcept { return m_fogColor; }
 
 	[[nodiscard]]
-	const Camera3D& GetCamera() const noexcept { return m_cam; }
+	const Camera& GetCamera() const noexcept { return m_cam; }
 
 private:
 	void InitializeBasicEffect(ID3D11Device* device);
@@ -94,7 +94,7 @@ private:
 	ID3D11Device* m_device = nullptr;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_context;
 
-	Camera3D m_cam;
+	ThirdPersonCamera m_cam;
 	Player3D m_player;
 
 	std::shared_ptr<BasicPrimitiveMaterial> m_arenaMaterial;

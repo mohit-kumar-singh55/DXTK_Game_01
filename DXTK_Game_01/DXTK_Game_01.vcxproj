@@ -196,6 +196,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SNX\Audio\AudioManager.cpp" />
     <ClCompile Include="SNX\Core\Camera3D.cpp" />
+    <ClCompile Include="SNX\Core\Camera\Camera.cpp" />
+    <ClCompile Include="SNX\Core\Camera\ThirdPersonCamera.cpp" />
     <ClCompile Include="SNX\Core\Components\Renderer\MeshRenderer.cpp" />
     <ClCompile Include="SNX\Core\Components\Renderer\PrimitiveRenderer.cpp" />
     <ClCompile Include="SNX\Core\Components\Transform.cpp" />
@@ -232,6 +234,8 @@
     <ClInclude Include="Games\Tank3D\TankGame3D.h" />
     <ClInclude Include="SNX\Audio\AudioManager.h" />
     <ClInclude Include="SNX\Core\Camera3D.h" />
+    <ClInclude Include="SNX\Core\Camera\Camera.h" />
+    <ClInclude Include="SNX\Core\Camera\ThirdPersonCamera.h" />
     <ClInclude Include="SNX\Core\Collision.h" />
     <ClInclude Include="SNX\Core\Components\Renderer\MeshRenderer.h" />
     <ClInclude Include="SNX\Core\Components\Renderer\PrimitiveRenderer.h" />

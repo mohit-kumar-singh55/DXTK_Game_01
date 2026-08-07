@@ -53,6 +53,9 @@
     <Filter Include="Games\Scenes">
       <UniqueIdentifier>{180fe3d8-b9a6-4f30-a240-10ff5ad6544d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SNX\Core\Camera">
+      <UniqueIdentifier>{bb4a693a-3579-4c37-b491-e0e773b87b48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -156,6 +159,12 @@
     </ClCompile>
     <ClCompile Include="Games\Scenes\TankScene.cpp">
       <Filter>Games\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Camera\Camera.cpp">
+      <Filter>SNX\Core\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SNX\Core\Camera\ThirdPersonCamera.cpp">
+      <Filter>SNX\Core\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +282,12 @@
     </ClInclude>
     <ClInclude Include="Games\Scenes\TankScene.h">
       <Filter>Games\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Camera\Camera.h">
+      <Filter>SNX\Core\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SNX\Core\Camera\ThirdPersonCamera.h">
+      <Filter>SNX\Core\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

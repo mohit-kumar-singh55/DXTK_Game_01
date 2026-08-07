@@ -157,7 +157,7 @@ void TankScene::RestartGame() {
 }
 
 bool TankScene::BuildRenderContext(RenderContext& context) const noexcept {
-	const Camera3D& camera = m_tankGame.GetCamera();
+	const Camera& camera = m_tankGame.GetCamera();
 
 	// fill camera based fields only as others are filled by Scene itself
 	context.view = camera.GetView();

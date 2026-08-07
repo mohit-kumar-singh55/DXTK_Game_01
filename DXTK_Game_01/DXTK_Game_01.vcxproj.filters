@@ -106,9 +106,6 @@
     <ClCompile Include="SNX\Audio\AudioManager.cpp">
       <Filter>SNX\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="SNX\Core\Camera3D.cpp">
-      <Filter>SNX\Core</Filter>
-    </ClCompile>
     <ClCompile Include="SNX\Core\ModelObject3D.cpp">
       <Filter>SNX\Core</Filter>
     </ClCompile>
@@ -210,9 +207,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="SNX\Audio\AudioManager.h">
       <Filter>SNX\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="SNX\Core\Camera3D.h">
-      <Filter>SNX\Core</Filter>
     </ClInclude>
     <ClInclude Include="SNX\Core\Collision.h">
       <Filter>SNX\Core</Filter>

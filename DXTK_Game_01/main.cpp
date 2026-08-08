@@ -8,6 +8,9 @@
 #include <memory>
 #include <stdexcept>
 
+#include <filesystem>
+#include <array>
+
 #include <Keyboard.h>
 #include <Mouse.h>
 
@@ -93,7 +96,7 @@ void CreateGameWindow(HINSTANCE instance, int showCommand) {
 	g_window = CreateWindowEx(
 		0,
 		CLASS_NAME,
-		L"DirectXTK Game 01",
+		L"Prototype Alpha",
 		windowStyle,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -114,11 +117,32 @@ void CreateGameWindow(HINSTANCE instance, int showCommand) {
 }
 
 // -----------------------------------------------------------------------------
+// Set working directory to the directory where the .exe is present
+// -----------------------------------------------------------------------------
+
+void SetWorkingDirectoryToExecutable() {
+	std::array<wchar_t, 32768> pathBuffer{};
+
+	const DWORD length = GetModuleFileNameW(nullptr, pathBuffer.data(), static_cast<DWORD>(pathBuffer.size()));
+
+	if (length == 0 || length >= pathBuffer.size())
+		throw std::runtime_error("Failed to get executable path.");
+
+	const std::filesystem::path executablePath(pathBuffer.data());
+
+	const std::filesystem::path executableDirectory = executablePath.parent_path();
+
+	std::filesystem::current_path(executableDirectory);
+}
+
+// -----------------------------------------------------------------------------
 // WinMain
 // -----------------------------------------------------------------------------
 
 int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCommand) {
 	try {
+		SetWorkingDirectoryToExecutable();
+
 		CreateGameWindow(instance, showCommand);
 
 		g_game = std::make_unique<Game>();

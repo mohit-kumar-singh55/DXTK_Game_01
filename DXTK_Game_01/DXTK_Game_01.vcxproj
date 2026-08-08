@@ -138,6 +138,9 @@
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /E /I /Y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -159,19 +162,11 @@
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
+    <PostBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /E /I /Y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Assets\gamefont.spritefont">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
     <None Include="packages.config" />
     <None Include="TODO.md" />
   </ItemGroup>
@@ -253,121 +248,6 @@
     <ClInclude Include="SNX\Graphics\DeviceResources.h" />
     <ClInclude Include="SNX\Graphics\RenderContext.h" />
     <ClInclude Include="SNX\Input\InputManager.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="Assets\Textures\bullet.png">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Assets\Textures\enemy.png">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Assets\Textures\player.png">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Textures/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="Assets\Audios\damage.wav">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Assets\Audios\hit.wav">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Assets\Audios\shoot.wav">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </RootFolder>
-      <RootFolder Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </RootFolder>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-      <DestinationFolders Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)Assets/Audios/;%(DestinationFolders)</DestinationFolders>
-    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
